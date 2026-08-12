@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.category.field_taxonomy_color
+    - taxonomy.vocabulary.category
+  module:
+    - options
+id: taxonomy_term.category.default
+targetEntityType: taxonomy_term
+bundle: category
+mode: default
+content:
+  field_taxonomy_color:
+    weight: -2
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: list_default
+    region: content
+hidden:
+  description: true

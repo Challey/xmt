@@ -1,0 +1,14 @@
+langcode: en
+status: true
+dependencies: {  }
+name: medium_3
+label: 'Medium 3(430x260)'
+effects:
+  b1837166-e4fc-4425-b782-27afbe88fb5f:
+    uuid: b1837166-e4fc-4425-b782-27afbe88fb5f
+    id: image_scale_and_crop
+    weight: 1
+    data:
+      width: 430
+      height: 260
+      anchor: center-center

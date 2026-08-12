@@ -1,0 +1,49 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser_2
+    - field.field.node.video.body
+    - field.field.node.video.field_image
+    - field.field.node.video.field_video_embed
+    - image.style.height
+    - node.type.video
+  module:
+    - image
+    - text
+    - user
+id: node.video.teaser_2
+targetEntityType: node
+bundle: video
+mode: teaser_2
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 101
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_image:
+    weight: 102
+    label: hidden
+    settings:
+      image_style: height
+      image_link: content
+    third_party_settings: {  }
+    type: image
+    region: content
+  field_video_embed:
+    weight: 103
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  links:
+    weight: 100
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden: {  }

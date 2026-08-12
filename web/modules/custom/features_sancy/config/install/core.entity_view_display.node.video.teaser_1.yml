@@ -1,0 +1,35 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser_1
+    - field.field.node.video.body
+    - field.field.node.video.field_image
+    - field.field.node.video.field_video_embed
+    - image.style.normal_size
+    - node.type.video
+  module:
+    - image
+    - user
+id: node.video.teaser_1
+targetEntityType: node
+bundle: video
+mode: teaser_1
+content:
+  field_image:
+    weight: 1
+    label: hidden
+    settings:
+      image_style: normal_size
+      image_link: content
+    third_party_settings: {  }
+    type: image
+    region: content
+  links:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  body: true
+  field_video_embed: true

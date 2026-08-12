@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+id: gallery
+label: Gallery
+icon_uuid: null
+description: 'Display Images grid for post.'
+behavior_plugins: {  }

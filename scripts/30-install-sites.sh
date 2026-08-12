@@ -1,0 +1,1 @@
+../setup/scripts/30-install-sites.sh

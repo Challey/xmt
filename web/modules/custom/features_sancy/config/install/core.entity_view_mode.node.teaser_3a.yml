@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.teaser_3a
+label: 'Teaser 3a (For Large Article First Height & Small Articles List)'
+targetEntityType: node
+cache: true

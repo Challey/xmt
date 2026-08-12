@@ -1,0 +1,185 @@
+global-styling:
+  version: VERSION
+  header: true
+  css:
+    theme:
+      //fonts.googleapis.com/css?family=Open+Sans:400,500,600,700: { type: external }
+      css/fonts-awesome/css/font-awesome.min.css: {}
+      css/icon.css: {}
+      css/animate.css: {}
+      vendor/owl-carousel/assets/owl.carousel.min.css: {}
+      vendor/owl-carousel/assets/owl.theme.default.min.css: {}
+      vendor/magnific/magnific-popup.css: {}
+      vendor/popup-gallery/css/lightgallery.min.css: {}
+      vendor/popup-gallery/css/lg-transitions.min.css: {}
+      vendor/slick/slick.css: {}
+  js:
+    vendor/jquery-migrate.min.js: {}
+    js/bootstrap.js: {}
+    js/imagesloader.min.js: {}
+    vendor/jquery.easing.js: {}
+    vendor/owl-carousel/owl.carousel.js: {}
+    vendor/perfect-scrollbar.jquery.min.js: {}
+    js/sidebar-sticky.js: {}
+    vendor/waypoint.js: {}
+    vendor/jquery.appear.js: {}
+    vendor/count-to.js: {}
+    vendor/masonry.pkgd.min.js: {}
+    vendor/isotope.pkgd.min.js: {}
+    vendor/jpreloader.min.js: {}
+    vendor/jquery.unveil.js: {}
+    vendor/magnific/jquery.magnific-popup.min.js: {}
+    vendor/popup-gallery/js/lightgallery.min.js: {}
+    vendor/slick/slick.min.js: {}
+    vendor/news-sticker/jquery.news-ticker.min.js: {}
+    vendor/jquery.hoverIntent.js: {}
+    vendor/aos.js: {}
+    js/main.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - core/jquery.once
+
+gavias_sancy.skin.default:
+  version: VERSION
+  css:
+    theme: 
+      css/template.css: {}
+      css/bootstrap.css: {}
+
+gavias_sancy.skin.blue:
+  version: VERSION
+  css:
+    theme: 
+      css/skins/blue/template.css: {}
+      css/skins/blue/bootstrap.css: {}
+
+gavias_sancy.skin.blue2:
+  version: VERSION
+  css:
+    theme: 
+      css/skins/blue2/template.css: {}
+      css/skins/blue2/bootstrap.css: {}
+
+gavias_sancy.skin.brown:
+  version: VERSION
+  css:
+    theme: 
+      css/skins/brown/template.css: {}
+      css/skins/brown/bootstrap.css: {}
+
+gavias_sancy.skin.green:
+  version: VERSION
+  css:
+    theme: 
+      css/skins/green/template.css: {}
+      css/skins/green/bootstrap.css: {}
+
+gavias_sancy.skin.lilac:
+  version: VERSION
+  css:
+    theme: 
+      css/skins/lilac/template.css: {}
+      css/skins/lilac/bootstrap.css: {}
+
+gavias_sancy.skin.lime_green:
+  version: VERSION
+  css:
+    theme: 
+      css/skins/lime_green/template.css: {}
+      css/skins/lime_green/bootstrap.css: {}
+
+gavias_sancy.skin.orange:
+  version: VERSION
+  css:
+    theme: 
+      css/skins/orange/template.css: {}
+      css/skins/orange/bootstrap.css: {}
+
+gavias_sancy.skin.pink:
+  version: VERSION
+  css:
+    theme: 
+      css/skins/pink/template.css: {}
+      css/skins/pink/bootstrap.css: {}
+
+gavias_sancy.skin.purple:
+  version: VERSION
+  css:
+    theme: 
+      css/skins/purple/template.css: {}
+      css/skins/purple/bootstrap.css: {}
+
+gavias_sancy.skin.red:
+  version: VERSION
+  css:
+    theme: 
+      css/skins/red/template.css: {}
+      css/skins/red/bootstrap.css: {}
+
+gavias_sancy.skin.turquoise:
+  version: VERSION
+  css:
+    theme: 
+      css/skins/turquoise/template.css: {}
+      css/skins/turquoise/bootstrap.css: {}
+
+gavias_sancy.skin.turquoise2:
+  version: VERSION
+  css:
+    theme: 
+      css/skins/turquoise2/template.css: {}
+      css/skins/turquoise2/bootstrap.css: {}
+
+gavias_sancy.skin.violet_red:
+  version: VERSION
+  css:
+    theme: 
+      css/skins/violet_red/template.css: {}
+      css/skins/violet_red/bootstrap.css: {}
+
+gavias_sancy.skin.violet_red2:
+  version: VERSION
+  css:
+    theme: 
+      css/skins/violet_red2/template.css: {}
+      css/skins/violet_red2/bootstrap.css: {}
+
+gavias_sancy.skin.yellow:
+  version: VERSION
+  css:
+    theme: 
+      css/skins/yellow/template.css: {}
+      css/skins/yellow/bootstrap.css: {}
+
+gavias_sancy_admin:
+  version: VERSION
+  css: 
+    theme: 
+      css/theme-settings.css: {}
+      vendor/colorpicker/css/colorpicker.css: {}
+      vendor/codemirror/lib/codemirror.css: {}
+      vendor/codemirror/addon/hint/show-hint.css: {}
+  js:
+      vendor/jquery-migrate.min.js: {}
+      vendor/colorpicker/js/colorpicker.js: {}
+      vendor/codemirror/lib/codemirror.js: {cope: footer}
+      vendor/codemirror/mode/css/css.js: {cope: footer}
+      js/customize.js: {}
+
+maintenance_page:
+  version: VERSION
+  css:
+    theme:
+      css/maintenance-page.css: {}
+
+views-infinite-scroll:
+  version: VERSION
+  js:
+    js/override/infinite-scroll.js : {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupal.debounce
+

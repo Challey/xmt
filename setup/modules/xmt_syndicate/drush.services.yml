@@ -1,0 +1,6 @@
+services:
+  xmt_syndicate.commands:
+    class: Drupal\xmt_syndicate\Commands\XmtCommands
+    arguments: ['@xmt_syndicate.syndicate']
+    tags:
+      - { name: drush.command }

@@ -1,0 +1,1 @@
+../setup/scripts/50-nginx-hosts.sh

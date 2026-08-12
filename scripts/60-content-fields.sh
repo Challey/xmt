@@ -1,0 +1,1 @@
+../setup/scripts/60-content-fields.sh

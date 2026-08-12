@@ -1,0 +1,8 @@
+name: Gavias Content Builder
+type: module
+description: Gavias Content Builder module.
+dependencies:
+package: gavias
+version: '4.0.0'
+core_version_requirement: ^8 || ^9 || ^10 || ^11
+project: 'gavias_content_builder'

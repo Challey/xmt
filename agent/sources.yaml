@@ -1,0 +1,81 @@
+# Domain-keyed mature RSS / Atom sources for XMT agent.
+# Each item: name, url, site (Drupal URI), domain tag
+
+sources:
+  jewelry:
+    site: zhubao.pub
+    domain: jewelry
+    feeds:
+      - name: Rapaport
+        url: https://rapaport.com/feed/
+      - name: JCK Online
+        url: https://www.jckonline.com/feed/
+      - name: Jewellery Net Asia
+        url: https://www.jewellerynet.com/en/rss
+
+  ai_robot:
+    site: airobotor.com
+    domain: ai_robot
+    feeds:
+      - name: IEEE Spectrum Robotics
+        url: https://spectrum.ieee.org/feeds/topic/robotics.rss
+      - name: MIT Tech Review
+        url: https://www.technologyreview.com/feed/
+      - name: The Robot Report
+        url: https://www.therobotreport.com/feed/
+      - name: OpenAI Blog
+        url: https://openai.com/blog/rss.xml
+
+  harmonyos:
+    site: hm-os.com
+    domain: harmonyos
+    feeds:
+      - name: OpenHarmony News
+        url: https://www.openharmony.cn/rss
+      - name: Huawei Developers Blog
+        url: https://developer.huawei.com/consumer/cn/forum/rss
+      - name: CNX Software Open Source
+        url: https://www.cnx-software.com/feed/
+
+  ai_edu:
+    site: kstudy.com.cn
+    domain: ai_edu
+    feeds:
+      - name: EdSurge
+        url: https://www.edsurge.com/articles.rss
+      - name: UNESCO Education
+        url: https://www.unesco.org/en/rss/news.xml
+      - name: Class Central Blog
+        url: https://www.classcentral.com/report/feed/
+
+  drupal:
+    site: drupal.org.cn
+    domain: drupal
+    feeds:
+      - name: Drupal.org Planet
+        url: https://www.drupal.org/planet/rss.xml
+      - name: Drupal.org News
+        url: https://www.drupal.org/rss.xml
+      - name: Lullabot
+        url: https://www.lullabot.com/rss.xml
+
+  itra:
+    site: itra.com.cn
+    domain: itra
+    feeds:
+      - name: ITRA News
+        url: https://itra.run/Rss/News
+      - name: iRunFar
+        url: https://www.irunfar.com/feed
+      - name: Trail Runner Mag
+        url: https://www.trailrunnermag.com/feed/
+
+  # Also push a curated cross-domain sample into xmt directly when vertical fails
+  general_tech:
+    site: xmt.pub
+    domain: general
+    feeds:
+      - name: BBC Technology
+        url: https://feeds.bbci.co.uk/news/technology/rss.xml
+      - name: The Verge
+        url: https://www.theverge.com/rss/index.xml

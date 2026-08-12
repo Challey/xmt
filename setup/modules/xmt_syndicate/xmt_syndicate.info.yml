@@ -1,0 +1,10 @@
+name: 'XMT Syndicate'
+type: module
+description: 'Syndicate vertical-site articles to xmt.pub and support agent publishing.'
+core_version_requirement: '^10 || ^11'
+package: XMT
+dependencies:
+  - drupal:node
+  - drupal:taxonomy
+  - drupal:path
+  - drupal:text

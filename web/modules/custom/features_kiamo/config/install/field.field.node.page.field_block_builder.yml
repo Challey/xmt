@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_block_builder
+    - node.type.page
+  module:
+    - gavias_blockbuilder
+id: node.page.field_block_builder
+field_name: field_block_builder
+entity_type: node
+bundle: page
+label: 'Block Builder'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    bid: '0'
+default_value_callback: ''
+settings: {  }
+field_type: blockbuilder

@@ -1,0 +1,39 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_visibility_groups.block_visibility_group.right_sidebar
+  content:
+    - 'block_content:basic:7a007496-476f-455b-b47c-4029a5a22ae0'
+  module:
+    - block_class
+    - block_content
+    - block_visibility_groups
+    - gaviasthemer
+  theme:
+    - gavias_sancy
+third_party_settings:
+  block_class:
+    classes: ''
+  gaviasthemer:
+    classes: ''
+id: gavias_sancy_socialsidebar
+theme: gavias_sancy
+region: sidebar_right
+weight: -11
+provider: null
+plugin: 'block_content:7a007496-476f-455b-b47c-4029a5a22ae0'
+settings:
+  id: 'block_content:7a007496-476f-455b-b47c-4029a5a22ae0'
+  label: 'Social Networks'
+  provider: block_content
+  label_display: visible
+  status: true
+  info: ''
+  view_mode: full
+visibility:
+  condition_group:
+    id: condition_group
+    negate: false
+    block_visibility_group: right_sidebar
+    context_mapping: {  }

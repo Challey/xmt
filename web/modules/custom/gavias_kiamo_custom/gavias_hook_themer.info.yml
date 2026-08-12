@@ -1,0 +1,7 @@
+type: module
+name : Gavias Kiamo Themer
+description : Gavias Kiamo Themer
+package: gavias
+core_version_requirement: ^8.8 || ^9 || ^10 || ^11
+project: 'gavias_hook_themer'
+version: '3.0.0'

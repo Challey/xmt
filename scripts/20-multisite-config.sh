@@ -1,0 +1,1 @@
+../setup/scripts/20-multisite-config.sh

@@ -1,0 +1,14 @@
+langcode: en
+status: true
+dependencies: {  }
+name: square
+label: 'Square (750 x 750)'
+effects:
+  9548dcfc-4556-4d69-80e6-96d507222365:
+    uuid: 9548dcfc-4556-4d69-80e6-96d507222365
+    id: image_scale_and_crop
+    weight: 2
+    data:
+      width: 750
+      height: 750
+      anchor: center-center

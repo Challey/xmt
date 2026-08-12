@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_taxonomy_color
+    - taxonomy.vocabulary.category
+  module:
+    - options
+id: taxonomy_term.category.field_taxonomy_color
+field_name: field_taxonomy_color
+entity_type: taxonomy_term
+bundle: category
+label: 'Taxonomy Color'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: red
+default_value_callback: ''
+settings: {  }
+field_type: list_string

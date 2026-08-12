@@ -1,0 +1,39 @@
+name: 'Features Sancy'
+description: 'Features Sancy - Import content type, field, view ... for Sancy theme.'
+type: module
+core_version_requirement: ^8.8 || ^9 || ^10 || ^11
+dependencies:
+  - block
+  - block_class
+  - block_content
+  - block_visibility_groups
+  - comment
+  - contact
+  - ctools
+  - entity_reference_revisions
+  - field
+  - file
+  - gavias_content_builder
+  - gavias_view
+  - gavias_views_magazine
+  - gaviasthemer
+  - image
+  - imce
+  - menu_ui
+  - node
+  - options
+  - paragraphs
+  - path
+  - pathauto
+  - simplenews
+  - statistics
+  - system
+  - taxonomy
+  - text
+  - user
+  - video_embed_field
+  - views
+  - views_infinite_scroll
+  - config_update
+  - features
+version: '2.0.0'

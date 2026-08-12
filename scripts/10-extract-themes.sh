@@ -1,0 +1,1 @@
+../setup/scripts/10-extract-themes.sh

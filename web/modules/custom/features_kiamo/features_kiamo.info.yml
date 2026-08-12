@@ -1,0 +1,34 @@
+name: 'Features Kiamo'
+description: 'Features Kiamo - Import content type, field, view ... for Kiamo theme'
+type: module
+dependencies:
+  - block
+  - comment
+  - contact
+  - ctools
+  - field
+  - file
+  - filter
+  - gavias_blockbuilder
+  - gavias_view
+  - gaviasthemer
+  - image
+  - image_url_formatter
+  - imce
+  - menu_ui
+  - node
+  - options
+  - path
+  - pathauto
+  - system
+  - taxonomy
+  - text
+  - user
+  - views
+  - views_infinite_scroll
+  - gavias_hook_themer
+  - config_update
+  - features
+  
+version: '3.0.0'
+core_version_requirement: ^8.8 || ^9 || ^10 || ^11

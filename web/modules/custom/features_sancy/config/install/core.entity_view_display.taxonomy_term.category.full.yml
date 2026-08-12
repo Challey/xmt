@@ -1,0 +1,23 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.taxonomy_term.full
+    - field.field.taxonomy_term.category.field_taxonomy_color
+    - taxonomy.vocabulary.category
+  module:
+    - text
+id: taxonomy_term.category.full
+targetEntityType: taxonomy_term
+bundle: category
+mode: full
+content:
+  description:
+    label: hidden
+    type: text_default
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_taxonomy_color: true

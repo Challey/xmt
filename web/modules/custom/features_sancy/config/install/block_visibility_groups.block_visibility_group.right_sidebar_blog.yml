@@ -1,0 +1,25 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - ctools
+    - system
+id: right_sidebar_blog
+label: 'Right sidebar for blog page only'
+logic: or
+conditions:
+  d89443ed-fd77-49b6-9874-dddbd1b2710c:
+    id: 'entity_bundle:node'
+    bundles:
+      article: article
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
+    uuid: d89443ed-fd77-49b6-9874-dddbd1b2710c
+  31f2701f-15b2-4fa0-b229-9181c115fda6:
+    id: request_path
+    pages: "/blogs-list\r\n/contact"
+    negate: false
+    context_mapping: {  }
+    uuid: 31f2701f-15b2-4fa0-b229-9181c115fda6
+allow_other_conditions: false

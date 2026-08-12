@@ -1,0 +1,43 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.rss
+    - field.field.node.article.body
+    - field.field.node.article.comment
+    - field.field.node.article.field_image
+    - field.field.node.article.field_post_category
+    - field.field.node.article.field_post_format
+    - field.field.node.article.field_post_paragraph
+    - field.field.node.article.field_post_review
+    - field.field.node.article.field_post_review_bad
+    - field.field.node.article.field_post_review_good
+    - field.field.node.article.field_post_review_title
+    - field.field.node.article.field_post_type
+    - field.field.node.article.field_tags
+    - node.type.article
+  module:
+    - user
+id: node.article.rss
+targetEntityType: node
+bundle: article
+mode: rss
+content:
+  links:
+    weight: 100
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  body: true
+  comment: true
+  field_image: true
+  field_post_category: true
+  field_post_format: true
+  field_post_paragraph: true
+  field_post_review: true
+  field_post_review_bad: true
+  field_post_review_good: true
+  field_post_review_title: true
+  field_post_type: true
+  field_tags: true

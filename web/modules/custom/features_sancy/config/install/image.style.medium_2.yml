@@ -1,0 +1,14 @@
+langcode: en
+status: true
+dependencies: {  }
+name: medium_2
+label: 'Medium 2(875x535)'
+effects:
+  3f004525-22cf-4bf0-ad64-f90c0bf47c21:
+    uuid: 3f004525-22cf-4bf0-ad64-f90c0bf47c21
+    id: image_scale_and_crop
+    weight: 1
+    data:
+      width: 875
+      height: 535
+      anchor: center-center

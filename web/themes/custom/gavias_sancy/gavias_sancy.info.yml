@@ -1,0 +1,48 @@
+name: Gavias Sancy Magazine News
+type: theme
+description: 'A flexible, recolorable theme with many regions and a responsive, mobile-first layout.'
+package: gaviasthemes
+base theme: false
+libraries:
+  - gavias_sancy/global-styling
+  - core/jquery
+
+
+libraries-override:
+  views_infinite_scroll/views-infinite-scroll: gavias_sancy/views-infinite-scroll
+
+regions:
+  offcanvas: 'After Offcanvas Mobile'
+  breaking_news: 'Breaking News'
+  branding: 'Branding'
+  search: 'Search'
+  header_right: 'Header Right'
+  breadcrumbs: 'Breadcrumbs'
+  help: 'Help'
+  main_menu: 'Main menu'
+  menu_another: 'Menu another'
+  promotion: 'Promotion'
+  before_content: 'Before Content'
+  content_top: 'Content Top'
+  content: 'Main content'
+  content_bottom: 'Content Bottom'
+  sidebar_left: 'Sidebar Left'
+  sidebar_right: 'Sidebar Right'
+  after_content: 'After Content'
+  highlighted: 'Highlighted'
+  before_footer: 'Before Footer'
+  panel_first: 'Panel Fisrt'
+  panel_second: 'Panel Second'
+  footer_first: 'Footer Fisrt'
+  footer_second: 'Footer Second'
+  footer_third: 'Footer Third'
+  footer_four: 'Footer Four'
+  after_footer: 'After Footer'
+  copyright: 'Copyright'
+  related_content: 'Related Content (using for article page)'
+  user_content: 'User Content (using for user page)'
+  other: 'None'
+
+version: '3.0.1'
+core_version_requirement: ^10 || ^11
+project: 'drupal'

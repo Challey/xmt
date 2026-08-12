@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.teaser_6
+label: 'Teaser 6 (For Large Article First & Articles List No Image)'
+targetEntityType: node
+cache: true

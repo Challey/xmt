@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.slider_1
+label: 'Slider 1'
+targetEntityType: node
+cache: true

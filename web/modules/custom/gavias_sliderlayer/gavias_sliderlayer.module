@@ -1,0 +1,59 @@
+<?php
+
+use Drupal\Core\Menu\MenuTreeParameters;
+use Drupal\Core\Template\Attribute;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\FieldDefinition;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Url;
+use Drupal\node\NodeForm;
+
+function gavias_sliderlayer_load_includes(){
+   \Drupal::moduleHandler()->loadInclude('gavias_sliderlayer','php', '/includes/functions');
+   \Drupal::moduleHandler()->loadInclude('gavias_sliderlayer','php',  '/includes/model');
+   \Drupal::moduleHandler()->loadInclude( 'gavias_sliderlayer','php', '/includes/utilities');
+   \Drupal::moduleHandler()->loadInclude( 'gavias_sliderlayer','php', '/includes/frontend');
+}
+
+function gavias_sliderlayer_theme($existing, $type, $theme, $path) {
+  $items['admin-form'] = array(
+    'variables' => array(
+      'content' => '',
+    ),
+    'path' => $path . '/templates/backend',
+  );
+
+  $items['admin-global'] = array(
+     'variables' => array(
+      'content' => '',
+    ),
+     'path' => $path . '/templates/backend',
+  );
+
+  $items['block-slider'] = array(
+     'variables' => array(
+      'content' => '',
+    ),
+     'path' => $path . '/templates/frontend',
+  );
+  return $items;
+}
+
+function gavias_sliderlayer_preprocess_page(&$variables) {
+  $variables['#attached']['library'][] = 'gavias_sliderlayer/gavias_sliderlayer.assets.frontend';
+}
+
+function gavias_sliderlayer_styles(){
+  $variables = array(
+    'data' => array()
+  );
+  Drupal::moduleHandler()->alter('sliderlayer_styles', $variables);
+
+  return $variables['data'];
+}
+
+function gavias_sliderlayer_update_projects_alter(&$projects){
+   unset($projects['gavias_sliderlayer']);
+}
+

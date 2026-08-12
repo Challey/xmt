@@ -1,0 +1,59 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - options
+    - taxonomy
+id: taxonomy_term.field_taxonomy_color
+field_name: field_taxonomy_color
+entity_type: taxonomy_term
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: red
+      label: red
+    -
+      value: pink
+      label: pink
+    -
+      value: light-pink
+      label: light-pink
+    -
+      value: orange
+      label: orange
+    -
+      value: yellow
+      label: yellow
+    -
+      value: green
+      label: green
+    -
+      value: blue
+      label: blue
+    -
+      value: dark-mint
+      label: dark-mint
+    -
+      value: violet
+      label: violet
+    -
+      value: navy
+      label: navy
+    -
+      value: purple
+      label: purple
+    -
+      value: gray
+      label: gray
+    -
+      value: black
+      label: black
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

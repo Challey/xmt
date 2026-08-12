@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_video_embed
+    - node.type.video
+id: node.video.field_video_embed
+field_name: field_video_embed
+entity_type: node
+bundle: video
+label: 'Link Video'
+description: 'Example: https://www.youtube.com/watch?v=4g7zRxRN1Xk'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

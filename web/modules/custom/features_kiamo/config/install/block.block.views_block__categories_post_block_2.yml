@@ -1,0 +1,33 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.categories_post
+  module:
+    - gaviasthemer
+    - system
+    - views
+  theme:
+    - gavias_kiamo
+third_party_settings:
+  gaviasthemer:
+    classes: ''
+id: views_block__categories_post_block_2
+theme: gavias_kiamo
+region: sidebar_right
+weight: -6
+provider: null
+plugin: 'views_block:categories_post-block_2'
+settings:
+  id: 'views_block:categories_post-block_2'
+  label: 'Tags '
+  provider: views
+  label_display: visible
+  views_label: 'Tags '
+  items_per_page: none
+visibility:
+  request_path:
+    id: request_path
+    pages: "/services\r\n/services-page\r\n/blogs-masonry\r\n/blogs-grid\r\n/portfolio\r\n/portfolio-1\r\n/portfolio-2\r\n/portfolio-3"
+    negate: true
+    context_mapping: {  }

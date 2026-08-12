@@ -1,0 +1,37 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_visibility_groups.block_visibility_group.right_sidebar_blog
+    - views.view.categories_post
+  module:
+    - block_class
+    - block_visibility_groups
+    - gaviasthemer
+    - views
+  theme:
+    - gavias_sancy
+third_party_settings:
+  block_class:
+    classes: ''
+  gaviasthemer:
+    classes: ''
+id: gavias_sancy_views_block__categories_post_block_1
+theme: gavias_sancy
+region: sidebar_right
+weight: -12
+provider: null
+plugin: 'views_block:categories_post-block_1'
+settings:
+  id: 'views_block:categories_post-block_1'
+  label: ''
+  provider: views
+  label_display: visible
+  views_label: ''
+  items_per_page: none
+visibility:
+  condition_group:
+    id: condition_group
+    negate: false
+    block_visibility_group: right_sidebar_blog
+    context_mapping: {  }

@@ -1,0 +1,77 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser_4
+    - field.field.node.article.body
+    - field.field.node.article.comment
+    - field.field.node.article.field_image
+    - field.field.node.article.field_post_category
+    - field.field.node.article.field_post_format
+    - field.field.node.article.field_post_paragraph
+    - field.field.node.article.field_post_review
+    - field.field.node.article.field_post_review_bad
+    - field.field.node.article.field_post_review_good
+    - field.field.node.article.field_post_review_title
+    - field.field.node.article.field_post_type
+    - field.field.node.article.field_tags
+    - image.style.medium_2
+    - node.type.article
+  module:
+    - image
+    - options
+    - user
+id: node.article.teaser_4
+targetEntityType: node
+bundle: article
+mode: teaser_4
+content:
+  field_image:
+    type: image
+    weight: 0
+    settings:
+      image_style: medium_2
+      image_link: content
+    third_party_settings: {  }
+    label: hidden
+    region: content
+  field_post_category:
+    type: entity_reference_label
+    weight: 2
+    label: hidden
+    settings:
+      link: true
+    third_party_settings: {  }
+    region: content
+  field_post_format:
+    type: list_key
+    weight: 3
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_post_review:
+    type: string
+    weight: 4
+    region: content
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_tags:
+    type: entity_reference_label
+    weight: 1
+    label: hidden
+    settings:
+      link: true
+    third_party_settings: {  }
+    region: content
+hidden:
+  body: true
+  comment: true
+  field_post_paragraph: true
+  field_post_review_bad: true
+  field_post_review_good: true
+  field_post_review_title: true
+  field_post_type: true
+  links: true

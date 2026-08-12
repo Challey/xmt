@@ -1,0 +1,1 @@
+../setup/scripts/ensure_fields.php

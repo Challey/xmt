@@ -1,0 +1,36 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.article_blocks
+  module:
+    - block_class
+    - block_visibility_groups
+    - gaviasthemer
+    - views
+  theme:
+    - gavias_sancy
+third_party_settings:
+  block_class:
+    classes: ''
+  gaviasthemer:
+    classes: ''
+id: gavias_sancy_views_block__article_blocks_breaking_news
+theme: gavias_sancy
+region: breaking_news
+weight: 0
+provider: null
+plugin: 'views_block:article_blocks-breaking_news'
+settings:
+  id: 'views_block:article_blocks-breaking_news'
+  label: ''
+  provider: views
+  label_display: '0'
+  views_label: ''
+  items_per_page: none
+visibility:
+  condition_group:
+    id: condition_group
+    negate: false
+    block_visibility_group: ''
+    context_mapping: {  }

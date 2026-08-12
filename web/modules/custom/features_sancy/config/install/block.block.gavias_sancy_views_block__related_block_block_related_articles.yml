@@ -1,0 +1,33 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.related_block
+  module:
+    - block_visibility_groups
+    - gaviasthemer
+    - views
+  theme:
+    - gavias_sancy
+third_party_settings:
+  gaviasthemer:
+    classes: ''
+id: gavias_sancy_views_block__related_block_block_related_articles
+theme: gavias_sancy
+region: related_content
+weight: -14
+provider: null
+plugin: 'views_block:related_block-block_related_articles'
+settings:
+  id: 'views_block:related_block-block_related_articles'
+  label: ''
+  provider: views
+  label_display: visible
+  views_label: ''
+  items_per_page: none
+visibility:
+  condition_group:
+    id: condition_group
+    negate: false
+    block_visibility_group: ''
+    context_mapping: {  }

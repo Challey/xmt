@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.teaser_5
+label: 'Teaser 5 (For Large Article List Large)'
+targetEntityType: node
+cache: true
