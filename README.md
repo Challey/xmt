@@ -1,0 +1,55 @@
+# XMT — 信媒体 / 新媒体
+
+**可信的媒体信源，服务 AI 时代。**
+
+XMT（xmt.pub）是在 Drupal 11 上构建的**企业级认证新媒体平台**：官方可信发布、企业身份认证后的企业可信发布，并与 [DrupalX](https://github.com/Challey) 企业门户 / App Store 在认证层互通。
+
+| | |
+|--|--|
+| 域名 | https://xmt.pub |
+| 栈 | Drupal 11.4 · Drush 13 · LNMPA |
+| 开源仓库 | [Challey/xmt](https://github.com/Challey/xmt) |
+
+## 信任分级
+
+| 级别 | 含义 |
+|------|------|
+| **L0 汇聚** | RSS/公开源自动采集，标注「汇聚·未认证」 |
+| **L1 官方可信** | XMT 官方栏目签发 |
+| **L2 企业可信** | 完成企业身份认证的主体发布 |
+
+详见 [docs/trust-model.md](docs/trust-model.md)。
+
+## 快速开始
+
+```bash
+cd /home/wwwroot/xmt   # 或 git clone git@github.com:Challey/xmt.git
+composer install
+cp web/sites/example.settings.php web/sites/xmt.pub/settings.php
+# 编辑数据库与 hash_salt 后：
+vendor/bin/drush --uri=xmt.pub cr
+```
+
+启用信任模块：
+
+```bash
+vendor/bin/drush --uri=xmt.pub en xmt_trust xmt_publisher xmt_trust_ui xmt_dx_bridge xmt_syndicate -y
+vendor/bin/drush --uri=xmt.pub cr
+```
+
+默认运维说明见 [docs/ops.md](docs/ops.md)；愿景见 [docs/vision.md](docs/vision.md)。
+
+## 模块
+
+| 模块 | 说明 |
+|------|------|
+| `xmt_trust` | 信任等级、溯源字段、权限 |
+| `xmt_publisher` | 发布主体（官方/企业）与认证状态机 |
+| `xmt_trust_ui` | 可信流、主体页、徽章 |
+| `xmt_dx_bridge` | DrupalX 认证 claim 验签 |
+| `xmt_syndicate` | 垂直站 → xmt.pub 聚合 |
+| `agent/` | 按领域 RSS 采集（写入 L0） |
+
+## 许可证
+
+见 [LICENSE.txt](LICENSE.txt)。运营密钥与生产 `settings.php` 不进入本仓库。

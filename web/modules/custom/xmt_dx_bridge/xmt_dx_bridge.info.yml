@@ -1,0 +1,8 @@
+name: 'XMT DrupalX Bridge'
+type: module
+description: 'Verify DrupalX HMAC claims and provision approved enterprise publishers.'
+core_version_requirement: '^10 || ^11'
+package: XMT
+dependencies:
+  - xmt_publisher:xmt_publisher
+  - drupal:user

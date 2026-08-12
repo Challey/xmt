@@ -1,0 +1,55 @@
+.xmt-trust-badge {
+  display: inline-block;
+  padding: 0.15em 0.55em;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  vertical-align: middle;
+  margin-left: 0.35em;
+}
+
+.xmt-badge-l0 {
+  background: #e9ecef;
+  color: #495057;
+  border: 1px solid #ced4da;
+}
+
+.xmt-badge-l1 {
+  background: #cfe2ff;
+  color: #084298;
+  border: 1px solid #9ec5fe;
+}
+
+.xmt-badge-l2 {
+  background: #fff3cd;
+  color: #997404;
+  border: 1px solid #ffda6a;
+}
+
+.xmt-trust-feed {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.xmt-trust-feed__nav {
+  margin-bottom: 1.5rem;
+}
+
+.xmt-trust-feed__nav a {
+  margin-right: 1rem;
+}
+
+.xmt-trust-feed__item {
+  border-bottom: 1px solid #dee2e6;
+  padding: 1rem 0;
+}
+
+.xmt-trust-feed__item h3 {
+  margin: 0 0 0.35rem;
+}
+
+.xmt-trust-feed__meta {
+  color: #6c757d;
+  font-size: 0.875rem;
+}

@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * @file
+ * XMT Publisher module hooks.
+ */
+
+use Drupal\Core\Entity\EntityInterface;
+
+/**
+ * Implements hook_theme().
+ */
+function xmt_publisher_theme(): array {
+  return [
+    'xmt_publisher' => [
+      'render element' => 'elements',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_entity_presave().
+ */
+function xmt_publisher_entity_presave(EntityInterface $entity): void {
+  if ($entity->getEntityTypeId() !== 'xmt_publisher') {
+    return;
+  }
+  if ($entity->isNew() && !$entity->getOwnerId()) {
+    $entity->setOwnerId(\Drupal::currentUser()->id());
+  }
+}

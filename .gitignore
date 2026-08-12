@@ -1,0 +1,38 @@
+# XMT ignore rules — keep secrets and runtime out of git
+/.env
+/.env.*
+!/.env.example
+
+# Drupal
+/web/sites/*/settings.php
+/web/sites/*/settings.local.php
+/web/sites/*/services.yml
+!/web/sites/example.settings.php
+/web/sites/*/files/
+/web/sites/default/files/
+/private/
+/config/sync/*/
+!/config/sync/.gitkeep
+
+# Composer / tooling
+/vendor/
+composer.phar
+
+# Agent runtime
+/agent/state.json
+/agent/.payload_*.json
+/agent/last_run.log
+/agent/agent/
+
+# Logs & OS junk
+*.log
+.DS_Store
+Thumbs.db
+/nul
+/current
+/Run
+
+# Local IDE
+.idea/
+.vscode/
+*.swp

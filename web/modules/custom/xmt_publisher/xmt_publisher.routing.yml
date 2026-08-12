@@ -1,0 +1,66 @@
+entity.xmt_publisher.collection:
+  path: '/admin/xmt/publishers'
+  defaults:
+    _entity_list: 'xmt_publisher'
+    _title: 'Publishers'
+  requirements:
+    _permission: 'administer xmt publishers'
+entity.xmt_publisher.add_form:
+  path: '/admin/xmt/publishers/add'
+  defaults:
+    _entity_form: 'xmt_publisher.add'
+    _title: 'Add publisher'
+  requirements:
+    _permission: 'administer xmt publishers'
+entity.xmt_publisher.edit_form:
+  path: '/admin/xmt/publishers/{xmt_publisher}/edit'
+  defaults:
+    _entity_form: 'xmt_publisher.edit'
+    _title: 'Edit publisher'
+  requirements:
+    _entity_access: 'xmt_publisher.update'
+entity.xmt_publisher.delete_form:
+  path: '/admin/xmt/publishers/{xmt_publisher}/delete'
+  defaults:
+    _entity_form: 'xmt_publisher.delete'
+    _title: 'Delete publisher'
+  requirements:
+    _entity_access: 'xmt_publisher.delete'
+entity.xmt_publisher.canonical:
+  path: '/publisher/{xmt_publisher}'
+  defaults:
+    _entity_view: 'xmt_publisher.full'
+    _title_callback: '\Drupal\Core\Entity\Controller\EntityController::title'
+  requirements:
+    _entity_access: 'xmt_publisher.view'
+xmt_publisher.apply:
+  path: '/publishers/apply'
+  defaults:
+    _form: '\Drupal\xmt_publisher\Form\PublisherApplyForm'
+    _title: '申请企业可信发布认证'
+  requirements:
+    _permission: 'apply xmt publisher'
+xmt_publisher.approve:
+  path: '/admin/xmt/publishers/{xmt_publisher}/approve'
+  defaults:
+    _controller: '\Drupal\xmt_publisher\Controller\PublisherApproveController::approve'
+    _title: 'Approve'
+  requirements:
+    _permission: 'administer xmt publishers'
+    xmt_publisher: \d+
+  options:
+    parameters:
+      xmt_publisher:
+        type: entity:xmt_publisher
+xmt_publisher.reject:
+  path: '/admin/xmt/publishers/{xmt_publisher}/reject'
+  defaults:
+    _controller: '\Drupal\xmt_publisher\Controller\PublisherApproveController::reject'
+    _title: 'Reject'
+  requirements:
+    _permission: 'administer xmt publishers'
+    xmt_publisher: \d+
+  options:
+    parameters:
+      xmt_publisher:
+        type: entity:xmt_publisher

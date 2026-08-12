@@ -1,0 +1,6 @@
+entity.xmt_publisher.collection:
+  title: 'XMT Publishers'
+  description: 'Manage trusted publishers'
+  parent: system.admin_content
+  route_name: entity.xmt_publisher.collection
+  weight: 50

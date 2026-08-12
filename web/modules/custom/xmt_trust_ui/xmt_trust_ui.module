@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * @file
+ * XMT Trust UI module hooks.
+ */
+
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_page_attachments().
+ */
+function xmt_trust_ui_page_attachments(array &$attachments): void {
+  $attachments['#attached']['library'][] = 'xmt_trust_ui/trust_feed';
+}
+
+/**
+ * Implements hook_preprocess_node().
+ */
+function xmt_trust_ui_preprocess_node(array &$variables): void {
+  /** @var \Drupal\node\NodeInterface $node */
+  $node = $variables['node'];
+  if (!$node instanceof NodeInterface || !$node->hasField('field_trust_level')) {
+    return;
+  }
+  if ($node->get('field_trust_level')->isEmpty()) {
+    return;
+  }
+  $level = $node->get('field_trust_level')->value;
+  $variables['xmt_trust_badge'] = [
+    '#type' => 'html_tag',
+    '#tag' => 'span',
+    '#value' => xmt_trust_badge_label($level),
+    '#attributes' => [
+      'class' => ['xmt-trust-badge', xmt_trust_badge_class($level)],
+    ],
+  ];
+  $variables['content']['xmt_trust_badge'] = $variables['xmt_trust_badge'];
+}

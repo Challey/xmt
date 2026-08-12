@@ -1,0 +1,10 @@
+name: 'XMT Trust'
+type: module
+description: 'Trust levels, provenance fields, and publishing permissions for articles.'
+core_version_requirement: '^10 || ^11'
+package: XMT
+dependencies:
+  - xmt_publisher:xmt_publisher
+  - drupal:node
+  - drupal:field
+  - drupal:user

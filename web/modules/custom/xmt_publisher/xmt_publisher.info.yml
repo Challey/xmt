@@ -1,0 +1,9 @@
+name: 'XMT Publisher'
+type: module
+description: 'Trusted publisher entities (official / enterprise) and apply/approve flow.'
+core_version_requirement: '^10 || ^11'
+package: XMT
+dependencies:
+  - drupal:user
+  - drupal:text
+  - drupal:options

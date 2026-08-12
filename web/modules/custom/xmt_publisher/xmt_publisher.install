@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for XMT Publisher.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function xmt_publisher_install(): void {
+  $storage = \Drupal::entityTypeManager()->getStorage('xmt_publisher');
+  $existing = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('name', 'XMT官方')
+    ->range(0, 1)
+    ->execute();
+  if ($existing) {
+    return;
+  }
+  /** @var \Drupal\xmt_publisher\Entity\Publisher $official */
+  $official = $storage->create([
+    'name' => 'XMT官方',
+    'type' => 'official',
+    'status' => 'approved',
+    'uid' => 1,
+    'website' => 'https://xmt.pub',
+  ]);
+  $official->save();
+}

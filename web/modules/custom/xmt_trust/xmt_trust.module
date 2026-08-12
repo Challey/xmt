@@ -1,0 +1,131 @@
+<?php
+
+/**
+ * @file
+ * XMT Trust module hooks.
+ */
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\node\NodeForm;
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_entity_presave().
+ */
+function xmt_trust_entity_presave(EntityInterface $entity): void {
+  if (!$entity instanceof NodeInterface || $entity->bundle() !== 'article') {
+    return;
+  }
+  if (!$entity->hasField('field_trust_level')) {
+    return;
+  }
+
+  $level = $entity->get('field_trust_level')->value;
+  if ($level === NULL || $level === '') {
+    $level = 'l0_aggregate';
+    $entity->set('field_trust_level', $level);
+  }
+
+  if ($level === 'l2_enterprise' && $entity->hasField('field_publisher')) {
+    $publisher = $entity->get('field_publisher')->entity;
+    if (!$publisher || $publisher->get('status')->value !== 'approved') {
+      throw new \Drupal\Core\Entity\EntityStorageException('L2 content requires an approved publisher.');
+    }
+  }
+
+  if ($entity->hasField('field_provenance_hash')) {
+    $source = '';
+    if ($entity->hasField('field_source_url') && !$entity->get('field_source_url')->isEmpty()) {
+      $source = $entity->get('field_source_url')->uri ?? $entity->get('field_source_url')->value ?? '';
+    }
+    $publisher_id = $entity->hasField('field_publisher') && !$entity->get('field_publisher')->isEmpty()
+      ? (int) $entity->get('field_publisher')->target_id
+      : 0;
+    $payload = $source . '|' . $publisher_id . '|' . ($entity->getCreatedTime() ?: time());
+    $entity->set('field_provenance_hash', hash('sha256', $payload));
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function xmt_trust_form_alter(array &$form, FormStateInterface $form_state, $form_id): void {
+  $form_object = $form_state->getFormObject();
+  if (!$form_object instanceof NodeForm) {
+    return;
+  }
+  /** @var \Drupal\node\NodeInterface $node */
+  $node = $form_object->getEntity();
+  if ($node->bundle() !== 'article' || !isset($form['field_trust_level'])) {
+    return;
+  }
+
+  $account = \Drupal::currentUser();
+  $allowed = [];
+  if ($account->hasPermission('administer xmt trust') || $account->hasPermission('administer nodes')) {
+    $allowed = array_keys(xmt_trust_level_allowed_values());
+  }
+  elseif ($account->hasPermission('publish xmt l2 enterprise')) {
+    $allowed = ['l2_enterprise'];
+  }
+  elseif ($account->hasPermission('publish xmt l1 official')) {
+    $allowed = ['l1_official'];
+  }
+  elseif ($account->hasPermission('publish xmt l0 aggregate')) {
+    $allowed = ['l0_aggregate'];
+  }
+
+  if ($allowed === []) {
+    unset($form['field_trust_level']);
+    return;
+  }
+
+  $options = xmt_trust_level_allowed_values();
+  $form['field_trust_level']['widget']['#options'] = array_intersect_key($options, array_flip($allowed));
+
+  if ($account->hasPermission('publish xmt l2 enterprise') && isset($form['field_publisher'])) {
+    $storage = \Drupal::entityTypeManager()->getStorage('xmt_publisher');
+    $ids = $storage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('status', 'approved')
+      ->condition('uid', $account->id())
+      ->execute();
+    if ($ids) {
+      $form['field_publisher']['#access'] = TRUE;
+    }
+  }
+}
+
+/**
+ * Returns trust level labels.
+ */
+function xmt_trust_level_allowed_values(): array {
+  return [
+    'l0_aggregate' => t('L0 Aggregate'),
+    'l1_official' => t('L1 Official'),
+    'l2_enterprise' => t('L2 Enterprise'),
+  ];
+}
+
+/**
+ * Returns badge label for a trust level code.
+ */
+function xmt_trust_badge_label(string $level): string {
+  return match ($level) {
+    'l1_official' => (string) t('Official'),
+    'l2_enterprise' => (string) t('Enterprise'),
+    default => (string) t('Aggregate'),
+  };
+}
+
+/**
+ * Returns CSS class for a trust level code.
+ */
+function xmt_trust_badge_class(string $level): string {
+  return match ($level) {
+    'l1_official' => 'xmt-badge-l1',
+    'l2_enterprise' => 'xmt-badge-l2',
+    default => 'xmt-badge-l0',
+  };
+}

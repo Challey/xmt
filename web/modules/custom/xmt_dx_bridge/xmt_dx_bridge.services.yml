@@ -1,0 +1,6 @@
+services:
+  xmt_dx_bridge.claim_handler:
+    class: Drupal\xmt_dx_bridge\Service\DxClaimHandler
+    arguments:
+      - '@entity_type.manager'
+      - '@logger.factory'

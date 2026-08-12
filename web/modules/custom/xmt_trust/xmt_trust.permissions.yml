@@ -1,0 +1,9 @@
+administer xmt trust:
+  title: 'Administer XMT trust settings'
+  restrict access: true
+publish xmt l0 aggregate:
+  title: 'Publish L0 aggregate content (agent)'
+publish xmt l1 official:
+  title: 'Publish L1 official trusted content'
+publish xmt l2 enterprise:
+  title: 'Publish L2 enterprise trusted content'

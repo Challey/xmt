@@ -1,0 +1,7 @@
+administer xmt publishers:
+  title: 'Administer XMT publishers'
+  restrict access: true
+view xmt publisher:
+  title: 'View XMT publishers'
+apply xmt publisher:
+  title: 'Apply for enterprise publisher certification'

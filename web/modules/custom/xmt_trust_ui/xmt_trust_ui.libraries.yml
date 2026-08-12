@@ -1,0 +1,5 @@
+trust_feed:
+  version: 1.x
+  css:
+    theme:
+      css/trust-badges.css: {}

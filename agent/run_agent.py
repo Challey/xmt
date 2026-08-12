@@ -198,6 +198,7 @@ def main() -> int:
                     "source_url": link,
                     "source_name": name,
                     "domain": domain,
+                    "trust_level": "l0_aggregate",
                 }
                 if publish(site, payload):
                     seen[h] = {"url": link, "site": site, "ts": int(time.time())}

@@ -1,0 +1,9 @@
+name: 'XMT Trust UI'
+type: module
+description: 'Trusted content feed, badges, and publisher pages.'
+core_version_requirement: '^10 || ^11'
+package: XMT
+dependencies:
+  - xmt_trust:xmt_trust
+  - xmt_publisher:xmt_publisher
+  - drupal:node

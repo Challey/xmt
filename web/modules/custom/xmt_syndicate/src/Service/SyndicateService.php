@@ -127,6 +127,9 @@ class SyndicateService {
     if ($node->hasField('field_domain')) {
       $node->set('field_domain', $data['domain'] ?? '');
     }
+    if ($node->hasField('field_trust_level') && !empty($data['trust_level'])) {
+      $node->set('field_trust_level', $data['trust_level']);
+    }
     $node->xmt_skip_syndicate = TRUE;
     $node->save();
     return (int) $node->id();

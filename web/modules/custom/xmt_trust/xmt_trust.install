@@ -1,0 +1,131 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for XMT Trust.
+ */
+
+use Drupal\user\Entity\Role;
+
+/**
+ * Ensure article fields exist.
+ */
+function xmt_trust_ensure_fields(): void {
+  $entity_type = 'node';
+  $bundle = 'article';
+  $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+  $config_storage = \Drupal::entityTypeManager()->getStorage('field_config');
+
+  $type_storage = \Drupal::entityTypeManager()->getStorage('node_type');
+  if (!$type_storage->load($bundle)) {
+    $type_storage->create([
+      'type' => $bundle,
+      'name' => 'Article',
+      'description' => 'Syndicated and editorial articles.',
+      'new_revision' => TRUE,
+      'preview_mode' => DRUPAL_OPTIONAL,
+      'display_submitted' => TRUE,
+    ])->save();
+  }
+
+  $defs = [
+    'field_trust_level' => [
+      'type' => 'list_string',
+      'label' => 'Trust level',
+      'settings' => [
+        'allowed_values' => xmt_trust_level_allowed_values(),
+      ],
+    ],
+    'field_publisher' => [
+      'type' => 'entity_reference',
+      'label' => 'Publisher',
+      'settings' => [
+        'target_type' => 'xmt_publisher',
+      ],
+    ],
+    'field_provenance_hash' => [
+      'type' => 'string',
+      'label' => 'Provenance hash',
+      'settings' => ['max_length' => 128],
+    ],
+  ];
+
+  foreach ($defs as $name => $info) {
+    $storage_id = "$entity_type.$name";
+    if (!$storage->load($storage_id)) {
+      $values = [
+        'field_name' => $name,
+        'entity_type' => $entity_type,
+        'type' => $info['type'],
+        'cardinality' => 1,
+        'translatable' => FALSE,
+      ];
+      if (!empty($info['settings'])) {
+        $values['settings'] = $info['settings'];
+      }
+      $storage->create($values)->save();
+    }
+
+    $config_id = "$entity_type.$bundle.$name";
+    if (!$config_storage->load($config_id)) {
+      $config_storage->create([
+        'field_name' => $name,
+        'entity_type' => $entity_type,
+        'bundle' => $bundle,
+        'label' => $info['label'],
+        'required' => FALSE,
+        'translatable' => FALSE,
+      ])->save();
+    }
+  }
+}
+
+/**
+ * Ensure trust roles exist.
+ */
+function xmt_trust_ensure_roles(): void {
+  $roles = [
+    'xmt_official_editor' => [
+      'label' => 'XMT Official Editor',
+      'permissions' => [
+        'publish xmt l1 official',
+        'view xmt publisher',
+        'create article content',
+        'edit own article content',
+        'delete own article content',
+      ],
+    ],
+    'xmt_enterprise_publisher' => [
+      'label' => 'XMT Enterprise Publisher',
+      'permissions' => [
+        'publish xmt l2 enterprise',
+        'view xmt publisher',
+        'apply xmt publisher',
+        'create article content',
+        'edit own article content',
+        'delete own article content',
+      ],
+    ],
+  ];
+
+  foreach ($roles as $id => $info) {
+    $role = Role::load($id);
+    if (!$role) {
+      $role = Role::create(['id' => $id, 'label' => $info['label']]);
+    }
+    foreach ($info['permissions'] as $perm) {
+      if (\Drupal::service('user.permissions')->getPermissions()[$perm] ?? NULL) {
+        $role->grantPermission($perm);
+      }
+    }
+    $role->save();
+  }
+}
+
+/**
+ * Implements hook_install().
+ */
+function xmt_trust_install(): void {
+  xmt_trust_ensure_fields();
+  xmt_trust_ensure_roles();
+}

@@ -1,0 +1,24 @@
+xmt_trust_ui.feed:
+  path: '/trusted'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustFeedController::feed'
+    _title: '可信内容'
+    filter: 'all'
+  requirements:
+    _permission: 'access content'
+xmt_trust_ui.feed_official:
+  path: '/trusted/official'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustFeedController::feed'
+    _title: '官方可信'
+    filter: 'l1_official'
+  requirements:
+    _permission: 'access content'
+xmt_trust_ui.feed_enterprise:
+  path: '/trusted/enterprise'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustFeedController::feed'
+    _title: '企业可信'
+    filter: 'l2_enterprise'
+  requirements:
+    _permission: 'access content'

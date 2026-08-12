@@ -1,0 +1,7 @@
+xmt_dx_bridge.claim:
+  path: '/api/xmt/v1/dx-claim'
+  defaults:
+    _controller: '\Drupal\xmt_dx_bridge\Controller\DxClaimController::claim'
+  requirements:
+    _access: 'TRUE'
+  methods: [POST]
