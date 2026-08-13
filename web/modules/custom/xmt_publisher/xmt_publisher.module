@@ -6,6 +6,8 @@
  */
 
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Render\Element;
+use Drupal\Core\Template\Attribute;
 
 /**
  * Implements hook_theme().
@@ -16,6 +18,21 @@ function xmt_publisher_theme(): array {
       'render element' => 'elements',
     ],
   ];
+}
+
+/**
+ * Prepares variables for publisher templates.
+ */
+function template_preprocess_xmt_publisher(array &$variables): void {
+  $variables['attributes'] = new Attribute(['class' => ['xmt-publisher-page']]);
+  $variables['content'] = [];
+  foreach (Element::children($variables['elements']) as $key) {
+    $variables['content'][$key] = $variables['elements'][$key];
+  }
+  if (isset($variables['elements']['#xmt_publisher'])) {
+    $variables['xmt_publisher'] = $variables['elements']['#xmt_publisher'];
+    $variables['label'] = $variables['xmt_publisher']->label();
+  }
 }
 
 /**

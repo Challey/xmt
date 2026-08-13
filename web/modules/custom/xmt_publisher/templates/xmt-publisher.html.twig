@@ -1,0 +1,14 @@
+{#
+/**
+ * @file
+ * Default theme implementation for a publisher entity.
+ */
+#}
+<div{{ attributes.addClass('xmt-publisher', 'xmt-trust-badge') }}>
+  {{ title_prefix }}
+  {% if label %}
+    <h1{{ title_attributes }}>{{ label }}</h1>
+  {% endif %}
+  {{ title_suffix }}
+  {{ content }}
+</div>

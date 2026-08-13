@@ -39,7 +39,7 @@ xmt_publisher.apply:
     _form: '\Drupal\xmt_publisher\Form\PublisherApplyForm'
     _title: '申请企业可信发布认证'
   requirements:
-    _permission: 'apply xmt publisher'
+    _permission: 'access content'
 xmt_publisher.approve:
   path: '/admin/xmt/publishers/{xmt_publisher}/approve'
   defaults:

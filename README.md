@@ -20,6 +20,8 @@ XMT（xmt.pub）是在 Drupal 11 上构建的**企业级认证新媒体平台**�
 
 详见 [docs/trust-model.md](docs/trust-model.md)。
 
+公开可信流：`/trusted`（全部 L1+L2）、`/trusted/official`（L1 官方）、`/trusted/enterprise`（L2 企业）。
+
 ## 快速开始
 
 ```bash
