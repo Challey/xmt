@@ -54,6 +54,15 @@ function xmt_trust_entity_presave(EntityInterface $entity): void {
 /**
  * Implements hook_form_alter().
  */
+
+/**
+ * Whether the current site is the XMT aggregation hub (xmt.pub).
+ */
+function xmt_trust_is_hub_site(): bool {
+  $host = \Drupal::request()?->getHost() ?? '';
+  return str_contains($host, 'xmt.pub') || str_contains($host, 'xmt.wsl');
+}
+
 function xmt_trust_form_alter(array &$form, FormStateInterface $form_state, $form_id): void {
   $form_object = $form_state->getFormObject();
   if (!$form_object instanceof NodeForm) {
@@ -66,6 +75,15 @@ function xmt_trust_form_alter(array &$form, FormStateInterface $form_state, $for
   }
 
   $account = \Drupal::currentUser();
+  if (!xmt_trust_is_hub_site() && !$account->hasPermission('administer xmt trust')) {
+    $form['field_trust_level']['#disabled'] = TRUE;
+    if (isset($form['field_publisher'])) {
+      $form['field_publisher']['#disabled'] = TRUE;
+    }
+    $form['#after_build'][] = 'xmt_trust_vertical_readonly_after_build';
+    return;
+  }
+
   $allowed = [];
   if ($account->hasPermission('administer xmt trust') || $account->hasPermission('administer nodes')) {
     $allowed = array_keys(xmt_trust_level_allowed_values());

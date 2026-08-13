@@ -49,6 +49,15 @@ class SyndicateService {
       $domain = $node->get('field_domain')->value;
     }
 
+    $trust_level = 'l0_aggregate';
+    if ($node->hasField('field_trust_level') && !$node->get('field_trust_level')->isEmpty()) {
+      $trust_level = $node->get('field_trust_level')->value ?: 'l0_aggregate';
+    }
+    $publisher_id = 0;
+    if ($node->hasField('field_publisher') && !$node->get('field_publisher')->isEmpty()) {
+      $publisher_id = (int) $node->get('field_publisher')->target_id;
+    }
+
     $payload = [
       'title' => $node->label(),
       'body' => $node->hasField('body') ? ($node->get('body')->value ?? '') : '',
@@ -56,6 +65,8 @@ class SyndicateService {
       'source_url' => $source_url,
       'source_name' => $source_name,
       'domain' => $domain,
+      'trust_level' => $trust_level,
+      'publisher_id' => $publisher_id,
       'origin_nid' => (int) $node->id(),
       'origin_site' => $current,
     ];
@@ -127,8 +138,12 @@ class SyndicateService {
     if ($node->hasField('field_domain')) {
       $node->set('field_domain', $data['domain'] ?? '');
     }
-    if ($node->hasField('field_trust_level') && !empty($data['trust_level'])) {
-      $node->set('field_trust_level', $data['trust_level']);
+    if ($node->hasField('field_trust_level')) {
+      $level = $data['trust_level'] ?? 'l0_aggregate';
+      $node->set('field_trust_level', $level);
+    }
+    if ($node->hasField('field_publisher') && !empty($data['publisher_id'])) {
+      $node->set('field_publisher', ['target_id' => (int) $data['publisher_id']]);
     }
     $node->xmt_skip_syndicate = TRUE;
     $node->save();
