@@ -18,6 +18,29 @@
 vendor/bin/drush --uri=xmt.pub cr
 ```
 
+## 首页可信分区（xmt.pub）
+
+- Block `xmt_trust_home_columns`（标签「信媒体 · 可信分区」）置于 `gavias_sancy` 主题 `content` 区，weight `-50`。
+- 三列：官方可信（L1）、企业可信（L2）、领域汇聚（L0），各最多 5 条；「更多」链至 `/trusted/official`、`/trusted/enterprise`、`/trusted/aggregate`。
+- 放置（本地或 B 机）：
+  ```bash
+  vendor/bin/drush --uri=xmt.pub php:eval "
+  \$s = \Drupal::entityTypeManager()->getStorage('block');
+  foreach (\$s->loadByProperties(['plugin' => 'xmt_trust_home_columns']) as \$b) { \$b->delete(); }
+  \$s->create([
+    'id' => 'gavias_sancy_xmt_trust_home',
+    'plugin' => 'xmt_trust_home_columns',
+    'region' => 'content',
+    'theme' => 'gavias_sancy',
+    'weight' => -50,
+    'status' => TRUE,
+    'settings' => ['label' => '信媒体 · 可信分区', 'label_display' => 'visible'],
+  ])->save();
+  echo 'OK';
+  "
+  vendor/bin/drush --uri=xmt.pub cr
+  ```
+
 ## 垂直站（zhubao 等）
 
 - 启用 `xmt_trust`、`xmt_publisher`（可选 `xmt_trust_ui` 展示徽章）；`vendor/bin/drush --uri=zhubao.wsl en xmt_trust xmt_publisher xmt_trust_ui -y` 后执行 `php:eval` 调用 `xmt_trust_ensure_fields()` / `xmt_trust_ensure_roles()`。

@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.3.0-homepage — 2026-08-13
+
+### Added
+- Homepage block `xmt_trust_home_columns` — three columns (官方可信 / 企业可信 / 领域汇聚)
+- Route `/trusted/aggregate` for L0 aggregate feed
+- CSS grid `.xmt-trust-home` (3 columns desktop, stacked mobile)
+
+### Ops
+- Place block on xmt.pub front page `content` region via Drush (see `docs/ops.md`)
+
 ## v0.2.0-trust-phase5 — 2026-08-13
 
 ### Added

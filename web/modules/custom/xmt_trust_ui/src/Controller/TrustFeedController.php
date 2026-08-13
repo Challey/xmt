@@ -72,6 +72,7 @@ class TrustFeedController extends ControllerBase {
       'all' => Link::fromTextAndUrl($this->t('All trusted'), Url::fromRoute('xmt_trust_ui.feed'))->toRenderable(),
       'official' => Link::fromTextAndUrl($this->t('Official (L1)'), Url::fromRoute('xmt_trust_ui.feed_official'))->toRenderable(),
       'enterprise' => Link::fromTextAndUrl($this->t('Enterprise (L2)'), Url::fromRoute('xmt_trust_ui.feed_enterprise'))->toRenderable(),
+      'aggregate' => Link::fromTextAndUrl($this->t('Aggregate (L0)'), Url::fromRoute('xmt_trust_ui.feed_aggregate'))->toRenderable(),
     ];
 
     return [

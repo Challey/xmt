@@ -22,3 +22,11 @@ xmt_trust_ui.feed_enterprise:
     filter: 'l2_enterprise'
   requirements:
     _permission: 'access content'
+xmt_trust_ui.feed_aggregate:
+  path: '/trusted/aggregate'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustFeedController::feed'
+    _title: '领域汇聚'
+    filter: 'l0_aggregate'
+  requirements:
+    _permission: 'access content'

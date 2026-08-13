@@ -80,3 +80,28 @@ vendor/bin/drush dx:xmt-push-content \
 ```
 
 企业可信 feed：`/trusted/enterprise`（L2 内容）。
+领域汇聚 feed：`/trusted/aggregate`（L0 内容）。
+
+## DrupalX 自动推送（auto-push）
+
+在 DrupalX 站点 `settings.php`（或 `settings.local.php`，**勿提交密钥**）配置：
+
+| 键 | 说明 |
+|----|------|
+| `xmt_auto_push` | `TRUE` 启用 `dx_media` 发布/更新时自动 POST |
+| `xmt_dx_bridge_secret` | 与 XMT `$settings['xmt_dx_bridge_secret']` / `XMT_DX_BRIDGE_SECRET` 一致 |
+| `xmt_developer_id` | 已在 XMT 完成 claim 且 `approved` 的 `dx_developer_id` |
+| `xmt_endpoint` | 默认 `http://127.0.0.1/api/xmt/v1/trusted-content`；生产改为 HTTPS 网关 URL |
+| `xmt_host` | 请求 `Host` 头；本地 `xmt.wsl`，生产 `xmt.pub` |
+
+**生产示例（无密钥）：**
+
+```php
+$settings['xmt_auto_push'] = TRUE;
+$settings['xmt_dx_bridge_secret'] = getenv('XMT_DX_BRIDGE_SECRET') ?: '';
+$settings['xmt_developer_id'] = 'dx-prod-xxx';
+$settings['xmt_endpoint'] = 'https://xmt.pub/api/xmt/v1/trusted-content';
+$settings['xmt_host'] = 'xmt.pub';
+```
+
+本地启用前须在 XMT 执行 claim（`xmt:dx-claim-test` 或 `POST /api/xmt/v1/dx-claim`）。发布 `dx_media` 后 XMT 应出现 L2 文章（`field_provenance_hash` = `dx:dx-media-{nid}`）。
