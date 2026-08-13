@@ -41,7 +41,7 @@ TLS 证书与 Nginx SSL **只在 B 上**维护，不随 `pack-deploy` / Git 同�
 
 ```bash
 ssh root@47.113.217.2
-/usr/local/acme.sh/acme.sh --renew -d www.xmt.pub --force
+/usr/local/acme.sh/acme.sh --renew -d xmt.pub --force
 /usr/local/acme.sh/acme.sh --list | grep xmt
 /usr/local/nginx/sbin/nginx -t && /usr/local/nginx/sbin/nginx -s reload
 tail -50 /usr/local/acme.sh/acme.sh.log
@@ -61,3 +61,14 @@ curl -sI http://127.0.0.1/ -H 'Host: xmt.pub' | head -10
 ```
 
 公网：`curl -sIk https://xmt.pub/ | head -10`
+
+## 状态
+
+| 项 | 值 |
+|----|-----|
+| HTTPS | **已启用**（2026-08-13 签发） |
+| 主域（acme） | `xmt.pub`（SAN：`www.xmt.pub`） |
+| 下次续期窗口 | 2026-10-11 左右（acme.sh cron 自动） |
+| Nginx | 80 → 301 HTTPS；`/.well-known/acme-challenge/` 仍走 80 |
+
+签发后 acme 工作目录为 `/usr/local/nginx/conf/ssl/xmt.pub/`；Nginx 使用 `www.xmt.pub/` 目录（`acme.sh --install-cert -d xmt.pub` 已配置，续期会同步并 reload）。
