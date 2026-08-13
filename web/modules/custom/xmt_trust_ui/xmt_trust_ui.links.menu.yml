@@ -1,0 +1,6 @@
+xmt_trust_ui.provenance_audit:
+  title: 'Provenance audit'
+  description: 'Recent articles with trust and provenance metadata'
+  parent: system.admin_content
+  route_name: xmt_trust_ui.provenance_audit
+  weight: 51

@@ -30,3 +30,11 @@ xmt_trust_ui.feed_aggregate:
     filter: 'l0_aggregate'
   requirements:
     _permission: 'access content'
+
+xmt_trust_ui.provenance_audit:
+  path: '/admin/xmt/provenance'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ProvenanceAuditController::list'
+    _title: 'Provenance audit'
+  requirements:
+    _permission: 'administer xmt trust'
