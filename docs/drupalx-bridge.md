@@ -27,6 +27,56 @@ cd /home/wwwroot/xmt
 vendor/bin/drush --uri=xmt.pub xmt:dx-claim-test --developer=dx-test-001 --name='Test Enterprise'
 ```
 
-## 二期（未实现）
+## 二期：可信内容推送（已实现）
 
-`POST /api/xmt/v1/trusted-content` 推送媒体节点。
+`POST /api/xmt/v1/trusted-content` — 与 claim 相同 HMAC 验签（`X-XMT-Signature` + 原始 JSON body）。
+
+### 请求 JSON 字段
+
+| 字段 | 必填 | 说明 |
+|------|------|------|
+| `title` | 是 | 文章标题 |
+| `body` | 是 | 正文 HTML |
+| `dx_developer_id` | 是 | 已在 XMT 完成 claim 且 `approved` 的发布者 ID |
+| `external_id` | 否 | 外部内容 ID；幂等键，`field_provenance_hash` = `dx:{external_id}` |
+| `source_url` | 否 | 原文链接；无 `external_id` 时用作幂等键 |
+| `source_name` | 否 | 来源名称 |
+| `domain` | 否 | 领域标签 |
+| `format` | 否 | 正文 text format，默认 `full_html` |
+| `exp` | 否 | Unix 过期时间，过期拒绝 |
+| `nonce` | 否 | 防重放（当前仅记录，不参与幂等） |
+
+### 行为
+
+- 创建或更新 `article` 节点：`status=1`，`field_trust_level=l2_enterprise`，关联已批准 `xmt_publisher`。
+- 设置 `xmt_skip_syndicate`，避免回环 syndicate。
+- 成功响应：`{"status":"ok","nid":123}`；验签失败：`403`。
+
+### 本地测试
+
+**XMT（模拟推送）：**
+
+```bash
+export XMT_DX_BRIDGE_SECRET='your-shared-secret'
+cd /home/wwwroot/xmt
+vendor/bin/drush --uri=xmt.pub xmt:dx-content-test \
+  --developer=dx-hm-100 \
+  --title='DrupalX推送的可信稿' \
+  --body='<p>来自 DrupalX 的企业可信内容</p>' \
+  --external-id=dx-media-demo-001
+```
+
+**DrupalX（推送到 XMT）：**
+
+```bash
+export XMT_DX_BRIDGE_SECRET='your-shared-secret'
+cd /home/wwwroot/drupalX
+vendor/bin/drush dx:xmt-push-content \
+  --developer=dx-hm-100 \
+  --title='从DrupalX推送' \
+  --body='<p>DX push</p>' \
+  --external-id=dx-media-demo-002 \
+  --host=xmt.wsl
+```
+
+企业可信 feed：`/trusted/enterprise`（L2 内容）。

@@ -4,18 +4,20 @@ namespace Drupal\xmt_dx_bridge\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\xmt_dx_bridge\Service\DxClaimHandler;
+use Drupal\xmt_dx_bridge\Service\DxContentHandler;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * REST endpoint for DrupalX publisher claims.
+ * REST endpoints for DrupalX bridge (claims and trusted content).
  */
 class DxClaimController extends ControllerBase {
 
   public function __construct(
     protected DxClaimHandler $claimHandler,
+    protected DxContentHandler $contentHandler,
   ) {}
 
   /**
@@ -24,6 +26,7 @@ class DxClaimController extends ControllerBase {
   public static function create(ContainerInterface $container): static {
     return new static(
       $container->get('xmt_dx_bridge.claim_handler'),
+      $container->get('xmt_dx_bridge.content_handler'),
     );
   }
 
@@ -43,6 +46,29 @@ class DxClaimController extends ControllerBase {
       return new JsonResponse([
         'status' => 'ok',
         'publisher_id' => $pid,
+      ]);
+    }
+    catch (\Throwable $e) {
+      return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+    }
+  }
+
+  /**
+   * Accept and verify signed trusted content from DrupalX.
+   */
+  public function content(Request $request): JsonResponse {
+    $body = $request->getContent();
+    $signature = $request->headers->get('X-XMT-Signature');
+    if (!$this->claimHandler->verifySignature($body, $signature)) {
+      return new JsonResponse(['error' => 'Invalid signature'], Response::HTTP_FORBIDDEN);
+    }
+
+    try {
+      $data = json_decode($body, TRUE, 512, JSON_THROW_ON_ERROR);
+      $nid = $this->contentHandler->processContent($data);
+      return new JsonResponse([
+        'status' => 'ok',
+        'nid' => $nid,
       ]);
     }
     catch (\Throwable $e) {

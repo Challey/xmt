@@ -35,6 +35,10 @@ function xmt_trust_entity_presave(EntityInterface $entity): void {
   }
 
   if ($entity->hasField('field_provenance_hash')) {
+    $existing_hash = $entity->get('field_provenance_hash')->value;
+    if ($existing_hash !== NULL && $existing_hash !== '' && str_starts_with($existing_hash, 'dx:')) {
+      return;
+    }
     $source = '';
     if ($entity->hasField('field_source_url') && !$entity->get('field_source_url')->isEmpty()) {
       $source = $entity->get('field_source_url')->uri ?? $entity->get('field_source_url')->value ?? '';

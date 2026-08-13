@@ -5,3 +5,11 @@ xmt_dx_bridge.claim:
   requirements:
     _access: 'TRUE'
   methods: [POST]
+
+xmt_dx_bridge.content:
+  path: '/api/xmt/v1/trusted-content'
+  defaults:
+    _controller: '\Drupal\xmt_dx_bridge\Controller\DxClaimController::content'
+  requirements:
+    _access: 'TRUE'
+  methods: [POST]

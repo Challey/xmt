@@ -4,3 +4,9 @@ services:
     arguments:
       - '@entity_type.manager'
       - '@logger.factory'
+  xmt_dx_bridge.content_handler:
+    class: Drupal\xmt_dx_bridge\Service\DxContentHandler
+    arguments:
+      - '@entity_type.manager'
+      - '@logger.factory'
+      - '@xmt_dx_bridge.claim_handler'

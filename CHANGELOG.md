@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.2.0-trust-phase5 — 2026-08-13
+
+### Added
+- DrupalX → XMT trusted content API `POST /api/xmt/v1/trusted-content` (HMAC)
+- `DxContentHandler` — L2 article upsert by `external_id` or `source_url`
+- Drush `xmt:dx-content-test` and DrupalX `dx:xmt-push-content`
+- Preserve `dx:` provenance hash on bridge-created articles
+
+### Notes
+- Requires approved publisher from phase 3 `dx-claim` flow
+
 ## v0.1.0-trust — 2026-08-12
 
 ### Added
