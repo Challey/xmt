@@ -10,6 +10,11 @@
 
 ## 管理员
 
+## HTTPS（Server B）
+
+证书与 Nginx 443 仅在生产机维护，见 [https.md](https.md)。签发：`/home/challey/ops/projects/xmt/setup-ssl-b.sh`（需 DNS 指向 B）。代码部署不含 SSL。
+
+
 各站约定：`admin`（密码仅存于部署环境，勿提交仓库）
 
 ## 缓存
