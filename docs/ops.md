@@ -41,6 +41,19 @@ vendor/bin/drush --uri=xmt.pub cr
   vendor/bin/drush --uri=xmt.pub cr
   ```
 
+
+## Article 字段（含 body）
+
+新装或 `site:install` 后，**每个 URI** 需确保 article 含 syndication 字段及标准 **`body`**（`text_with_summary`），否则可信内容推送可能 400：
+
+```bash
+vendor/bin/drush --uri=xmt.pub php:script setup/scripts/ensure_fields.php
+# 或（含 trust 字段 + body）：
+vendor/bin/drush --uri=xmt.pub php:eval 'xmt_trust_ensure_fields(); echo "ok\n";'
+```
+
+多站批量见 `setup/scripts/60-content-fields.sh`。
+
 ## 垂直站（zhubao 等）
 
 - 启用 `xmt_trust`、`xmt_publisher`（可选 `xmt_trust_ui` 展示徽章）；`vendor/bin/drush --uri=zhubao.wsl en xmt_trust xmt_publisher xmt_trust_ui -y` 后执行 `php:eval` 调用 `xmt_trust_ensure_fields()` / `xmt_trust_ensure_roles()`。

@@ -27,6 +27,19 @@ vendor/bin/drush --uri=xmt.pub en xmt_publisher xmt_trust xmt_trust_ui xmt_dx_br
 vendor/bin/drush --uri=xmt.pub cr
 ```
 
+
+4. **Article 字段（含 body）** — `site:install` 或缺字段导致推送 400 时，对每个已 bootstrap 的 URI 执行：
+
+```bash
+cd /home/wwwroot/xmt
+for u in xmt.pub zhubao.pub airobotor.com hm-os.com kstudy.com.cn drupal.org.cn itra.com.cn; do
+  vendor/bin/drush --uri="$u" php:script setup/scripts/ensure_fields.php
+  vendor/bin/drush --uri="$u" php:eval 'xmt_trust_ensure_fields(); echo "ok\n";' 
+done
+```
+
+`setup/scripts/ensure_fields.php` 与 `xmt_trust_ensure_fields()` 均会创建缺失的 **`node.body`** 存储及 **`article`** 实例。
+
 ## Web 根目录
 
 Composer 布局文档根为 **`/home/wwwroot/xmt/web`**。Nginx / Apache 的 `DocumentRoot` 与 `open_basedir` 须指向 `web`（模板见 `setup/nginx/xmt.pub.conf`）。改 vhost 后 reload。

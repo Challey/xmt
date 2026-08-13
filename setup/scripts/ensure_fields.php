@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Ensure article content type + syndication fields.
+ * Ensure article content type + syndication fields + body (text_with_summary).
  * Usage: drush php:script setup/scripts/ensure_fields.php
  */
 

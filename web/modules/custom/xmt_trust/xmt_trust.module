@@ -225,6 +225,28 @@ function xmt_trust_ensure_fields(): void {
       ])->save();
     }
   }
+
+  // Standard article body (text_with_summary); required for trusted-content push.
+  if (!$config_storage->load('node.article.body')) {
+    if (!$storage->load('node.body')) {
+      $storage->create([
+        'field_name' => 'body',
+        'entity_type' => $entity_type,
+        'type' => 'text_with_summary',
+        'cardinality' => 1,
+        'translatable' => TRUE,
+        'settings' => [],
+      ])->save();
+    }
+    $config_storage->create([
+      'field_name' => 'body',
+      'entity_type' => $entity_type,
+      'bundle' => $bundle,
+      'label' => 'Body',
+      'required' => FALSE,
+      'translatable' => TRUE,
+    ])->save();
+  }
 }
 
 /**
