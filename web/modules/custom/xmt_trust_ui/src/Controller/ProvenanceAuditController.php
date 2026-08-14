@@ -245,7 +245,10 @@ class ProvenanceAuditController extends ControllerBase {
    */
   protected static function sanitizeCsvCell(mixed $value): string {
     $value = (string) $value;
-    if ($value !== '' && preg_match('/^[=+\-@]/', $value)) {
+    if (
+      preg_match('/^[\t\r\n]/', $value)
+      || preg_match('/^[=+\-@]/', ltrim($value))
+    ) {
       return "'" . $value;
     }
     return $value;
