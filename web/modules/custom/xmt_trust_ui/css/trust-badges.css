@@ -128,6 +128,25 @@
   margin: 0;
 }
 
+.xmt-trust-home__footer {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dee2e6;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.875rem;
+}
+
+.xmt-trust-home__footer a {
+  color: #084298;
+  text-decoration: none;
+}
+
+.xmt-trust-home__footer a:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 768px) {
   .xmt-trust-home {
     grid-template-columns: 1fr;

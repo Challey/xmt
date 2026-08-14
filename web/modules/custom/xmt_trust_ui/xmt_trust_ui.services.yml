@@ -13,3 +13,8 @@ services:
     arguments:
       - '@entity_type.manager'
       - '@string_translation'
+  xmt_trust_ui.trust_sitemap_builder:
+    class: Drupal\xmt_trust_ui\Service\TrustSitemapBuilder
+    arguments:
+      - '@entity_type.manager'
+      - '@string_translation'

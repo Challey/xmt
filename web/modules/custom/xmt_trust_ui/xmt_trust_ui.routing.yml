@@ -96,6 +96,14 @@ xmt_trust_ui.publishers_directory:
   requirements:
     _permission: 'access content'
 
+xmt_trust_ui.trust_sitemap:
+  path: '/trusted/sitemap.xml'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustSitemapController::sitemap'
+    _title: 'Trust sitemap'
+  requirements:
+    _permission: 'access content'
+
 xmt_trust_ui.publisher_feed_rss:
   path: '/publisher/{xmt_publisher}/feed.rss'
   defaults:

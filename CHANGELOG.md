@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.8.0-trust-verify-sitemap — 2026-08-14
+
+### Added
+- Trust platform XML sitemap at `/trusted/sitemap.xml` (hub pages, publishers, recent L1/L2 articles)
+- `TrustSitemapBuilder` service with optional `?limit=` (10–500 articles, default 100)
+- Homepage trust block footer links: all trusted, publishers, apply, sitemap
+- Ops script `setup/scripts/75-verify-trust.sh` — HTTP + Drush post-deploy checks
+
+### Docs
+- `docs/deploy-server-b.md`, `docs/ops.md` — verification script usage
+
 ## v0.7.0-publishers-directory — 2026-08-14
 
 ### Added

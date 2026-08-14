@@ -1,0 +1,1 @@
+../setup/scripts/75-verify-trust.sh

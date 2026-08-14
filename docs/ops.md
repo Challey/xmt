@@ -114,3 +114,18 @@ curl -sH 'Host: xmt.pub' 'http://127.0.0.1/trusted/enterprise/feed.rss?limit=5' 
   curl -sH 'Host: xmt.pub' http://127.0.0.1/publishers | grep -oE 'xmt-publishers-directory|Official|Enterprise' | head
   curl -sH 'Host: xmt.pub' 'http://127.0.0.1/publisher/1/feed.json?limit=3' | head -c 400
   ```
+
+## 部署验收脚本
+
+一键检查可信页、RSS/JSON、主体目录、sitemap 及 Drush 导出：
+
+```bash
+bash setup/scripts/75-verify-trust.sh
+HOST=xmt.pub BASE=https://xmt.pub DRUSH_URI=xmt.pub bash setup/scripts/75-verify-trust.sh
+```
+
+## 可信站点地图
+
+- URL：`/trusted/sitemap.xml`
+- 含 `/trusted*`、`/publishers`、各已认证 `/publisher/{id}`、近期 L1/L2 文章
+- 可选 `?limit=200`（10–500 篇文章，默认 100）
