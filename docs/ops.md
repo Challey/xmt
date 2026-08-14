@@ -59,6 +59,21 @@ vendor/bin/drush --uri=xmt.pub php:eval 'xmt_trust_ensure_fields(); echo "ok\n";
 
 多站批量见 `setup/scripts/60-content-fields.sh`。
 
+## 溯源核验与审计
+
+- 公开核验页：`/trusted/verify/{nid}`；JSON：`/trusted/verify/{nid}/json`
+- 审计列表：`/admin/xmt/provenance`（需 `administer xmt trust`）；CSV 导出：`/admin/xmt/provenance/export`
+- 批量核验（`mismatch` 存在时退出码为 1，可用于巡检）：
+
+```bash
+vendor/bin/drush --uri=xmt.pub xmt:provenance-verify
+vendor/bin/drush --uri=xmt.pub xmt:provenance-verify --status=missing --limit=200
+```
+
+新增路由后需清缓存：`vendor/bin/drush --uri=xmt.pub cr`。
+
+`mismatch` 表示文章的来源/主体/创建时间在首次落库之后被改过，需人工核对修订记录；`bridge` 为 DrupalX 推送内容，溯源标识由对方签发，本站不重算。
+
 ## 垂直站（zhubao 等）
 
 - 启用 `xmt_trust`、`xmt_publisher`（可选 `xmt_trust_ui` 展示徽章）；`vendor/bin/drush --uri=zhubao.wsl en xmt_trust xmt_publisher xmt_trust_ui -y` 后执行 `php:eval` 调用 `xmt_trust_ensure_fields()` / `xmt_trust_ensure_roles()`。

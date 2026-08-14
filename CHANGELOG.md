@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.4.0-provenance — 2026-08-14
+
+### Added
+- `Drupal\xmt_trust\Provenance` — single source of truth for provenance payload, hashing, and verification (`verified` / `mismatch` / `bridge` / `missing`)
+- Public verification page `/trusted/verify/{nid}` and machine-readable `/trusted/verify/{nid}/json`
+- Provenance audit CSV export `/admin/xmt/provenance/export`, plus a verification column on `/admin/xmt/provenance`
+- Drush `xmt:provenance-verify` (`--limit`, `--status`); exits 1 when mismatches exist, for cron checks
+- 「核验溯源」link on full article displays
+- Unit tests `Drupal\Tests\xmt_trust\Unit\ProvenanceTest`
+
+### Changed
+- Provenance hashes are now **write-once**: previously every save recomputed the hash, which hid later edits to source URL, publisher, or creation time
+- `TrustFeedController` takes `date.formatter` by injection instead of `\Drupal::service()`
+
+### Fixed
+- `/admin/xmt/provenance` fataled on an unqualified `Drupal::service('date.formatter')` call
+
+### Ops
+- Run `drush --uri=xmt.pub cr` after deploy so the new routes register (see `docs/ops.md`)
+
 ## v0.3.0-homepage — 2026-08-13
 
 ### Added
