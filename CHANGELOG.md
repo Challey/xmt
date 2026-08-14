@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Added
+- Provenance audit CSV export at `/admin/xmt/provenance/export`, including trust, publisher, source, hash, and UTC timestamps
+
 ## v0.3.0-homepage — 2026-08-13
 
 ### Added

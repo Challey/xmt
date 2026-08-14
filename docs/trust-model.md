@@ -17,7 +17,7 @@
 
 ## 溯源
 
-每条可信文章可写 `field_provenance_hash`（来源 URL + 主体 ID + 时间的哈希），便于审计导出（后续）。
+每条可信文章可写 `field_provenance_hash`（来源 URL + 主体 ID + 时间的哈希）。管理员可在「内容 → Provenance audit」下载完整 CSV 审计导出，其中包含信任级别、主体、来源 URL、溯源哈希及创建/更新时间。
 
 ## 与 DrupalX
 
