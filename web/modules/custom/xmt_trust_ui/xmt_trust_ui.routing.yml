@@ -31,6 +31,40 @@ xmt_trust_ui.feed_aggregate:
   requirements:
     _permission: 'access content'
 
+xmt_trust_ui.api_trusted:
+  path: '/api/xmt/v1/trusted/{filter}'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustFeedController::jsonFeed'
+    filter: 'all'
+  requirements:
+    _permission: 'access content'
+    filter: 'all|l0_aggregate|l1_official|l2_enterprise'
+
+xmt_trust_ui.api_trusted_root:
+  path: '/api/xmt/v1/trusted'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustFeedController::jsonFeed'
+    filter: 'all'
+  requirements:
+    _permission: 'access content'
+
+xmt_trust_ui.rss_trusted:
+  path: '/trusted/{filter}.xml'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustFeedController::rssFeed'
+    filter: 'all'
+  requirements:
+    _permission: 'access content'
+    filter: 'all|l0_aggregate|l1_official|l2_enterprise|official|enterprise|aggregate'
+
+xmt_trust_ui.rss_trusted_root:
+  path: '/trusted.xml'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustFeedController::rssFeed'
+    filter: 'all'
+  requirements:
+    _permission: 'access content'
+
 xmt_trust_ui.provenance_audit:
   path: '/admin/xmt/provenance'
   defaults:

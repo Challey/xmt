@@ -63,6 +63,11 @@ vendor/bin/drush --uri=xmt.pub cr
   vendor/bin/drush --uri=xmt.pub cr
   ```
 
+## 机器可读可信 feed
+
+- JSON：`/api/xmt/v1/trusted/all`（默认 L1+L2）、`…/l1_official`、`…/l2_enterprise`、`…/l0_aggregate`
+- RSS：`/trusted/all.xml`、`/trusted/l1_official.xml`（亦支持 `official` / `enterprise` / `aggregate` 别名）
+- 权限：`access content`；每页最多 30 条，含 title/url/trust/publisher/provenance/summary
 
 ## Article 字段（含 body）
 

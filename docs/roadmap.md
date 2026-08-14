@@ -15,7 +15,7 @@
 ## 下一步（优先序）
 
 1. ~~审计列表筛选/分页~~ — **已完成（本分支）**
-2. **机器可读可信 feed** — RSS 或 JSON API，供 AI / 聚合消费（愿景对齐）
+2. ~~机器可读可信 feed~~ — **已完成**：`/api/xmt/v1/trusted/{filter}` JSON + `/trusted/{filter}.xml` RSS
 3. **引导脚本** — bootstrap 自动启用 trust 栈并放置首页 block（减少手工 Drush）
 4. **PHPUnit** — `xmt_*` Kernel/Functional（导出、nonce、claim/content）
 5. **DrupalX 侧 auto-push** — 在 DrupalX 仓库实现（非本仓）；须带唯一 nonce
