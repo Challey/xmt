@@ -60,7 +60,7 @@ function xmt_trust_ui_entity_view_alter(array &$build, EntityInterface $entity, 
       'rel' => 'alternate',
       'type' => 'application/rss+xml',
       'title' => t('RSS'),
-      'href' => \Drupal\Core\Url::fromRoute('xmt_trust_ui.publisher_feed_rss', [
+      'href' => Url::fromRoute('xmt_trust_ui.publisher_feed_rss', [
         'xmt_publisher' => $entity->id(),
       ], ['absolute' => TRUE])->toString(),
     ],
@@ -90,4 +90,56 @@ function xmt_trust_ui_preprocess_node(array &$variables): void {
     ],
   ];
   $variables['content']['xmt_trust_badge'] = $variables['xmt_trust_badge'];
+
+  if (($variables['view_mode'] ?? '') !== 'full' || $node->isNew()) {
+    return;
+  }
+  $variables['xmt_trust_verify_link'] = [
+    '#type' => 'link',
+    '#title' => t('核验溯源'),
+    '#url' => Url::fromRoute('xmt_trust_ui.provenance_verify', ['node' => $node->id()]),
+    '#attributes' => ['class' => ['xmt-trust-verify-link']],
+  ];
+  $variables['content']['xmt_trust_verify_link'] = $variables['xmt_trust_verify_link'];
+
+  $byline = xmt_trust_ui_publisher_byline($node);
+  if ($byline !== NULL) {
+    $variables['xmt_trust_byline'] = $byline;
+    $variables['content']['xmt_trust_byline'] = $byline;
+  }
+}
+
+/**
+ * Builds a publisher byline linking an article to its accountable subject.
+ *
+ * @param \Drupal\node\NodeInterface $node
+ *   Article node.
+ *
+ * @return array|null
+ *   Render array, or NULL when the article has no viewable publisher.
+ */
+function xmt_trust_ui_publisher_byline(NodeInterface $node): ?array {
+  if (!$node->hasField('field_publisher') || $node->get('field_publisher')->isEmpty()) {
+    return NULL;
+  }
+  $publisher = $node->get('field_publisher')->entity;
+  if (!$publisher || !$publisher->access('view')) {
+    return NULL;
+  }
+
+  return [
+    '#type' => 'container',
+    '#attributes' => ['class' => ['xmt-trust-byline']],
+    'label' => [
+      '#type' => 'html_tag',
+      '#tag' => 'span',
+      '#value' => t('发布主体：'),
+    ],
+    'link' => [
+      '#type' => 'link',
+      '#title' => $publisher->label(),
+      '#url' => $publisher->toUrl(),
+    ],
+    '#cache' => ['tags' => $publisher->getCacheTags()],
+  ];
 }

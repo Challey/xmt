@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.10.0-provenance-verify — 2026-08-14
+
+### Added
+- `Drupal\xmt_trust\Provenance` — payload, hashing, and verification (`verified` / `mismatch` / `bridge` / `missing`)
+- `Drupal\xmt_trust\TrustLevel` — shared trust level codes
+- Public verification page `/trusted/verify/{nid}` and JSON `/trusted/verify/{nid}/json`
+- Drush `xmt:provenance-verify` (`--limit`, `--status`); exits 1 when mismatches exist
+- Unit tests `Drupal\Tests\xmt_trust\Unit\ProvenanceTest`
+
+### Changed
+- Provenance hashes are **write-once**: previously every save recomputed the hash, which hid later edits to source URL, publisher, or creation time
+
+### Ops
+- Run `drush --uri=xmt.pub cr` after deploy so verify routes register (see `docs/ops.md`)
+
 ## v0.9.0-trust-seo — 2026-08-14
 
 ### Added

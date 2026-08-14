@@ -6,9 +6,11 @@
  */
 
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\NodeForm;
 use Drupal\node\NodeInterface;
+use Drupal\xmt_trust\Provenance;
 
 /**
  * Implements hook_entity_presave().
@@ -30,30 +32,24 @@ function xmt_trust_entity_presave(EntityInterface $entity): void {
   if ($level === 'l2_enterprise' && $entity->hasField('field_publisher')) {
     $publisher = $entity->get('field_publisher')->entity;
     if (!$publisher || $publisher->get('status')->value !== 'approved') {
-      throw new \Drupal\Core\Entity\EntityStorageException('L2 content requires an approved publisher.');
+      throw new EntityStorageException('L2 content requires an approved publisher.');
     }
   }
 
-  if ($entity->hasField('field_provenance_hash')) {
-    $existing_hash = $entity->get('field_provenance_hash')->value;
-    if ($existing_hash !== NULL && $existing_hash !== '' && str_starts_with($existing_hash, 'dx:')) {
-      return;
-    }
-    $source = '';
-    if ($entity->hasField('field_source_url') && !$entity->get('field_source_url')->isEmpty()) {
-      $source = $entity->get('field_source_url')->uri ?? $entity->get('field_source_url')->value ?? '';
-    }
-    $publisher_id = $entity->hasField('field_publisher') && !$entity->get('field_publisher')->isEmpty()
-      ? (int) $entity->get('field_publisher')->target_id
-      : 0;
-    $payload = $source . '|' . $publisher_id . '|' . ($entity->getCreatedTime() ?: time());
-    $entity->set('field_provenance_hash', hash('sha256', $payload));
+  if (!$entity->hasField('field_provenance_hash')) {
+    return;
   }
+  // The hash is a write-once audit record: once stored it is never rewritten,
+  // so later edits to source URL, publisher, or creation time show up as a
+  // mismatch on /trusted/verify instead of being silently absorbed.
+  if (Provenance::storedHash($entity) !== '') {
+    return;
+  }
+  if (!$entity->getCreatedTime()) {
+    $entity->setCreatedTime(\Drupal::time()->getRequestTime());
+  }
+  $entity->set('field_provenance_hash', Provenance::expectedHash($entity));
 }
-
-/**
- * Implements hook_form_alter().
- */
 
 /**
  * Whether the current site is the XMT aggregation hub (xmt.pub).
@@ -63,6 +59,9 @@ function xmt_trust_is_hub_site(): bool {
   return str_contains($host, 'xmt.pub') || str_contains($host, 'xmt.wsl');
 }
 
+/**
+ * Implements hook_form_alter().
+ */
 function xmt_trust_form_alter(array &$form, FormStateInterface $form_state, $form_id): void {
   $form_object = $form_state->getFormObject();
   if (!$form_object instanceof NodeForm) {
@@ -163,6 +162,30 @@ function xmt_trust_badge_label(string $level): string {
 }
 
 /**
+ * Returns a human label for a provenance verification status.
+ */
+function xmt_trust_provenance_status_label(string $status): string {
+  return match ($status) {
+    Provenance::STATUS_VERIFIED => (string) t('Verified'),
+    Provenance::STATUS_MISMATCH => (string) t('Mismatch'),
+    Provenance::STATUS_BRIDGE => (string) t('DrupalX attested'),
+    default => (string) t('Not recorded'),
+  };
+}
+
+/**
+ * Returns CSS class for a provenance verification status.
+ */
+function xmt_trust_provenance_status_class(string $status): string {
+  return match ($status) {
+    Provenance::STATUS_VERIFIED => 'xmt-provenance--verified',
+    Provenance::STATUS_MISMATCH => 'xmt-provenance--mismatch',
+    Provenance::STATUS_BRIDGE => 'xmt-provenance--bridge',
+    default => 'xmt-provenance--missing',
+  };
+}
+
+/**
  * Returns CSS class for a trust level code.
  */
 function xmt_trust_badge_class(string $level): string {
@@ -247,7 +270,8 @@ function xmt_trust_ensure_fields(): void {
     }
   }
 
-  // Standard article body (text_with_summary); required for trusted-content push.
+  // Standard article body (text_with_summary); required for trusted-content
+  // push.
   if (!$config_storage->load('node.article.body')) {
     if (!$storage->load('node.body')) {
       $storage->create([

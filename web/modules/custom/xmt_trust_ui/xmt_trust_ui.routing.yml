@@ -130,6 +130,31 @@ xmt_trust_ui.publisher_feed_json:
       xmt_publisher:
         type: entity:xmt_publisher
 
+xmt_trust_ui.provenance_verify:
+  path: '/trusted/verify/{node}'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ProvenanceVerifyController::page'
+    _title_callback: '\Drupal\xmt_trust_ui\Controller\ProvenanceVerifyController::title'
+  requirements:
+    _entity_access: 'node.view'
+    node: \d+
+  options:
+    parameters:
+      node:
+        type: entity:node
+xmt_trust_ui.provenance_verify_json:
+  path: '/trusted/verify/{node}/json'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ProvenanceVerifyController::json'
+  requirements:
+    _entity_access: 'node.view'
+    node: \d+
+  options:
+    parameters:
+      node:
+        type: entity:node
+
+
 xmt_trust_ui.provenance_audit:
   path: '/admin/xmt/provenance'
   defaults:

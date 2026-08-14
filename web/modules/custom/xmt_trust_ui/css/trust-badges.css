@@ -147,6 +147,72 @@
   text-decoration: underline;
 }
 
+.xmt-trust-verify-link {
+  display: inline-block;
+  margin: 0.5rem 0;
+  font-size: 0.875rem;
+}
+
+.xmt-provenance-verify {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.xmt-provenance-verdict {
+  display: inline-block;
+  padding: 0.35em 0.9em;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.xmt-provenance-summary {
+  color: #495057;
+}
+
+.xmt-provenance-table td {
+  word-break: break-all;
+}
+
+.xmt-provenance-algorithm {
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+.xmt-provenance--verified {
+  background: #d1e7dd;
+  color: #0f5132;
+  border: 1px solid #a3cfbb;
+}
+
+.xmt-provenance--mismatch {
+  background: #f8d7da;
+  color: #842029;
+  border: 1px solid #f1aeb5;
+}
+
+.xmt-provenance--bridge {
+  background: #cfe2ff;
+  color: #084298;
+  border: 1px solid #9ec5fe;
+}
+
+.xmt-provenance--missing {
+  background: #e9ecef;
+  color: #495057;
+  border: 1px solid #ced4da;
+}
+
+.xmt-provenance-export {
+  margin-bottom: 1rem;
+}
+
+.xmt-trust-byline {
+  color: #495057;
+  font-size: 0.9375rem;
+  margin: 0.25rem 0;
+}
+
+
 @media (max-width: 768px) {
   .xmt-trust-home {
     grid-template-columns: 1fr;
