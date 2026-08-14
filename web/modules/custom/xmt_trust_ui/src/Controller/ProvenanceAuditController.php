@@ -6,23 +6,35 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
+use Drupal\xmt_trust_ui\Service\ProvenanceAuditExporter;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
- * Admin listing of recent articles with provenance metadata.
+ * Admin listing and CSV export of articles with provenance metadata.
  */
 class ProvenanceAuditController extends ControllerBase {
+
+  public function __construct(
+    protected ProvenanceAuditExporter $exporter,
+  ) {}
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container): static {
+    return new static(
+      $container->get('xmt_trust_ui.provenance_exporter'),
+    );
+  }
 
   /**
    * Lists recent trusted articles for audit.
    */
-  public function list(): array {
-    $storage = $this->entityTypeManager()->getStorage('node');
-    $nids = $storage->getQuery()
-      ->accessCheck(TRUE)
-      ->condition('type', 'article')
-      ->sort('changed', 'DESC')
-      ->range(0, 50)
-      ->execute();
+  public function list(Request $request): array {
+    $trust_level = $request->query->get('trust_level');
+    $records = $this->exporter->records(50, $trust_level ?: NULL);
 
     $header = [
       $this->t('Title'),
@@ -34,49 +46,76 @@ class ProvenanceAuditController extends ControllerBase {
     ];
 
     $rows = [];
-    if ($nids) {
-      /** @var \Drupal\node\NodeInterface[] $nodes */
-      $nodes = $storage->loadMultiple($nids);
-      foreach ($nodes as $node) {
-        $rows[] = $this->buildRow($node);
+    $storage = $this->entityTypeManager()->getStorage('node');
+    foreach ($records as $record) {
+      $node = $storage->load($record['nid']);
+      if ($node instanceof NodeInterface) {
+        $rows[] = $this->buildTableRow($node, $record);
       }
     }
 
+    $export_url = Url::fromRoute('xmt_trust_ui.provenance_audit_export', [], [
+      'query' => array_filter(['trust_level' => $trust_level]),
+    ]);
+
     return [
-      '#type' => 'table',
-      '#header' => $header,
-      '#rows' => $rows,
-      '#empty' => $this->t('No articles found.'),
-      '#attributes' => ['class' => ['xmt-provenance-audit']],
+      'actions' => [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['xmt-provenance-audit-actions']],
+        'export' => [
+          '#type' => 'link',
+          '#title' => $this->t('Export CSV'),
+          '#url' => $export_url,
+          '#attributes' => ['class' => ['button', 'button--primary']],
+        ],
+      ],
+      'table' => [
+        '#type' => 'table',
+        '#header' => $header,
+        '#rows' => $rows,
+        '#empty' => $this->t('No articles found.'),
+        '#attributes' => ['class' => ['xmt-provenance-audit']],
+      ],
     ];
   }
 
   /**
-   * Builds a table row for one article.
+   * Streams a CSV download of provenance audit records.
    */
-  protected function buildRow(NodeInterface $node): array {
+  public function exportCsv(Request $request): StreamedResponse {
+    $trust_level = $request->query->get('trust_level');
+    $limit = min(5000, max(1, (int) $request->query->get('limit', 500)));
+    $records = $this->exporter->records($limit, $trust_level ?: NULL);
+
+    $filename = 'xmt-provenance-audit-' . date('Ymd-His') . '.csv';
+    $response = new StreamedResponse(function () use ($records) {
+      $handle = fopen('php://output', 'wb');
+      if ($handle !== FALSE) {
+        $this->exporter->writeCsv($handle, $records);
+        fclose($handle);
+      }
+    });
+    $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+    $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+    return $response;
+  }
+
+  /**
+   * Builds a table row for one article.
+   *
+   * @param array<string, string> $record
+   *   Audit record from the exporter.
+   */
+  protected function buildTableRow(NodeInterface $node, array $record): array {
     $title = Link::fromTextAndUrl($node->label(), $node->toUrl())->toString();
 
-    $level = $node->hasField('field_trust_level') && !$node->get('field_trust_level')->isEmpty()
-      ? xmt_trust_badge_label($node->get('field_trust_level')->value)
-      : $this->t('—');
-
-    $publisher = $this->t('—');
-    if ($node->hasField('field_publisher') && !$node->get('field_publisher')->isEmpty()) {
-      $entity = $node->get('field_publisher')->entity;
-      $publisher = $entity ? $entity->label() : $node->get('field_publisher')->target_id;
-    }
-
-    $provenance = $node->hasField('field_provenance_hash') && !$node->get('field_provenance_hash')->isEmpty()
-      ? $node->get('field_provenance_hash')->value
-      : '—';
+    $level = $record['trust_level'] !== '' ? $record['trust_level'] : $this->t('—');
+    $publisher = $record['publisher'] !== '' ? $record['publisher'] : $this->t('—');
+    $provenance = $record['provenance_hash'] !== '' ? $record['provenance_hash'] : '—';
 
     $source = '—';
-    if ($node->hasField('field_source_url') && !$node->get('field_source_url')->isEmpty()) {
-      $uri = $node->get('field_source_url')->uri ?? $node->get('field_source_url')->value ?? '';
-      if ($uri !== '') {
-        $source = Link::fromTextAndUrl($uri, Url::fromUri($uri))->toString();
-      }
+    if ($record['source_url'] !== '') {
+      $source = Link::fromTextAndUrl($record['source_url'], Url::fromUri($record['source_url']))->toString();
     }
 
     $updated = Drupal::service('date.formatter')->format($node->getChangedTime(), 'short');

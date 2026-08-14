@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.4.0-provenance-export — 2026-08-14
+
+### Added
+- CSV export for provenance audit: `/admin/xmt/provenance/export` (button on audit page)
+- `ProvenanceAuditExporter` service — shared by admin UI and Drush
+- Drush `xmt:provenance-export` (`--limit`, `--trust-level`, `--output`)
+
+### Docs
+- `docs/trust-model.md` — audit export marked implemented
+- `docs/ops.md` — export usage
+
 ## v0.3.0-homepage — 2026-08-13
 
 ### Added

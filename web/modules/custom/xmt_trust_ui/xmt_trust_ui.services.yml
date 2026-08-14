@@ -1,0 +1,5 @@
+services:
+  xmt_trust_ui.provenance_exporter:
+    class: Drupal\xmt_trust_ui\Service\ProvenanceAuditExporter
+    arguments:
+      - '@entity_type.manager'
