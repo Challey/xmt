@@ -17,8 +17,18 @@
 
 ## 溯源
 
-每条可信文章可写 `field_provenance_hash`（来源 URL + 主体 ID + 时间的哈希）。管理员可在「内容 → Provenance audit」下载完整 CSV 审计导出，其中包含信任级别、主体、来源 URL、溯源哈希及创建/更新时间。
+每条可信文章可写 `field_provenance_hash`（来源 URL + 主体 ID + 时间的哈希），便于审计导出。
+
+- 管理后台：`/admin/xmt/provenance` — 可按信任等级 / 发布主体筛选，分页（每页 50）
+- CSV：`/admin/xmt/provenance/export.csv`（继承当前筛选 query）或 Drush `xmt:provenance-export`
+- JSON：`/admin/xmt/provenance/export.json` 或 `--format=json`
+- Drush 筛选：`--trust-level=l2_enterprise`、`--publisher=<id>`
+
+## 发布主体页
+
+- 公开页 `/publisher/{id}`（已批准主体）展示该主体最近 L1/L2 可信文章
+- 文章页对 L1/L2 显示「Published by」链至主体页
 
 ## 与 DrupalX
 
-DrupalX `dx_developer` 认证通过后，可签发 HMAC claim；XMT `xmt_dx_bridge` 验签后创建/升级为已批准企业主体。内容自动双写为二期。
+DrupalX `dx_developer` 认证通过后，可签发 HMAC claim；XMT `xmt_dx_bridge` 验签后创建/升级为已批准企业主体。可信内容推送见 [drupalx-bridge.md](drupalx-bridge.md)。

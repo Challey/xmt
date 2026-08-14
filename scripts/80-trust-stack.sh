@@ -1,0 +1,1 @@
+../setup/scripts/80-trust-stack.sh
