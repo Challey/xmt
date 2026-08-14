@@ -19,6 +19,7 @@ bash "$SETUP/scripts/40-themes-modules.sh"
 bash "$SETUP/scripts/50-nginx-hosts.sh"
 bash "$SETUP/scripts/60-content-fields.sh"
 bash "$SETUP/scripts/70-agent-cron.sh"
+bash "$SETUP/scripts/80-trust-stack.sh"
 
 echo "==== Bootstrap complete ===="
 echo "Admin: $SITE_ADMIN_USER / $SITE_ADMIN_PASS"

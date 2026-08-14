@@ -2,24 +2,30 @@
 
 namespace Drupal\Tests\xmt_trust_ui\Unit;
 
+use Drupal\Core\Datetime\DateFormatterInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Tests\UnitTestCase;
-use Drupal\xmt_trust_ui\Controller\ProvenanceAuditController;
+use Drupal\xmt_trust_ui\Service\ProvenanceAuditService;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
- * Tests provenance CSV cell sanitization.
+ * Tests provenance audit export safety.
  */
 #[Group('xmt_trust_ui')]
-class ProvenanceAuditControllerTest extends UnitTestCase {
+class ProvenanceAuditServiceTest extends UnitTestCase {
 
   /**
    * Tests that spreadsheet formulas cannot execute from exported cells.
    */
   #[DataProvider('csvCellProvider')]
-  public function testSanitizeCsvCell(string $value, string $expected): void {
-    $method = new \ReflectionMethod(ProvenanceAuditController::class, 'sanitizeCsvCell');
-    $this->assertSame($expected, $method->invoke(NULL, $value));
+  public function testCsvSafeValue(string $value, string $expected): void {
+    $service = new ProvenanceAuditService(
+      $this->createMock(EntityTypeManagerInterface::class),
+      $this->createMock(DateFormatterInterface::class),
+    );
+
+    $this->assertSame($expected, $service->csvSafeValue($value));
   }
 
   /**

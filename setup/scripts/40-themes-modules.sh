@@ -37,9 +37,14 @@ for uri in kstudy.com.cn drupal.org.cn itra.com.cn; do
   enable_for "$uri" pathauto token admin_toolbar || true
 done
 
-# Deploy custom syndicate module
+# Deploy custom XMT modules (syndicate + trust stack mirrors if present)
 mkdir -p "$XMT_WEB/modules/custom"
-cp -a "$ROOT/modules/xmt_syndicate" "$XMT_WEB/modules/custom/"
+if [ -d "$ROOT/modules" ]; then
+  for mod in "$ROOT"/modules/xmt_*; do
+    [ -d "$mod" ] || continue
+    cp -a "$mod" "$XMT_WEB/modules/custom/"
+  done
+fi
 
 for uri in xmt.pub zhubao.pub airobotor.com hm-os.com kstudy.com.cn drupal.org.cn itra.com.cn; do
   $DRUSH --uri="$uri" en xmt_syndicate node taxonomy field field_ui text path path_alias views -y 2>&1 | tail -10 || true

@@ -4,55 +4,54 @@ namespace Drupal\xmt_trust_ui\Controller;
 
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Datetime\DateFormatterInterface;
-use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Link;
+use Drupal\Core\Pager\PagerManagerInterface;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
+use Drupal\xmt_trust_ui\Form\ProvenanceAuditFilterForm;
+use Drupal\xmt_trust_ui\Service\ProvenanceAuditService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\HeaderUtils;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
- * Admin listing of recent articles with provenance metadata.
+ * Admin listing and export of articles with provenance metadata.
  */
 class ProvenanceAuditController extends ControllerBase {
 
-  /**
-   * The node storage.
-   */
-  protected EntityStorageInterface $nodeStorage;
+  public const LIST_LIMIT = 50;
 
-  /**
-   * Constructs a provenance audit controller.
-   */
+  public const EXPORT_LIMIT = 500;
+
   public function __construct(
-    EntityTypeManagerInterface $entity_type_manager,
-    protected DateFormatterInterface $dateFormatter,
-  ) {
-    $this->nodeStorage = $entity_type_manager->getStorage('node');
-  }
+    protected ProvenanceAuditService $auditService,
+    protected FormBuilderInterface $formBuilderService,
+    protected PagerManagerInterface $pagerManager,
+  ) {}
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container): static {
     return new static(
-      $container->get('entity_type.manager'),
-      $container->get('date.formatter'),
+      $container->get('xmt_trust_ui.provenance_audit'),
+      $container->get('form_builder'),
+      $container->get('pager.manager'),
     );
   }
 
   /**
    * Lists recent trusted articles for audit.
    */
-  public function list(): array {
-    $nids = $this->trustedArticleQuery()
-      ->pager(50)
-      ->execute();
+  public function list(Request $request): array {
+    $filters = $this->filtersFromRequest($request);
+    $total = $this->auditService->countArticles($filters);
+    $this->pagerManager->createPager($total, self::LIST_LIMIT);
+    $page = $this->pagerManager->findPage();
+    $nodes = $this->auditService->loadArticles(self::LIST_LIMIT, $page * self::LIST_LIMIT, $filters);
 
     $header = [
       $this->t('Title'),
@@ -64,33 +63,42 @@ class ProvenanceAuditController extends ControllerBase {
     ];
 
     $rows = [];
-    if ($nids) {
-      /** @var \Drupal\node\NodeInterface[] $nodes */
-      $nodes = $this->nodeStorage->loadMultiple($nids);
-      foreach ($nodes as $node) {
-        $rows[] = $this->buildRow($node);
-      }
+    foreach ($nodes as $node) {
+      $rows[] = $this->buildTableRow($node);
     }
 
+    $export_query = array_filter([
+      'trust_level' => $filters['trust_level'] ?? '',
+      'publisher_id' => $filters['publisher_id'] ?? '',
+    ], static fn ($value) => $value !== '' && $value !== NULL);
+
     return [
+      'filters' => $this->formBuilderService->getForm(ProvenanceAuditFilterForm::class),
+      'summary' => [
+        '#markup' => '<p class="xmt-provenance-audit__summary">' . $this->t('@count articles match.', [
+          '@count' => $total,
+        ]) . '</p>',
+      ],
       'actions' => [
-        '#type' => 'container',
-        '#attributes' => ['class' => ['xmt-provenance-audit__actions']],
-        'export' => [
+        '#type' => 'actions',
+        'csv' => [
           '#type' => 'link',
           '#title' => $this->t('Export CSV'),
-          '#url' => Url::fromRoute('xmt_trust_ui.provenance_export'),
-          '#attributes' => [
-            'class' => ['button', 'button--primary'],
-            'download' => TRUE,
-          ],
+          '#url' => Url::fromRoute('xmt_trust_ui.provenance_audit_csv', [], ['query' => $export_query]),
+          '#attributes' => ['class' => ['button', 'button--primary']],
+        ],
+        'json' => [
+          '#type' => 'link',
+          '#title' => $this->t('Export JSON'),
+          '#url' => Url::fromRoute('xmt_trust_ui.provenance_audit_json', [], ['query' => $export_query]),
+          '#attributes' => ['class' => ['button']],
         ],
       ],
       'table' => [
         '#type' => 'table',
         '#header' => $header,
         '#rows' => $rows,
-        '#empty' => $this->t('No trusted articles found.'),
+        '#empty' => $this->t('No articles found.'),
         '#attributes' => ['class' => ['xmt-provenance-audit']],
       ],
       'pager' => [
@@ -100,62 +108,27 @@ class ProvenanceAuditController extends ControllerBase {
   }
 
   /**
-   * Exports all accessible trusted articles as CSV.
+   * Streams a CSV download of provenance audit records.
    */
-  public function export(): StreamedResponse {
-    $nids = $this->trustedArticleQuery()->execute();
+  public function exportCsv(Request $request): StreamedResponse {
+    $filters = $this->filtersFromRequest($request);
+    $nodes = $this->auditService->loadArticles(self::EXPORT_LIMIT, 0, $filters);
+    $filename = 'xmt-provenance-audit-' . gmdate('Y-m-d') . '.csv';
 
-    $response = new StreamedResponse(function () use ($nids): void {
-      $output = fopen('php://output', 'wb');
-      if ($output === FALSE) {
+    $response = new StreamedResponse(function () use ($nodes): void {
+      $handle = fopen('php://output', 'w');
+      if ($handle === FALSE) {
         return;
       }
-
-      // Help spreadsheet applications detect UTF-8 without changing cell data.
-      fwrite($output, "\xEF\xBB\xBF");
-      fputcsv($output, [
-        'Node ID',
-        'Title',
-        'Trust level',
-        'Publisher ID',
-        'Publisher',
-        'Provenance hash',
-        'Source URL',
-        'Created (UTC)',
-        'Updated (UTC)',
-      ], ',', '"', '');
-
-      foreach (array_chunk($nids, 100) as $chunk) {
-        /** @var \Drupal\node\NodeInterface[] $nodes */
-        $nodes = $this->nodeStorage->loadMultiple($chunk);
-        foreach ($chunk as $nid) {
-          if (!isset($nodes[$nid])) {
-            continue;
-          }
-          fputcsv(
-            $output,
-            array_map(
-              static fn(mixed $value): string => static::sanitizeCsvCell($value),
-              $this->buildExportRow($nodes[$nid]),
-            ),
-            ',',
-            '"',
-            '',
-          );
-        }
-        $this->nodeStorage->resetCache($chunk);
-      }
-
-      fclose($output);
+      $this->auditService->writeCsv($handle, $nodes);
+      fclose($handle);
     });
 
-    $filename = 'xmt-provenance-' . gmdate('Y-m-d') . '.csv';
-    $disposition = HeaderUtils::makeDisposition(
+    $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+    $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
       ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-      $filename,
-    );
-    $response->headers->set('Content-Type', 'text/csv; charset=UTF-8');
-    $response->headers->set('Content-Disposition', $disposition);
+      $filename
+    ));
     $response->headers->set('Cache-Control', 'private, no-store');
     $response->headers->set('X-Content-Type-Options', 'nosniff');
 
@@ -163,102 +136,59 @@ class ProvenanceAuditController extends ControllerBase {
   }
 
   /**
-   * Builds the common query for accessible L1 and L2 articles.
+   * Returns a JSON download of provenance audit records.
    */
-  protected function trustedArticleQuery(): QueryInterface {
-    return $this->nodeStorage->getQuery()
-      ->accessCheck(TRUE)
-      ->condition('type', 'article')
-      ->condition('field_trust_level', ['l1_official', 'l2_enterprise'], 'IN')
-      ->sort('changed', 'DESC')
-      ->sort('nid', 'DESC');
+  public function exportJson(Request $request): JsonResponse {
+    $filters = $this->filtersFromRequest($request);
+    $nodes = $this->auditService->loadArticles(self::EXPORT_LIMIT, 0, $filters);
+    $filename = 'xmt-provenance-audit-' . gmdate('Y-m-d') . '.json';
+
+    $response = new JsonResponse($this->auditService->buildJsonPayload($nodes));
+    $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
+      ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+      $filename
+    ));
+    $response->headers->set('Cache-Control', 'private, no-store');
+    $response->headers->set('X-Content-Type-Options', 'nosniff');
+
+    return $response;
+  }
+
+  /**
+   * Reads supported audit filters from the request query string.
+   *
+   * @return array{trust_level?: string, publisher_id?: string}
+   *   Supported audit filters.
+   */
+  protected function filtersFromRequest(Request $request): array {
+    return [
+      'trust_level' => (string) $request->query->get('trust_level', ''),
+      'publisher_id' => (string) $request->query->get('publisher_id', ''),
+    ];
   }
 
   /**
    * Builds a table row for one article.
    */
-  protected function buildRow(NodeInterface $node): array {
-    $title = Link::fromTextAndUrl($node->label(), $node->toUrl())->toRenderable();
-
-    $level = $node->hasField('field_trust_level') && !$node->get('field_trust_level')->isEmpty()
-      ? xmt_trust_badge_label($node->get('field_trust_level')->value)
-      : $this->t('—');
-
-    $publisher = $this->t('—');
-    if ($node->hasField('field_publisher') && !$node->get('field_publisher')->isEmpty()) {
-      $entity = $node->get('field_publisher')->entity;
-      $publisher = $entity ? $entity->label() : $node->get('field_publisher')->target_id;
-    }
-
-    $provenance = $node->hasField('field_provenance_hash') && !$node->get('field_provenance_hash')->isEmpty()
-      ? $node->get('field_provenance_hash')->value
-      : '—';
+  protected function buildTableRow(NodeInterface $node): array {
+    $record = $this->auditService->buildRecord($node);
+    $title = Link::fromTextAndUrl($node->label(), $node->toUrl())->toString();
 
     $source = '—';
-    if ($node->hasField('field_source_url') && !$node->get('field_source_url')->isEmpty()) {
-      $uri = $node->get('field_source_url')->uri ?? $node->get('field_source_url')->value ?? '';
-      if ($uri !== '') {
-        $source = UrlHelper::isValid($uri, TRUE)
-          ? Link::fromTextAndUrl($uri, Url::fromUri($uri))->toRenderable()
-          : $uri;
-      }
-    }
-
-    $updated = $this->dateFormatter->format($node->getChangedTime(), 'short');
-
-    return [$title, $level, $publisher, $provenance, $source, $updated];
-  }
-
-  /**
-   * Builds a raw CSV row for one article.
-   */
-  protected function buildExportRow(NodeInterface $node): array {
-    $level = $node->hasField('field_trust_level') && !$node->get('field_trust_level')->isEmpty()
-      ? $node->get('field_trust_level')->value
-      : '';
-
-    $publisher_id = '';
-    $publisher = '';
-    if ($node->hasField('field_publisher') && !$node->get('field_publisher')->isEmpty()) {
-      $publisher_id = (string) $node->get('field_publisher')->target_id;
-      $entity = $node->get('field_publisher')->entity;
-      $publisher = $entity ? $entity->label() : $publisher_id;
-    }
-
-    $provenance = $node->hasField('field_provenance_hash') && !$node->get('field_provenance_hash')->isEmpty()
-      ? (string) $node->get('field_provenance_hash')->value
-      : '';
-
-    $source = '';
-    if ($node->hasField('field_source_url') && !$node->get('field_source_url')->isEmpty()) {
-      $source = (string) ($node->get('field_source_url')->uri ?? $node->get('field_source_url')->value ?? '');
+    if ($record['source_url'] !== '') {
+      $source = UrlHelper::isValid($record['source_url'], TRUE)
+        ? Link::fromTextAndUrl($record['source_url'], Url::fromUri($record['source_url']))->toString()
+        : $record['source_url'];
     }
 
     return [
-      (string) $node->id(),
-      $node->label(),
-      $level,
-      $publisher_id,
-      $publisher,
-      $provenance,
-      $source,
-      gmdate(DATE_ATOM, $node->getCreatedTime()),
-      gmdate(DATE_ATOM, $node->getChangedTime()),
+      $title,
+      $record['trust_label'] !== '' ? $record['trust_label'] : $this->t('—'),
+      $record['publisher'] !== '' ? $record['publisher'] : $this->t('—'),
+      $record['provenance_hash'] !== '' ? $record['provenance_hash'] : '—',
+      ['data' => ['#markup' => $source]],
+      $record['changed'],
     ];
-  }
-
-  /**
-   * Prevents spreadsheet formula execution in exported text cells.
-   */
-  protected static function sanitizeCsvCell(mixed $value): string {
-    $value = (string) $value;
-    if (
-      preg_match('/^[\t\r\n]/', $value)
-      || preg_match('/^[=+\-@]/', ltrim($value))
-    ) {
-      return "'" . $value;
-    }
-    return $value;
   }
 
 }

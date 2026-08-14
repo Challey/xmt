@@ -11,3 +11,4 @@ DrupalX claim ──► xmt_publisher(approved)
 - 生产服务器 B：`git pull` + composer + drush（见 `docs/deploy-server-b.md`）
 - 多站点表前缀：字符串前缀（D11.4）；用户表各站独立
 - 信任模块仅需在 **xmt.pub** 完整启用；垂直站可只读展示信任字段
+- 路线图与进度：[roadmap.md](roadmap.md)

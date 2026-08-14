@@ -23,14 +23,35 @@
 vendor/bin/drush --uri=xmt.pub cr
 ```
 
-## 可信内容溯源审计
+## Trust 栈引导
 
-- 管理页：`/admin/xmt/provenance`，仅显示当前管理员有权访问的 L1/L2
-  文章，每页 50 条。
-- 「Export CSV」导出全部可访问的可信文章；文件为 UTF-8，包含节点 ID、
-  信任级别、发布主体 ID/名称、溯源哈希、来源 URL 以及 UTC 创建/更新时间。
-- 页面与导出均要求 `administer xmt trust` 权限；CSV 响应禁止缓存，并转义
-  可能被电子表格识别为公式的单元格。
+幂等脚本（亦可由 `bootstrap-all.sh` 调用）：
+
+```bash
+bash setup/scripts/80-trust-stack.sh
+# 或
+bash scripts/80-trust-stack.sh
+```
+
+作用：hub 启用 `xmt_publisher` / `xmt_trust` / `xmt_trust_ui` / `xmt_dx_bridge`；垂直站启用前三者；`xmt_trust_ensure_fields()` / `xmt_trust_ensure_roles()`；在 `gavias_sancy` 放置首页可信分区 block。
+
+## 溯源审计导出
+
+- 列表：`/admin/xmt/provenance`（需 `administer xmt trust`）；可按 Trust level / Publisher 筛选并分页
+- CSV：`/admin/xmt/provenance/export.csv` 或页面 **Export CSV**（带当前筛选）
+- JSON：`/admin/xmt/provenance/export.json` 或页面 **Export JSON**
+- Web 导出按节点访问权限过滤、禁止响应缓存；CSV 会转义电子表格公式前缀
+- CLI：
+  ```bash
+  vendor/bin/drush --uri=xmt.pub xmt:provenance-export --limit=500 --output=/tmp/audit.csv
+  vendor/bin/drush --uri=xmt.pub xmt:provenance-export --format=json --trust-level=l2_enterprise --output=/tmp/audit.json
+  vendor/bin/drush --uri=xmt.pub xmt:provenance-export --publisher=1 --output=/tmp/pub1.csv
+  ```
+
+## 发布主体页
+
+- 公开：`/publisher/{id}`（approved）列出该主体最近最多 20 篇 L1/L2 文章
+- 文章页 L1/L2 显示「Published by」归因链接
 
 ## 首页可信分区（xmt.pub）
 
@@ -55,6 +76,12 @@ vendor/bin/drush --uri=xmt.pub cr
   vendor/bin/drush --uri=xmt.pub cr
   ```
 
+## 机器可读可信 feed
+
+- JSON：`/api/xmt/v1/trusted`（默认 L1+L2）、`/api/xmt/v1/trusted/l1_official`、`…/l2_enterprise`、`…/l0_aggregate`
+- RSS：`/trusted.xml`、`/trusted/l1_official.xml`（亦支持 `official` / `enterprise` / `aggregate` 别名）
+- 权限：`access content`；最多 30 条，含 title/url/trust/publisher/provenance/summary
+- HTML 可信页导航含 JSON / RSS 链接
 
 ## Article 字段（含 body）
 
