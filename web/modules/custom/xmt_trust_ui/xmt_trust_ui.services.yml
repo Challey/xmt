@@ -1,4 +1,9 @@
 services:
+  xmt_trust_ui.provenance_audit:
+    class: Drupal\xmt_trust_ui\Service\ProvenanceAuditService
+    arguments:
+      - '@entity_type.manager'
+      - '@date.formatter'
   xmt_trust_ui.provenance_exporter:
     class: Drupal\xmt_trust_ui\Service\ProvenanceAuditExporter
     arguments:

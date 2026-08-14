@@ -38,14 +38,11 @@ bash scripts/80-trust-stack.sh
 ## 溯源审计导出
 
 - 列表：`/admin/xmt/provenance`（需 `administer xmt trust`）；可按 Trust level / Publisher 筛选并分页
-- CSV：`/admin/xmt/provenance/export.csv` 或页面 **Export CSV**（带当前筛选）
-- JSON：`/admin/xmt/provenance/export.json` 或页面 **Export JSON**
-- Web 导出按节点访问权限过滤、禁止响应缓存；CSV 会转义电子表格公式前缀
+- CSV：`/admin/xmt/provenance/export` 或页面 **Export CSV**（带当前筛选；可选 `?limit=`、`?trust_level=`）
 - CLI：
   ```bash
   vendor/bin/drush --uri=xmt.pub xmt:provenance-export --limit=500 --output=/tmp/audit.csv
-  vendor/bin/drush --uri=xmt.pub xmt:provenance-export --format=json --trust-level=l2_enterprise --output=/tmp/audit.json
-  vendor/bin/drush --uri=xmt.pub xmt:provenance-export --publisher=1 --output=/tmp/pub1.csv
+  vendor/bin/drush --uri=xmt.pub xmt:provenance-export --trust-level=l2_enterprise --output=/tmp/audit.csv
   ```
 
 ## 发布主体页
@@ -104,16 +101,6 @@ vendor/bin/drush --uri=xmt.pub php:eval 'xmt_trust_ensure_fields(); echo "ok\n";
   ```
 - 垂直站文章默认 **L0 汇聚**（`xmt_trust_entity_presave`）；编辑表单上信任字段对非 hub 为**只读**（仅 `xmt.pub` 可改 L1/L2）。
 - Agent / `xmt_syndicate` 同步到 hub 时会带上 `trust_level` 与 `publisher_id`（垂直站一般为 L0）。
-
-## 溯源审计导出
-
-- 后台：**Content → Provenance audit**（`/admin/xmt/provenance`），点击 **Export CSV**。
-- 直接下载：`/admin/xmt/provenance/export`（需 `administer xmt trust`）；可选查询参数 `limit`（1–5000，默认 500）、`trust_level`（`l0_aggregate` / `l1_official` / `l2_enterprise`）。
-- Drush：
-  ```bash
-  vendor/bin/drush --uri=xmt.pub xmt:provenance-export --limit=500 --output=/tmp/xmt-provenance.csv
-  vendor/bin/drush --uri=xmt.pub xmt:provenance-export --trust-level=l2_enterprise
-  ```
 
 ## 可信流 RSS / JSON
 

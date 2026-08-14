@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- **Trust field permissions were silently inactive on every site**: `xmt_trust_form_alter()` imported `Drupal\node\NodeForm` (no such class; real class is `Drupal\node\Form\NodeForm`), so its `instanceof` check always failed and the function returned before applying vertical-site read-only or per-role trust-level option filtering.
+- Register missing `xmt_trust_ui.provenance_audit` service so `ProvenanceAuditFilterForm` can resolve `ProvenanceAuditService`.
+
+### Docs
+- Deduplicate and align `docs/ops.md` provenance export section with the live `/admin/xmt/provenance/export` route.
+
 ## v0.9.0-trust-seo — 2026-08-14
 
 ### Added
