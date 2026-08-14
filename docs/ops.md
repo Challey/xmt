@@ -23,6 +23,22 @@
 vendor/bin/drush --uri=xmt.pub cr
 ```
 
+## 溯源审计导出
+
+- 列表：`/admin/xmt/provenance`（需 `administer xmt trust`）
+- CSV：`/admin/xmt/provenance/export.csv` 或页面 **Export CSV**
+- JSON：`/admin/xmt/provenance/export.json` 或页面 **Export JSON**
+- CLI：
+  ```bash
+  vendor/bin/drush --uri=xmt.pub xmt:provenance-export --limit=500 --output=/tmp/audit.csv
+  vendor/bin/drush --uri=xmt.pub xmt:provenance-export --format=json --output=/tmp/audit.json
+  ```
+
+## 发布主体页
+
+- 公开：`/publisher/{id}`（approved）列出该主体最近最多 20 篇 L1/L2 文章
+- 文章页 L1/L2 显示「Published by」归因链接
+
 ## 首页可信分区（xmt.pub）
 
 - Block `xmt_trust_home_columns`（标签「信媒体 · 可信分区」）置于 `gavias_sancy` 主题 `content` 区，weight `-50`。

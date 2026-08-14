@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.4.0-provenance-export — 2026-08-14
+
+### Added
+- Provenance audit CSV/JSON export at `/admin/xmt/provenance/export.csv` and `export.json` (buttons on audit page)
+- Drush `xmt:provenance-export` — CSV or JSON, up to 500 articles (trust level, publisher, provenance hash, source URL)
+- `ProvenanceAuditService` — shared query/export logic for web UI and CLI
+- Publisher public page (`/publisher/{id}`) lists recent L1/L2 articles for that subject
+- Article pages show “Published by” attribution linking to the publisher
+
+### Fixed
+- Define missing `xmt_trust_vertical_readonly_after_build()` so vertical-site article forms do not fatally error
+
+### Ops
+- Export: `vendor/bin/drush --uri=xmt.pub xmt:provenance-export --format=csv --output=/tmp/audit.csv`
+- JSON: `vendor/bin/drush --uri=xmt.pub xmt:provenance-export --format=json --output=/tmp/audit.json`
+
 ## v0.3.0-homepage — 2026-08-13
 
 ### Added
