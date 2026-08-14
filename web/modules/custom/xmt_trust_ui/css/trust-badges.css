@@ -177,6 +177,64 @@
   margin-bottom: 1rem;
 }
 
+.xmt-trust-byline {
+  color: #495057;
+  font-size: 0.9375rem;
+  margin: 0.25rem 0;
+}
+
+.xmt-publisher-directory {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.xmt-publisher-directory__filter {
+  margin-bottom: 1rem;
+}
+
+.xmt-publisher-directory__filter-link {
+  margin-right: 1rem;
+}
+
+.xmt-publisher-directory__filter-link.is-active {
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.xmt-publisher-directory__apply {
+  display: inline-block;
+  margin-top: 1rem;
+}
+
+.xmt-publisher-certified,
+.xmt-publisher-article-count {
+  color: #6c757d;
+  font-size: 0.875rem;
+  margin: 0.25rem 0;
+}
+
+.xmt-publisher-articles {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+
+.xmt-publisher-articles li {
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.xmt-publisher-articles li:last-child {
+  border-bottom: none;
+}
+
+.xmt-publisher-article {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
 @media (max-width: 768px) {
   .xmt-trust-home {
     grid-template-columns: 1fr;

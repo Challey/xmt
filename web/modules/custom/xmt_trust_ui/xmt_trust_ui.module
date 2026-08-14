@@ -5,8 +5,11 @@
  * XMT Trust UI module hooks.
  */
 
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
+use Drupal\xmt_trust\TrustLevel;
 
 /**
  * Implements hook_page_attachments().
@@ -48,4 +51,147 @@ function xmt_trust_ui_preprocess_node(array &$variables): void {
     '#attributes' => ['class' => ['xmt-trust-verify-link']],
   ];
   $variables['content']['xmt_trust_verify_link'] = $variables['xmt_trust_verify_link'];
+
+  $byline = xmt_trust_ui_publisher_byline($node);
+  if ($byline !== NULL) {
+    $variables['xmt_trust_byline'] = $byline;
+    $variables['content']['xmt_trust_byline'] = $byline;
+  }
+}
+
+/**
+ * Builds a publisher byline linking an article to its accountable subject.
+ *
+ * @param \Drupal\node\NodeInterface $node
+ *   Article node.
+ *
+ * @return array|null
+ *   Render array, or NULL when the article has no viewable publisher.
+ */
+function xmt_trust_ui_publisher_byline(NodeInterface $node): ?array {
+  if (!$node->hasField('field_publisher') || $node->get('field_publisher')->isEmpty()) {
+    return NULL;
+  }
+  $publisher = $node->get('field_publisher')->entity;
+  if (!$publisher || !$publisher->access('view')) {
+    return NULL;
+  }
+
+  return [
+    '#type' => 'container',
+    '#attributes' => ['class' => ['xmt-trust-byline']],
+    'label' => [
+      '#type' => 'html_tag',
+      '#tag' => 'span',
+      '#value' => t('发布主体：'),
+    ],
+    'link' => [
+      '#type' => 'link',
+      '#title' => $publisher->label(),
+      '#url' => $publisher->toUrl(),
+    ],
+    '#cache' => ['tags' => $publisher->getCacheTags()],
+  ];
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_view() for xmt_publisher entities.
+ */
+function xmt_trust_ui_xmt_publisher_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode): void {
+  if ($view_mode !== 'full' || $entity->get('status')->value !== 'approved') {
+    return;
+  }
+
+  $build['#cache']['tags'][] = 'node_list';
+  $build['xmt_trust_certified'] = [
+    '#type' => 'html_tag',
+    '#tag' => 'p',
+    '#value' => t('认证时间：@date', [
+      '@date' => \Drupal::service('date.formatter')
+        ->format((int) $entity->get('created')->value, 'custom', 'Y-m-d'),
+    ]),
+    '#attributes' => ['class' => ['xmt-publisher-certified']],
+    '#weight' => 10,
+  ];
+
+  if (!xmt_trust_ui_article_trust_fields_exist()) {
+    return;
+  }
+
+  $count = (int) xmt_trust_ui_publisher_article_query((int) $entity->id())
+    ->count()
+    ->execute();
+  $build['xmt_trust_article_count'] = [
+    '#type' => 'html_tag',
+    '#tag' => 'p',
+    '#value' => t('可信发文：@count 篇', ['@count' => $count]),
+    '#attributes' => ['class' => ['xmt-publisher-article-count']],
+    '#weight' => 11,
+  ];
+
+  $nids = xmt_trust_ui_publisher_article_query((int) $entity->id())
+    ->sort('created', 'DESC')
+    ->range(0, 10)
+    ->execute();
+  if (!$nids) {
+    return;
+  }
+
+  $items = [];
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  foreach ($storage->loadMultiple($nids) as $node) {
+    $level = $node->get('field_trust_level')->value ?? 'l0_aggregate';
+    $items[] = [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['xmt-publisher-article']],
+      'link' => [
+        '#type' => 'link',
+        '#title' => $node->label(),
+        '#url' => $node->toUrl(),
+      ],
+      'badge' => [
+        '#type' => 'html_tag',
+        '#tag' => 'span',
+        '#value' => xmt_trust_badge_label($level),
+        '#attributes' => [
+          'class' => ['xmt-trust-badge', xmt_trust_badge_class($level)],
+        ],
+      ],
+    ];
+  }
+
+  $build['xmt_trust_articles'] = [
+    '#theme' => 'item_list',
+    '#title' => t('最近可信内容'),
+    '#items' => $items,
+    '#attributes' => ['class' => ['xmt-publisher-articles']],
+    '#weight' => 12,
+  ];
+}
+
+/**
+ * Builds the base query for trusted articles of one publisher.
+ *
+ * @param int $publisher_id
+ *   Publisher entity ID.
+ *
+ * @return \Drupal\Core\Entity\Query\QueryInterface
+ *   Query for published, publisher-attributed articles.
+ */
+function xmt_trust_ui_publisher_article_query(int $publisher_id) {
+  return \Drupal::entityTypeManager()->getStorage('node')->getQuery()
+    ->accessCheck(TRUE)
+    ->condition('type', 'article')
+    ->condition('status', 1)
+    ->condition('field_publisher', $publisher_id)
+    ->condition('field_trust_level', TrustLevel::ATTRIBUTED, 'IN');
+}
+
+/**
+ * Whether articles on this site carry the trust attribution fields.
+ */
+function xmt_trust_ui_article_trust_fields_exist(): bool {
+  $definitions = \Drupal::service('entity_field.manager')
+    ->getFieldDefinitions('node', 'article');
+  return isset($definitions['field_publisher'], $definitions['field_trust_level']);
 }
