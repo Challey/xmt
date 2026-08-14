@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.4.0-provenance-export — 2026-08-14
+
+### Added
+- Paginated L1/L2 provenance audit at `/admin/xmt/provenance`
+- UTF-8 CSV export with node-access filtering and formula-injection protection
+
+### Fixed
+- Provenance audit date formatting now uses the injected Drupal date formatter
+
 ## v0.3.0-homepage — 2026-08-13
 
 ### Added

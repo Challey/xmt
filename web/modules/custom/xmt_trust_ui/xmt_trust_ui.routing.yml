@@ -38,3 +38,10 @@ xmt_trust_ui.provenance_audit:
     _title: 'Provenance audit'
   requirements:
     _permission: 'administer xmt trust'
+
+xmt_trust_ui.provenance_export:
+  path: '/admin/xmt/provenance/export'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ProvenanceAuditController::export'
+  requirements:
+    _permission: 'administer xmt trust'
