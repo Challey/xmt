@@ -120,6 +120,27 @@ function xmt_trust_form_alter(array &$form, FormStateInterface $form_state, $for
 }
 
 /**
+ * Keeps trust fields read-only after a vertical-site node form is built.
+ *
+ * Disabled widgets are not submitted, so the existing entity values remain
+ * unchanged when an editor saves unrelated article fields.
+ */
+function xmt_trust_vertical_readonly_after_build(array $form, FormStateInterface $form_state): array {
+  $form_object = $form_state->getFormObject();
+  if (!$form_object instanceof NodeForm || $form_object->getEntity()->bundle() !== 'article') {
+    return $form;
+  }
+
+  foreach (['field_trust_level', 'field_publisher'] as $field_name) {
+    if (isset($form[$field_name])) {
+      $form[$field_name]['#disabled'] = TRUE;
+    }
+  }
+
+  return $form;
+}
+
+/**
  * Returns trust level labels.
  */
 function xmt_trust_level_allowed_values(): array {

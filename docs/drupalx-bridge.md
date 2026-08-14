@@ -14,10 +14,11 @@
      --website=https://hm.example.com
    ```
    输出第一行为 JSON body，下一行 `X-XMT-Signature: <hex>`。
-3. Claim 字段：`publisher_name`, `credit_code`, `website`, `dx_developer_id`, `exp`, `nonce`。
+3. Claim 字段：`publisher_name`, `credit_code`, `website`, `dx_developer_id`, `exp`, **`nonce`（必填，防重放）**。
 4. 签名：`hash_hmac('sha256', body, secret)`，请求头 `X-XMT-Signature`。
    **注意：** HMAC 的 `body` 必须是签名的**精确字节**（与 Drush 打印的**单行 JSON 字符串**完全一致，无额外空格或换行）。
-5. **XMT** 接收：`POST /api/xmt/v1/dx-claim`（Host: `xmt.wsl` 或生产域名）→ 创建/更新 `xmt_publisher` 为 `approved`。
+5. **XMT** 接收：`POST /api/xmt/v1/dx-claim`（Host: `xmt.wsl` 或生产域名）→ 验签后校验 `nonce` 未使用，再创建/更新 `xmt_publisher` 为 `approved`。
+6. 重复提交同一 `nonce`（在 TTL 内，默认对齐 `exp`，最长 24h）→ `400` `Nonce already used.`。
 
 ### 本地测试（XMT）
 
@@ -44,7 +45,7 @@ vendor/bin/drush --uri=xmt.pub xmt:dx-claim-test --developer=dx-test-001 --name=
 | `domain` | 否 | 领域标签 |
 | `format` | 否 | 正文 text format，默认 `full_html` |
 | `exp` | 否 | Unix 过期时间，过期拒绝 |
-| `nonce` | 否 | 防重放（当前仅记录，不参与幂等） |
+| `nonce` | **是** | 防重放；8–128 字符；同一 nonce 在有效期内不可复用（存于 key-value expirable） |
 
 ### 行为
 
@@ -105,3 +106,5 @@ $settings['xmt_host'] = 'xmt.pub';
 ```
 
 本地启用前须在 XMT 执行 claim（`xmt:dx-claim-test` 或 `POST /api/xmt/v1/dx-claim`）。发布 `dx_media` 后 XMT 应出现 L2 文章（`field_provenance_hash` = `dx:dx-media-{nid}`）。
+
+每次 claim / trusted-content 请求必须带**唯一** `nonce`；DrupalX 推送侧应在每次 POST 生成新 nonce（见 `DxNonceGuard`）。
