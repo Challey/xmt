@@ -26,13 +26,17 @@ class ProvenanceAuditCommands extends DrushCommands {
    * @option limit Maximum number of articles to export (default 500).
    * @option output Output file path (default stdout).
    * @option format Export format: csv or json (default csv).
+   * @option trust-level Filter by trust level code (l0_aggregate, l1_official, l2_enterprise).
+   * @option publisher Filter by publisher entity ID.
    * @usage drush xmt:provenance-export --limit=100 --output=/tmp/audit.csv
-   * @usage drush xmt:provenance-export --format=json --output=/tmp/audit.json
+   * @usage drush xmt:provenance-export --format=json --trust-level=l2_enterprise
    */
   public function export(array $options = [
     'limit' => 500,
     'output' => '',
     'format' => 'csv',
+    'trust-level' => '',
+    'publisher' => '',
   ]): void {
     $limit = max(1, (int) $options['limit']);
     $format = strtolower((string) $options['format']);
@@ -40,7 +44,11 @@ class ProvenanceAuditCommands extends DrushCommands {
       throw new \InvalidArgumentException('Format must be csv or json.');
     }
 
-    $nodes = $this->auditService->loadArticles($limit);
+    $filters = [
+      'trust_level' => (string) $options['trust-level'],
+      'publisher_id' => (string) $options['publisher'],
+    ];
+    $nodes = $this->auditService->loadArticles($limit, 0, $filters);
     $output = (string) $options['output'];
 
     if ($format === 'json') {

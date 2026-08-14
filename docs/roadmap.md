@@ -14,7 +14,7 @@
 
 ## 下一步（优先序）
 
-1. **审计列表筛选/分页** — 按 trust level / publisher 过滤，代替固定「最近 N 条」
+1. ~~审计列表筛选/分页~~ — **已完成（本分支）**
 2. **机器可读可信 feed** — RSS 或 JSON API，供 AI / 聚合消费（愿景对齐）
 3. **引导脚本** — bootstrap 自动启用 trust 栈并放置首页 block（减少手工 Drush）
 4. **PHPUnit** — `xmt_*` Kernel/Functional（导出、nonce、claim/content）

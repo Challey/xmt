@@ -4,7 +4,8 @@
 
 ### Added
 - Provenance audit CSV/JSON export at `/admin/xmt/provenance/export.csv` and `export.json` (buttons on audit page)
-- Drush `xmt:provenance-export` — CSV or JSON, up to 500 articles (trust level, publisher, provenance hash, source URL)
+- Audit list filters (trust level / publisher) with pager; exports inherit the active filters
+- Drush `xmt:provenance-export` — CSV or JSON, up to 500 articles (trust level, publisher, provenance hash, source URL); `--trust-level` / `--publisher` filters
 - `ProvenanceAuditService` — shared query/export logic for web UI and CLI
 - Publisher public page (`/publisher/{id}`) lists recent L1/L2 articles for that subject
 - Article pages show “Published by” attribution linking to the publisher

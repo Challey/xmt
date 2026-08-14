@@ -25,13 +25,14 @@ vendor/bin/drush --uri=xmt.pub cr
 
 ## 溯源审计导出
 
-- 列表：`/admin/xmt/provenance`（需 `administer xmt trust`）
-- CSV：`/admin/xmt/provenance/export.csv` 或页面 **Export CSV**
+- 列表：`/admin/xmt/provenance`（需 `administer xmt trust`）；可按 Trust level / Publisher 筛选并分页
+- CSV：`/admin/xmt/provenance/export.csv` 或页面 **Export CSV**（带当前筛选）
 - JSON：`/admin/xmt/provenance/export.json` 或页面 **Export JSON**
 - CLI：
   ```bash
   vendor/bin/drush --uri=xmt.pub xmt:provenance-export --limit=500 --output=/tmp/audit.csv
-  vendor/bin/drush --uri=xmt.pub xmt:provenance-export --format=json --output=/tmp/audit.json
+  vendor/bin/drush --uri=xmt.pub xmt:provenance-export --format=json --trust-level=l2_enterprise --output=/tmp/audit.json
+  vendor/bin/drush --uri=xmt.pub xmt:provenance-export --publisher=1 --output=/tmp/pub1.csv
   ```
 
 ## 发布主体页

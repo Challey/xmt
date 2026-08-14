@@ -19,9 +19,10 @@
 
 每条可信文章可写 `field_provenance_hash`（来源 URL + 主体 ID + 时间的哈希），便于审计导出。
 
-- 管理后台：`/admin/xmt/provenance` — 最近 50 条文章列表
-- CSV：`/admin/xmt/provenance/export.csv` 或 Drush `xmt:provenance-export`
+- 管理后台：`/admin/xmt/provenance` — 可按信任等级 / 发布主体筛选，分页（每页 50）
+- CSV：`/admin/xmt/provenance/export.csv`（继承当前筛选 query）或 Drush `xmt:provenance-export`
 - JSON：`/admin/xmt/provenance/export.json` 或 `--format=json`
+- Drush 筛选：`--trust-level=l2_enterprise`、`--publisher=<id>`
 
 ## 发布主体页
 

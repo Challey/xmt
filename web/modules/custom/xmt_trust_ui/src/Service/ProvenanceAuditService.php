@@ -4,6 +4,7 @@ namespace Drupal\xmt_trust_ui\Service;
 
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\node\NodeInterface;
 
 /**
@@ -19,23 +20,79 @@ class ProvenanceAuditService {
   /**
    * Loads article nodes for audit, newest first.
    *
+   * @param array{trust_level?: string, publisher_id?: int|string} $filters
+   *   Optional filters.
+   *
    * @return \Drupal\node\NodeInterface[]
    *   Article nodes keyed by nid.
    */
-  public function loadArticles(int $limit = 50): array {
-    $storage = $this->entityTypeManager->getStorage('node');
-    $nids = $storage->getQuery()
-      ->accessCheck(TRUE)
-      ->condition('type', 'article')
-      ->sort('changed', 'DESC')
-      ->range(0, $limit)
+  public function loadArticles(int $limit = 50, int $offset = 0, array $filters = []): array {
+    $nids = $this->buildQuery($filters)
+      ->range($offset, $limit)
       ->execute();
 
     if ($nids === []) {
       return [];
     }
 
-    return $storage->loadMultiple($nids);
+    return $this->entityTypeManager->getStorage('node')->loadMultiple($nids);
+  }
+
+  /**
+   * Counts articles matching audit filters.
+   *
+   * @param array{trust_level?: string, publisher_id?: int|string} $filters
+   *   Optional filters.
+   */
+  public function countArticles(array $filters = []): int {
+    return (int) $this->buildQuery($filters)->count()->execute();
+  }
+
+  /**
+   * Builds a filtered article query sorted by changed DESC.
+   *
+   * @param array{trust_level?: string, publisher_id?: int|string} $filters
+   *   Optional filters.
+   */
+  protected function buildQuery(array $filters = []): QueryInterface {
+    $query = $this->entityTypeManager->getStorage('node')->getQuery()
+      ->accessCheck(TRUE)
+      ->condition('type', 'article')
+      ->sort('changed', 'DESC');
+
+    $level = trim((string) ($filters['trust_level'] ?? ''));
+    if ($level !== '' && array_key_exists($level, xmt_trust_level_allowed_values())) {
+      $query->condition('field_trust_level', $level);
+    }
+
+    $publisher_id = $filters['publisher_id'] ?? '';
+    if ($publisher_id !== '' && $publisher_id !== NULL && (int) $publisher_id > 0) {
+      $query->condition('field_publisher', (int) $publisher_id);
+    }
+
+    return $query;
+  }
+
+  /**
+   * Approved publishers for filter dropdowns, keyed by id.
+   *
+   * @return array<int|string, string>
+   */
+  public function publisherOptions(): array {
+    $storage = $this->entityTypeManager->getStorage('xmt_publisher');
+    $ids = $storage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('status', 'approved')
+      ->sort('name', 'ASC')
+      ->execute();
+    if ($ids === []) {
+      return [];
+    }
+    $options = [];
+    foreach ($storage->loadMultiple($ids) as $publisher) {
+      $options[$publisher->id()] = $publisher->label();
+    }
+    return $options;
   }
 
   /**
