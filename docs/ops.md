@@ -59,6 +59,18 @@ vendor/bin/drush --uri=xmt.pub php:eval 'xmt_trust_ensure_fields(); echo "ok\n";
 
 多站批量见 `setup/scripts/60-content-fields.sh`。
 
+## 溯源审计导出
+
+- Web（需 `administer xmt trust`）：`/admin/xmt/provenance` 页面按钮，或直接访问 `/admin/xmt/provenance/export.csv`、`/admin/xmt/provenance/export.json`。
+- CLI：
+
+```bash
+vendor/bin/drush --uri=xmt.pub xmt:provenance-export --file=/tmp/xmt-provenance.csv
+vendor/bin/drush --uri=xmt.pub xmt:provenance-export --limit=500 > audit.csv
+```
+
+`--limit=0`（默认）导出全部可信文章；未指定 `--file` 时输出到 stdout。
+
 ## 垂直站（zhubao 等）
 
 - 启用 `xmt_trust`、`xmt_publisher`（可选 `xmt_trust_ui` 展示徽章）；`vendor/bin/drush --uri=zhubao.wsl en xmt_trust xmt_publisher xmt_trust_ui -y` 后执行 `php:eval` 调用 `xmt_trust_ensure_fields()` / `xmt_trust_ensure_roles()`。

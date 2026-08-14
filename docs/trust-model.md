@@ -17,7 +17,12 @@
 
 ## 溯源
 
-每条可信文章可写 `field_provenance_hash`（来源 URL + 主体 ID + 时间的哈希），便于审计导出（后续）。
+每条可信文章可写 `field_provenance_hash`（来源 URL + 主体 ID + 时间的哈希）。
+
+拥有 `administer xmt trust` 权限的管理员可在 `/admin/xmt/provenance` 查看最近 50 篇文章的信任等级、发布主体、溯源哈希、来源 URL 和更新时间，并导出：
+
+- Web：页面按钮「Export CSV」`/admin/xmt/provenance/export.csv`、「Export JSON」`/admin/xmt/provenance/export.json`（导出全部可访问文章，非仅前 50 条）
+- CLI：`vendor/bin/drush --uri=xmt.pub xmt:provenance-export --file=/tmp/audit.csv`（详见 `docs/ops.md`）
 
 ## 与 DrupalX
 

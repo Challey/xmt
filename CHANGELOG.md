@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### Added
+- Provenance audit CSV/JSON export at `/admin/xmt/provenance/export.csv` and `.json`, plus `drush xmt:provenance-export` for CLI/cron use
+- `ProvenanceAuditService` — shared query, row, and CSV building logic for the audit listing, web export, and Drush command
+
+### Fixed
+- Fatal error on vertical-site article forms: defined the missing `xmt_trust_vertical_readonly_after_build` `#after_build` callback in `xmt_trust`
+- Fatal error on `/admin/xmt/provenance`: unqualified `Drupal::service()` call in a namespaced controller resolved to the wrong class; now uses injected services
+
 ## v0.3.0-homepage — 2026-08-13
 
 ### Added
