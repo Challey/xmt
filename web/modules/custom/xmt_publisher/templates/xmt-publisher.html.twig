@@ -19,8 +19,14 @@
     </div>
   {% endif %}
 
+  {% if content.xmt_feed_links %}
+    <div class="xmt-publisher-page__feeds">
+      {{ content.xmt_feed_links }}
+    </div>
+  {% endif %}
+
   <div class="xmt-publisher-page__fields">
-    {{ content|without('xmt_trust_meta', 'xmt_articles') }}
+    {{ content|without('xmt_trust_meta', 'xmt_feed_links', 'xmt_articles') }}
   </div>
 
   {% if content.xmt_articles %}

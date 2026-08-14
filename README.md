@@ -67,6 +67,8 @@ vendor/bin/drush --uri=xmt.pub cr
 
 已认证发布主体公开页：`/publisher/{id}`（展示信任徽章、官网链接、已发布文章列表）。
 
+认证主体目录：`/publishers`（官方 L1 + 企业 L2）；单主体订阅：`/publisher/{id}/feed.rss` / `feed.json`。
+
 ## 许可证
 
 见 [LICENSE.txt](LICENSE.txt)。运营密钥与生产 `settings.php` 不进入本仓库。

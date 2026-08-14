@@ -154,4 +154,132 @@ class PublisherPageBuilder {
     ];
   }
 
+  /**
+   * Loads approved publishers, optionally filtered by type.
+   *
+   * @return \Drupal\xmt_publisher\Entity\Publisher[]
+   */
+  public function loadApproved(?string $type = NULL): array {
+    $storage = $this->entityTypeManager->getStorage('xmt_publisher');
+    $query = $storage->getQuery()
+      ->accessCheck(TRUE)
+      ->condition('status', 'approved')
+      ->sort('name', 'ASC');
+    if ($type !== NULL && $type !== '') {
+      $query->condition('type', $type);
+    }
+    $ids = $query->execute();
+    return $ids ? $storage->loadMultiple($ids) : [];
+  }
+
+  /**
+   * Builds the public publishers directory page.
+   */
+  public function buildDirectory(): array {
+    $official = $this->loadApproved('official');
+    $enterprise = $this->loadApproved('enterprise');
+
+    return [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['xmt-publishers-directory']],
+      'intro' => [
+        '#markup' => '<p>' . $this->t('Certified publishers on the XMT trust network.') . '</p>',
+      ],
+      'official' => $this->buildDirectorySection(
+        $this->t('Official publishers (L1)'),
+        $official,
+        'l1_official',
+      ),
+      'enterprise' => $this->buildDirectorySection(
+        $this->t('Enterprise publishers (L2)'),
+        $enterprise,
+        'l2_enterprise',
+      ),
+      'apply' => [
+        '#type' => 'link',
+        '#title' => $this->t('Apply for enterprise certification'),
+        '#url' => Url::fromRoute('xmt_publisher.apply'),
+        '#attributes' => ['class' => ['xmt-publishers-directory__apply']],
+      ],
+      '#attached' => ['library' => ['xmt_trust_ui/publisher_page']],
+    ];
+  }
+
+  /**
+   * RSS/JSON subscription links for a publisher page.
+   */
+  public function buildFeedLinks(Publisher $publisher): array {
+    return [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['xmt-publisher-feed-links']],
+      'rss' => Link::fromTextAndUrl($this->t('RSS'), Url::fromRoute('xmt_trust_ui.publisher_feed_rss', [
+        'xmt_publisher' => $publisher->id(),
+      ]))->toRenderable(),
+      'json' => Link::fromTextAndUrl($this->t('JSON'), Url::fromRoute('xmt_trust_ui.publisher_feed_json', [
+        'xmt_publisher' => $publisher->id(),
+      ]))->toRenderable(),
+    ];
+  }
+
+  /**
+   * Builds one directory section for a publisher type.
+   *
+   * @param \Drupal\xmt_publisher\Entity\Publisher[] $publishers
+   */
+  protected function buildDirectorySection(string $title, array $publishers, string $level): array {
+    if ($publishers === []) {
+      return [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['xmt-publishers-directory__section', 'xmt-publishers-directory__section--empty']],
+        'heading' => [
+          '#type' => 'html_tag',
+          '#tag' => 'h2',
+          '#value' => $title,
+        ],
+        'empty' => [
+          '#markup' => '<p>' . $this->t('No publishers yet.') . '</p>',
+        ],
+      ];
+    }
+
+    $items = [];
+    foreach ($publishers as $publisher) {
+      $row = [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['xmt-publishers-directory__item']],
+        'link' => Link::fromTextAndUrl($publisher->label(), $publisher->toUrl())->toRenderable(),
+        'badge' => [
+          '#type' => 'html_tag',
+          '#tag' => 'span',
+          '#value' => xmt_trust_badge_label($level),
+          '#attributes' => [
+            'class' => ['xmt-trust-badge', xmt_trust_badge_class($level)],
+          ],
+        ],
+      ];
+      if (!$publisher->get('website')->isEmpty()) {
+        $uri = $publisher->get('website')->uri ?? $publisher->get('website')->value ?? '';
+        if ($uri !== '') {
+          $row['website'] = Link::fromTextAndUrl($this->t('Website'), Url::fromUri($uri))->toRenderable();
+        }
+      }
+      $items[] = $row;
+    }
+
+    return [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['xmt-publishers-directory__section']],
+      'heading' => [
+        '#type' => 'html_tag',
+        '#tag' => 'h2',
+        '#value' => $title,
+      ],
+      'list' => [
+        '#theme' => 'item_list',
+        '#items' => $items,
+        '#attributes' => ['class' => ['xmt-publishers-directory__list']],
+      ],
+    ];
+  }
+
 }

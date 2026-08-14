@@ -80,6 +80,57 @@
   margin: 0;
 }
 
+.xmt-publisher-feed-links {
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.xmt-publisher-feed-links a {
+  margin-right: 0.75rem;
+}
+
+.xmt-publishers-directory {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.xmt-publishers-directory__section {
+  margin-bottom: 2rem;
+}
+
+.xmt-publishers-directory__section h2 {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.xmt-publishers-directory__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.xmt-publishers-directory__list > li {
+  margin: 0;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.xmt-publishers-directory__item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.xmt-publishers-directory__apply {
+  display: inline-block;
+  margin-top: 1rem;
+}
+
 @media (max-width: 640px) {
   .xmt-publisher-articles__date {
     margin-left: 0;

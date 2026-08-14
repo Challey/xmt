@@ -90,6 +90,36 @@ class TrustedFeedBuilder {
   }
 
   /**
+   * Loads feed items for one approved publisher.
+   *
+   * @return array<int, array<string, mixed>>
+   */
+  public function itemsForPublisher(int $publisher_id, int $limit = 30): array {
+    $limit = max(1, min($limit, 100));
+    $storage = $this->entityTypeManager->getStorage('node');
+    $nids = $storage->getQuery()
+      ->accessCheck(TRUE)
+      ->condition('type', 'article')
+      ->condition('status', 1)
+      ->condition('field_publisher', $publisher_id)
+      ->sort('created', 'DESC')
+      ->range(0, $limit)
+      ->execute();
+
+    if (!$nids) {
+      return [];
+    }
+
+    /** @var \Drupal\node\NodeInterface[] $nodes */
+    $nodes = $storage->loadMultiple($nids);
+    $items = [];
+    foreach ($nodes as $node) {
+      $items[] = $this->itemFromNode($node);
+    }
+    return $items;
+  }
+
+  /**
    * Builds one feed item from a node.
    *
    * @return array<string, mixed>
@@ -161,15 +191,21 @@ class TrustedFeedBuilder {
    */
   public function toRss(string $filter, array $items, string $feed_url, string $site_name, string $site_url): string {
     $meta = $this->filters()[$filter];
+    return $this->toRssChannel($site_name . ' — ' . $meta['title'], $meta['title'], $items, $feed_url, $site_url);
+  }
+
+  /**
+   * Serializes feed items as RSS 2.0 XML with explicit channel metadata.
+   */
+  public function toRssChannel(string $channel_title, string $description, array $items, string $feed_url, string $site_url): string {
     $updated = $items[0]['published'] ?? time();
-    $channel_title = $site_name . ' — ' . $meta['title'];
 
     $xml = '<?xml version="1.0" encoding="utf-8"?>' . "\n";
     $xml .= '<rss version="2.0" xmlns:xmt="https://xmt.pub/ns/trust-feed">' . "\n";
     $xml .= "  <channel>\n";
     $xml .= '    <title>' . $this->xml($channel_title) . "</title>\n";
     $xml .= '    <link>' . $this->xml($site_url) . "</link>\n";
-    $xml .= '    <description>' . $this->xml($meta['title']) . "</description>\n";
+    $xml .= '    <description>' . $this->xml($description) . "</description>\n";
     $xml .= '    <lastBuildDate>' . gmdate('r', $updated) . "</lastBuildDate>\n";
     $xml .= '    <atom:link href="' . $this->xml($feed_url) . '" rel="self" type="application/rss+xml" xmlns:atom="http://www.w3.org/2005/Atom" />' . "\n";
 
@@ -208,16 +244,32 @@ class TrustedFeedBuilder {
    */
   public function toJson(string $filter, array $items, string $feed_url, string $site_name): array {
     $meta = $this->filters()[$filter];
+    return $this->toJsonChannel(
+      $site_name . ' — ' . $meta['title'],
+      $feed_url,
+      $items,
+      ['filter' => $filter],
+    );
+  }
+
+  /**
+   * Serializes feed items as a JSON document with extra feed metadata.
+   *
+   * @param array<string, mixed> $extra
+   *   Additional keys merged into the feed object.
+   *
+   * @return array<string, mixed>
+   */
+  public function toJsonChannel(string $title, string $feed_url, array $items, array $extra = []): array {
     $updated = $items[0]['published_iso'] ?? gmdate('c');
     return [
       'feed' => [
-        'title' => $site_name . ' — ' . $meta['title'],
-        'filter' => $filter,
+        'title' => $title,
         'self' => $feed_url,
         'updated' => $updated,
         'count' => count($items),
         'items' => $items,
-      ],
+      ] + $extra,
     ];
   }
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.7.0-publishers-directory — 2026-08-14
+
+### Added
+- Public publishers directory at `/publishers` (official L1 + enterprise L2 sections)
+- Per-publisher RSS/JSON feeds: `/publisher/{id}/feed.rss` and `/publisher/{id}/feed.json`
+- `TrustedFeedBuilder::itemsForPublisher()` and channel serializers for publisher feeds
+- Publisher pages show RSS/JSON subscription links; trust feed nav links to `/publishers`
+
+### Docs
+- README, `docs/ops.md`, `docs/trust-model.md` — directory and per-publisher feeds
+
 ## v0.6.0-publisher-page — 2026-08-14
 
 ### Added

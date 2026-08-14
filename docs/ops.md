@@ -104,3 +104,13 @@ curl -sH 'Host: xmt.pub' 'http://127.0.0.1/trusted/enterprise/feed.rss?limit=5' 
 - URL：`/publisher/{id}`（仅 `approved` 主体对公众可见）
 - 展示信任徽章、认证状态、官网、企业注册号及该主体最近文章
 - 验收：`curl -sH 'Host: xmt.pub' http://127.0.0.1/publisher/1 | grep -oE 'xmt-publisher|xmt-trust-badge|Published articles' | head`
+
+## 认证主体目录
+
+- URL：`/publishers`（官方 L1 + 企业 L2 分区，链至 `/publisher/{id}`）
+- 单主体订阅：`/publisher/{id}/feed.rss`、`/publisher/{id}/feed.json`（`?limit=` 1–100）
+- 验收：
+  ```bash
+  curl -sH 'Host: xmt.pub' http://127.0.0.1/publishers | grep -oE 'xmt-publishers-directory|Official|Enterprise' | head
+  curl -sH 'Host: xmt.pub' 'http://127.0.0.1/publisher/1/feed.json?limit=3' | head -c 400
+  ```

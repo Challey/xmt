@@ -88,6 +88,40 @@ xmt_trust_ui.feed_aggregate_json:
   requirements:
     _permission: 'access content'
 
+xmt_trust_ui.publishers_directory:
+  path: '/publishers'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\PublisherDirectoryController::list'
+    _title: '认证发布主体'
+  requirements:
+    _permission: 'access content'
+
+xmt_trust_ui.publisher_feed_rss:
+  path: '/publisher/{xmt_publisher}/feed.rss'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\PublisherFeedFormatController::rss'
+    _title: 'Publisher feed'
+  requirements:
+    _entity_access: 'xmt_publisher.view'
+    xmt_publisher: \d+
+  options:
+    parameters:
+      xmt_publisher:
+        type: entity:xmt_publisher
+
+xmt_trust_ui.publisher_feed_json:
+  path: '/publisher/{xmt_publisher}/feed.json'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\PublisherFeedFormatController::json'
+    _title: 'Publisher feed'
+  requirements:
+    _entity_access: 'xmt_publisher.view'
+    xmt_publisher: \d+
+  options:
+    parameters:
+      xmt_publisher:
+        type: entity:xmt_publisher
+
 xmt_trust_ui.provenance_audit:
   path: '/admin/xmt/provenance'
   defaults:
