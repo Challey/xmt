@@ -1,9 +1,71 @@
 # Changelog
 
-## Unreleased
+## v0.9.0-trust-seo — 2026-08-14
 
 ### Added
-- Provenance audit CSV export at `/admin/xmt/provenance/export`, including trust, publisher, source, hash, and UTC timestamps
+- `hook_robots_alter` on xmt.pub hub — appends `Sitemap: /trusted/sitemap.xml` to `robots.txt`
+- Sitemap includes recent **L0 aggregate** articles by default (half of `limit`, max 50)
+- Query params: `include_l0=0` to exclude L0; `l0_limit=` to override L0 cap
+- Trust feed pages link to sitemap; verify script checks `robots.txt`
+
+### Docs
+- `RELEASE-NOTES-v0.9.0-trust-platform.md` — consolidated v0.4–v0.9 slice summary
+
+## v0.8.0-trust-verify-sitemap — 2026-08-14
+
+### Added
+- Trust platform XML sitemap at `/trusted/sitemap.xml` (hub pages, publishers, recent L1/L2 articles)
+- `TrustSitemapBuilder` service with optional `?limit=` (10–500 articles, default 100)
+- Homepage trust block footer links: all trusted, publishers, apply, sitemap
+- Ops script `setup/scripts/75-verify-trust.sh` — HTTP + Drush post-deploy checks
+
+### Docs
+- `docs/deploy-server-b.md`, `docs/ops.md` — verification script usage
+
+## v0.7.0-publishers-directory — 2026-08-14
+
+### Added
+- Public publishers directory at `/publishers` (official L1 + enterprise L2 sections)
+- Per-publisher RSS/JSON feeds: `/publisher/{id}/feed.rss` and `/publisher/{id}/feed.json`
+- `TrustedFeedBuilder::itemsForPublisher()` and channel serializers for publisher feeds
+- Publisher pages show RSS/JSON subscription links; trust feed nav links to `/publishers`
+
+### Docs
+- README, `docs/ops.md`, `docs/trust-model.md` — directory and per-publisher feeds
+
+## v0.6.0-publisher-page — 2026-08-14
+
+### Added
+- Public publisher page (`/publisher/{id}`) shows trust badge, certification status, website, and recent articles
+- `PublisherPageBuilder` service — meta block + article list for approved publishers
+- CSS `publisher-page` library for publisher layout
+- Ops script `setup/scripts/65-trust-vertical.sh` — batch enable trust modules/fields on vertical sites
+
+### Docs
+- README, `docs/ops.md`, `docs/trust-model.md` — publisher page and vertical bootstrap
+
+## v0.5.0-trusted-feed-api — 2026-08-14
+
+### Added
+- Machine-readable trusted feeds: RSS 2.0 and JSON for `/trusted`, `/trusted/official`, `/trusted/enterprise`, `/trusted/aggregate`
+- `TrustedFeedBuilder` service — shared item shape with trust level, publisher, provenance hash, source URL
+- HTML trust pages link to RSS/JSON and expose `<link rel="alternate">` for feed discovery
+- Optional `?limit=` query parameter (1–100, default 30) on feed endpoints
+
+### Docs
+- README and `docs/ops.md` — feed URLs and sample `curl`
+
+## v0.4.0-provenance-export — 2026-08-14
+
+### Added
+- CSV export for provenance audit: `/admin/xmt/provenance/export` (button on audit page)
+- `ProvenanceAuditExporter` service — shared by admin UI and Drush
+- Drush `xmt:provenance-export` (`--limit`, `--trust-level`, `--output`)
+- Export includes trust level, publisher, source URL, provenance hash, and timestamps
+
+### Docs
+- `docs/trust-model.md` — audit export marked implemented
+- `docs/ops.md` — export usage
 
 ## v0.3.0-homepage — 2026-08-13
 

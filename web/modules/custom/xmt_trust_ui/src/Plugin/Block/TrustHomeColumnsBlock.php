@@ -134,6 +134,30 @@ class TrustHomeColumnsBlock extends BlockBase implements ContainerFactoryPluginI
       '#type' => 'container',
       '#attributes' => ['class' => ['xmt-trust-home']],
       'columns' => $columns,
+      'footer' => [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['xmt-trust-home__footer']],
+        'trusted' => [
+          '#type' => 'link',
+          '#title' => $this->t('All trusted content'),
+          '#url' => Url::fromRoute('xmt_trust_ui.feed'),
+        ],
+        'publishers' => [
+          '#type' => 'link',
+          '#title' => $this->t('Certified publishers'),
+          '#url' => Url::fromRoute('xmt_trust_ui.publishers_directory'),
+        ],
+        'apply' => [
+          '#type' => 'link',
+          '#title' => $this->t('Apply for certification'),
+          '#url' => Url::fromRoute('xmt_publisher.apply'),
+        ],
+        'sitemap' => [
+          '#type' => 'link',
+          '#title' => $this->t('Sitemap'),
+          '#url' => Url::fromRoute('xmt_trust_ui.trust_sitemap'),
+        ],
+      ],
       '#attached' => ['library' => ['xmt_trust_ui/trust_feed']],
       '#cache' => [
         'tags' => ['node_list'],

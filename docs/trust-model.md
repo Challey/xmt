@@ -15,9 +15,28 @@
 - 企业字段：名称、信用代码/注册号、网站、联系人
 - 批准后授予角色 `xmt_enterprise_publisher`，发文必须绑定本主体且等级为 L2
 
+## 公开主体页
+
+已批准主体可通过 `/publisher/{id}` 公开访问：
+
+- 官方主体显示 L1 徽章，企业主体显示 L2 徽章
+- 展示官网链接；企业主体展示注册号/信用代码
+- 列出该主体最近发布的文章（含信任徽章与日期）
+- 订阅该主体文章：`/publisher/{id}/feed.rss`、`/publisher/{id}/feed.json`
+
+## 主体目录
+
+- `/publishers` — 全部已认证官方（L1）与企业（L2）主体，链至各主体页与申请入口 `/publishers/apply`
+
 ## 溯源
 
-每条可信文章可写 `field_provenance_hash`（来源 URL + 主体 ID + 时间的哈希）。管理员可在「内容 → Provenance audit」下载完整 CSV 审计导出，其中包含信任级别、主体、来源 URL、溯源哈希及创建/更新时间。
+每条可信文章可写 `field_provenance_hash`（来源 URL + 主体 ID + 时间的哈希），便于审计导出。
+
+### 审计导出
+
+- 后台 **Content → Provenance audit**（`/admin/xmt/provenance`）列出最近 50 条文章及溯源字段。
+- 页面 **Export CSV** 或 `GET /admin/xmt/provenance/export` 下载 CSV（默认最多 500 条，可用 `?limit=`、`?trust_level=` 过滤）；含信任级别、主体、来源 URL、溯源哈希及时间戳。
+- 运维：`vendor/bin/drush --uri=xmt.pub xmt:provenance-export --limit=1000 --output=/tmp/xmt-provenance.csv`
 
 ## 与 DrupalX
 

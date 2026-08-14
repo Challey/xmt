@@ -62,5 +62,71 @@ vendor/bin/drush --uri=xmt.pub php:eval 'xmt_trust_ensure_fields(); echo "ok\n";
 ## 垂直站（zhubao 等）
 
 - 启用 `xmt_trust`、`xmt_publisher`（可选 `xmt_trust_ui` 展示徽章）；`vendor/bin/drush --uri=zhubao.wsl en xmt_trust xmt_publisher xmt_trust_ui -y` 后执行 `php:eval` 调用 `xmt_trust_ensure_fields()` / `xmt_trust_ensure_roles()`。
+- **批量引导**（非 hub 六站）：
+  ```bash
+  bash setup/scripts/65-trust-vertical.sh
+  ```
 - 垂直站文章默认 **L0 汇聚**（`xmt_trust_entity_presave`）；编辑表单上信任字段对非 hub 为**只读**（仅 `xmt.pub` 可改 L1/L2）。
 - Agent / `xmt_syndicate` 同步到 hub 时会带上 `trust_level` 与 `publisher_id`（垂直站一般为 L0）。
+
+## 溯源审计导出
+
+- 后台：**Content → Provenance audit**（`/admin/xmt/provenance`），点击 **Export CSV**。
+- 直接下载：`/admin/xmt/provenance/export`（需 `administer xmt trust`）；可选查询参数 `limit`（1–5000，默认 500）、`trust_level`（`l0_aggregate` / `l1_official` / `l2_enterprise`）。
+- Drush：
+  ```bash
+  vendor/bin/drush --uri=xmt.pub xmt:provenance-export --limit=500 --output=/tmp/xmt-provenance.csv
+  vendor/bin/drush --uri=xmt.pub xmt:provenance-export --trust-level=l2_enterprise
+  ```
+
+## 可信流 RSS / JSON
+
+公开订阅（无需登录），与 HTML 页 `/trusted*` 同级过滤：
+
+| 过滤 | RSS | JSON |
+|------|-----|------|
+| L1+L2 | `/trusted/feed.rss` | `/trusted/feed.json` |
+| L1 官方 | `/trusted/official/feed.rss` | `/trusted/official/feed.json` |
+| L2 企业 | `/trusted/enterprise/feed.rss` | `/trusted/enterprise/feed.json` |
+| L0 汇聚 | `/trusted/aggregate/feed.rss` | `/trusted/aggregate/feed.json` |
+
+每条含 `trust_level`、`trust_label`、`publisher`、`provenance_hash`、`source_url` 等。可选 `?limit=50`（1–100）。
+
+验收：
+
+```bash
+curl -sH 'Host: xmt.pub' 'http://127.0.0.1/trusted/feed.json?limit=5' | head -c 500
+curl -sH 'Host: xmt.pub' 'http://127.0.0.1/trusted/enterprise/feed.rss?limit=5' | head -20
+```
+
+## 发布主体公开页
+
+- URL：`/publisher/{id}`（仅 `approved` 主体对公众可见）
+- 展示信任徽章、认证状态、官网、企业注册号及该主体最近文章
+- 验收：`curl -sH 'Host: xmt.pub' http://127.0.0.1/publisher/1 | grep -oE 'xmt-publisher|xmt-trust-badge|Published articles' | head`
+
+## 认证主体目录
+
+- URL：`/publishers`（官方 L1 + 企业 L2 分区，链至 `/publisher/{id}`）
+- 单主体订阅：`/publisher/{id}/feed.rss`、`/publisher/{id}/feed.json`（`?limit=` 1–100）
+- 验收：
+  ```bash
+  curl -sH 'Host: xmt.pub' http://127.0.0.1/publishers | grep -oE 'xmt-publishers-directory|Official|Enterprise' | head
+  curl -sH 'Host: xmt.pub' 'http://127.0.0.1/publisher/1/feed.json?limit=3' | head -c 400
+  ```
+
+## 部署验收脚本
+
+一键检查可信页、RSS/JSON、主体目录、sitemap 及 Drush 导出：
+
+```bash
+bash setup/scripts/75-verify-trust.sh
+HOST=xmt.pub BASE=https://xmt.pub DRUSH_URI=xmt.pub bash setup/scripts/75-verify-trust.sh
+```
+
+## 可信站点地图
+
+- URL：`/trusted/sitemap.xml`
+- 含 `/trusted*`、`/publishers`、各已认证 `/publisher/{id}`、L1/L2 文章，**默认含 L0 汇聚**（约为 `limit` 一半，最多 50 条）
+- 可选：`?limit=200`、`?include_l0=0` 排除 L0、`?l0_limit=30` 指定 L0 上限
+- **robots.txt**（仅 xmt.pub hub）：自动追加 `Sitemap: https://xmt.pub/trusted/sitemap.xml`

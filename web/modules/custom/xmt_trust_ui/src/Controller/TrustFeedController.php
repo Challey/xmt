@@ -5,65 +5,61 @@ namespace Drupal\xmt_trust_ui\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\xmt_trust_ui\Service\TrustedFeedBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Trusted content listing pages.
  */
 class TrustFeedController extends ControllerBase {
 
+  public function __construct(
+    protected TrustedFeedBuilder $feedBuilder,
+  ) {}
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container): static {
+    return new static(
+      $container->get('xmt_trust_ui.trusted_feed_builder'),
+    );
+  }
+
   /**
    * Renders a filtered trust feed.
    */
   public function feed(string $filter = 'all'): array {
-    $storage = $this->entityTypeManager()->getStorage('node');
-    $query = $storage->getQuery()
-      ->accessCheck(TRUE)
-      ->condition('type', 'article')
-      ->condition('status', 1)
-      ->sort('created', 'DESC')
-      ->range(0, 30);
-
-    if ($filter !== 'all') {
-      $query->condition('field_trust_level', $filter);
-    }
-    else {
-      $query->condition('field_trust_level', ['l1_official', 'l2_enterprise'], 'IN');
-    }
-
-    $nids = $query->execute();
     $items = [];
-    if ($nids) {
-      $nodes = $storage->loadMultiple($nids);
-      foreach ($nodes as $node) {
-        $level = $node->hasField('field_trust_level') ? ($node->get('field_trust_level')->value ?? 'l0_aggregate') : 'l0_aggregate';
-        $items[] = [
-          '#type' => 'container',
-          '#attributes' => ['class' => ['xmt-trust-feed__item']],
-          'title' => [
-            '#type' => 'link',
-            '#title' => $node->label(),
-            '#url' => $node->toUrl(),
-            '#prefix' => '<h3>',
-            '#suffix' => '</h3>',
+    foreach ($this->feedBuilder->items($filter, 30) as $item) {
+      $level = $item['trust_level'];
+      $items[] = [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['xmt-trust-feed__item']],
+        'title' => [
+          '#type' => 'link',
+          '#title' => $item['title'],
+          '#url' => Url::fromUri($item['url']),
+          '#prefix' => '<h3>',
+          '#suffix' => '</h3>',
+        ],
+        'badge' => [
+          '#type' => 'html_tag',
+          '#tag' => 'span',
+          '#value' => $item['trust_label'],
+          '#attributes' => [
+            'class' => ['xmt-trust-badge', xmt_trust_badge_class($level)],
           ],
-          'badge' => [
-            '#type' => 'html_tag',
-            '#tag' => 'span',
-            '#value' => xmt_trust_badge_label($level),
-            '#attributes' => [
-              'class' => ['xmt-trust-badge', xmt_trust_badge_class($level)],
-            ],
-          ],
-          'meta' => [
-            '#type' => 'html_tag',
-            '#tag' => 'div',
-            '#value' => $this->t('Published @date', [
-              '@date' => \Drupal::service('date.formatter')->format($node->getCreatedTime(), 'short'),
-            ]),
-            '#attributes' => ['class' => ['xmt-trust-feed__meta']],
-          ],
-        ];
-      }
+        ],
+        'meta' => [
+          '#type' => 'html_tag',
+          '#tag' => 'div',
+          '#value' => $this->t('Published @date', [
+            '@date' => \Drupal::service('date.formatter')->format($item['published'], 'short'),
+          ]),
+          '#attributes' => ['class' => ['xmt-trust-feed__meta']],
+        ],
+      ];
     }
 
     $nav = [
@@ -73,20 +69,54 @@ class TrustFeedController extends ControllerBase {
       'official' => Link::fromTextAndUrl($this->t('Official (L1)'), Url::fromRoute('xmt_trust_ui.feed_official'))->toRenderable(),
       'enterprise' => Link::fromTextAndUrl($this->t('Enterprise (L2)'), Url::fromRoute('xmt_trust_ui.feed_enterprise'))->toRenderable(),
       'aggregate' => Link::fromTextAndUrl($this->t('Aggregate (L0)'), Url::fromRoute('xmt_trust_ui.feed_aggregate'))->toRenderable(),
+      'publishers' => Link::fromTextAndUrl($this->t('Publishers'), Url::fromRoute('xmt_trust_ui.publishers_directory'))->toRenderable(),
     ];
 
-    return [
+    $formats = [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['xmt-trust-feed__formats']],
+      'rss' => Link::fromTextAndUrl($this->t('RSS'), Url::fromRoute('xmt_trust_ui.' . $this->feedBuilder->formatRouteSuffix($filter, 'rss')))->toRenderable(),
+      'json' => Link::fromTextAndUrl($this->t('JSON'), Url::fromRoute('xmt_trust_ui.' . $this->feedBuilder->formatRouteSuffix($filter, 'json')))->toRenderable(),
+      'sitemap' => Link::fromTextAndUrl($this->t('Sitemap'), Url::fromRoute('xmt_trust_ui.trust_sitemap'))->toRenderable(),
+    ];
+
+    $build = [
       '#type' => 'container',
       '#attributes' => ['class' => ['xmt-trust-feed']],
       'nav' => $nav,
+      'formats' => $formats,
       'list' => $items === [] ? [
         '#markup' => '<p>' . $this->t('No trusted articles yet.') . '</p>',
       ] : [
         '#theme' => 'item_list',
         '#items' => $items,
       ],
-      '#attached' => ['library' => ['xmt_trust_ui/trust_feed']],
+      '#attached' => [
+        'library' => ['xmt_trust_ui/trust_feed'],
+        'html_head_link' => [
+          [
+            [
+              'rel' => 'alternate',
+              'type' => 'application/rss+xml',
+              'title' => $this->t('RSS'),
+              'href' => Url::fromRoute('xmt_trust_ui.' . $this->feedBuilder->formatRouteSuffix($filter, 'rss'), [], ['absolute' => TRUE])->toString(),
+            ],
+            TRUE,
+          ],
+          [
+            [
+              'rel' => 'alternate',
+              'type' => 'application/json',
+              'title' => $this->t('JSON'),
+              'href' => Url::fromRoute('xmt_trust_ui.' . $this->feedBuilder->formatRouteSuffix($filter, 'json'), [], ['absolute' => TRUE])->toString(),
+            ],
+            TRUE,
+          ],
+        ],
+      ],
     ];
+
+    return $build;
   }
 
 }

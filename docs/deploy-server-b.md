@@ -14,10 +14,16 @@
 ## 推荐流程
 
 1. **本机验收**（bootstrap、xmt 模块、`/trusted`、可选 `xmt:dx-content-test`）通过后，再同步 B。
-2. **B 上部署**  
+2. **部署后验收**（B 或本机）：
+   ```bash
+   bash setup/scripts/75-verify-trust.sh
+   # 生产公网：
+   HOST=xmt.pub BASE=https://xmt.pub DRUSH_URI=xmt.pub bash setup/scripts/75-verify-trust.sh
+   ```
+3. **B 上部署**  
    - 优先：`git pull`（B 需能访问 GitHub；SSH 密钥缺失时用 HTTPS 或本机 `rsync`）。  
    - `deploy-prod.sh` 在 Git 失败时会从本机 `rsync`（排除 `vendor`、各站 `settings.php`、`files`）。
-3. **Composer / Drush**（在 B 的 `/home/wwwroot/xmt`）：
+4. **Composer / Drush**（在 B 的 `/home/wwwroot/xmt`）：
 
 ```bash
 export COMPOSER_ALLOW_SUPERUSER=1
@@ -28,7 +34,7 @@ vendor/bin/drush --uri=xmt.pub cr
 ```
 
 
-4. **Article 字段（含 body）** — `site:install` 或缺字段导致推送 400 时，对每个已 bootstrap 的 URI 执行：
+5. **Article 字段（含 body）** — `site:install` 或缺字段导致推送 400 时，对每个已 bootstrap 的 URI 执行：
 
 ```bash
 cd /home/wwwroot/xmt

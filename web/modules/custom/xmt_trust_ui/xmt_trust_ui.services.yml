@@ -1,0 +1,20 @@
+services:
+  xmt_trust_ui.provenance_exporter:
+    class: Drupal\xmt_trust_ui\Service\ProvenanceAuditExporter
+    arguments:
+      - '@entity_type.manager'
+  xmt_trust_ui.trusted_feed_builder:
+    class: Drupal\xmt_trust_ui\Service\TrustedFeedBuilder
+    arguments:
+      - '@entity_type.manager'
+      - '@string_translation'
+  xmt_trust_ui.publisher_page_builder:
+    class: Drupal\xmt_trust_ui\Service\PublisherPageBuilder
+    arguments:
+      - '@entity_type.manager'
+      - '@string_translation'
+  xmt_trust_ui.trust_sitemap_builder:
+    class: Drupal\xmt_trust_ui\Service\TrustSitemapBuilder
+    arguments:
+      - '@entity_type.manager'
+      - '@string_translation'
