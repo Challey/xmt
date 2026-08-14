@@ -18,6 +18,7 @@
 4. 签名：`hash_hmac('sha256', body, secret)`，请求头 `X-XMT-Signature`。
    **注意：** HMAC 的 `body` 必须是签名的**精确字节**（与 Drush 打印的**单行 JSON 字符串**完全一致，无额外空格或换行）。
 5. **XMT** 接收：`POST /api/xmt/v1/dx-claim`（Host: `xmt.wsl` 或生产域名）→ 创建/更新 `xmt_publisher` 为 `approved`。
+6. **防重放**：签名有效但被截获的请求，在 `exp` 之前理论上可被重放。若请求带 `nonce`，XMT 会记录 `dx_developer_id + nonce` 组合，重复提交返回 `400`（`Nonce already used; possible replay.`）。记录窗口取 `exp - 当前时间`，无 `exp` 时默认 10 分钟。省略 `nonce` 时不做防重放检查（兼容旧调用方），但新集成应始终携带。
 
 ### 本地测试（XMT）
 
@@ -44,7 +45,7 @@ vendor/bin/drush --uri=xmt.pub xmt:dx-claim-test --developer=dx-test-001 --name=
 | `domain` | 否 | 领域标签 |
 | `format` | 否 | 正文 text format，默认 `full_html` |
 | `exp` | 否 | Unix 过期时间，过期拒绝 |
-| `nonce` | 否 | 防重放（当前仅记录，不参与幂等） |
+| `nonce` | 否（**强烈建议**） | 防重放；提供后 XMT 会记录并拒绝同一 `dx_developer_id` + `nonce` 的重复请求，直到 `exp`（或默认 10 分钟）过期 |
 
 ### 行为
 

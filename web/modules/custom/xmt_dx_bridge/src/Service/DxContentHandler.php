@@ -15,6 +15,7 @@ class DxContentHandler {
     protected EntityTypeManagerInterface $entityTypeManager,
     protected LoggerChannelFactoryInterface $loggerFactory,
     protected DxClaimHandler $claimHandler,
+    protected DxNonceGuard $nonceGuard,
   ) {}
 
   /**
@@ -30,6 +31,11 @@ class DxContentHandler {
     if (!empty($data['exp']) && time() > (int) $data['exp']) {
       throw new \InvalidArgumentException('Content payload expired.');
     }
+    $this->nonceGuard->consume(
+      (string) $data['dx_developer_id'],
+      isset($data['nonce']) ? (string) $data['nonce'] : NULL,
+      isset($data['exp']) ? (int) $data['exp'] : NULL,
+    );
 
     $publisher = $this->loadApprovedPublisher((string) $data['dx_developer_id']);
 

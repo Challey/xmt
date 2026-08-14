@@ -13,6 +13,7 @@ class DxClaimHandler {
   public function __construct(
     protected EntityTypeManagerInterface $entityTypeManager,
     protected LoggerChannelFactoryInterface $loggerFactory,
+    protected DxNonceGuard $nonceGuard,
   ) {}
 
   /**
@@ -52,6 +53,11 @@ class DxClaimHandler {
     if (!empty($claim['exp']) && time() > (int) $claim['exp']) {
       throw new \InvalidArgumentException('Claim expired.');
     }
+    $this->nonceGuard->consume(
+      (string) $claim['dx_developer_id'],
+      isset($claim['nonce']) ? (string) $claim['nonce'] : NULL,
+      isset($claim['exp']) ? (int) $claim['exp'] : NULL,
+    );
 
     $storage = $this->entityTypeManager->getStorage('xmt_publisher');
     $existing = $storage->getQuery()
