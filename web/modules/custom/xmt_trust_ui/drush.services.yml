@@ -2,6 +2,6 @@ services:
   xmt_trust_ui.commands:
     class: Drupal\xmt_trust_ui\Commands\ProvenanceAuditCommands
     arguments:
-      - '@xmt_trust_ui.provenance_audit'
+      - '@xmt_trust_ui.provenance_exporter'
     tags:
       - { name: drush.command }

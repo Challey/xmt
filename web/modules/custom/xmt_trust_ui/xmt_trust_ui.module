@@ -5,9 +5,9 @@
  * XMT Trust UI module hooks.
  */
 
-use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Link;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 use Drupal\xmt_publisher\Entity\Publisher;
 
@@ -16,6 +16,56 @@ use Drupal\xmt_publisher\Entity\Publisher;
  */
 function xmt_trust_ui_page_attachments(array &$attachments): void {
   $attachments['#attached']['library'][] = 'xmt_trust_ui/trust_feed';
+}
+
+/**
+ * Implements hook_robots_alter().
+ */
+function xmt_trust_ui_robots_alter(array &$robots): void {
+  if (!function_exists('xmt_trust_is_hub_site') || !xmt_trust_is_hub_site()) {
+    return;
+  }
+  $sitemap = Url::fromRoute('xmt_trust_ui.trust_sitemap', [], ['absolute' => TRUE])->toString();
+  if (empty($robots['Sitemap'])) {
+    $robots['Sitemap'] = $sitemap;
+    return;
+  }
+  if (!is_array($robots['Sitemap'])) {
+    $robots['Sitemap'] = [$robots['Sitemap']];
+  }
+  if (!in_array($sitemap, $robots['Sitemap'], TRUE)) {
+    $robots['Sitemap'][] = $sitemap;
+  }
+}
+
+/**
+ * Implements hook_entity_view_alter().
+ */
+function xmt_trust_ui_entity_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode): void {
+  if (!$entity instanceof Publisher || $view_mode !== 'full') {
+    return;
+  }
+  if ($entity->get('status')->value !== 'approved') {
+    return;
+  }
+
+  /** @var \Drupal\xmt_trust_ui\Service\PublisherPageBuilder $builder */
+  $builder = \Drupal::service('xmt_trust_ui.publisher_page_builder');
+  $build['xmt_trust_meta'] = $builder->buildMeta($entity);
+  $build['xmt_feed_links'] = $builder->buildFeedLinks($entity);
+  $build['xmt_articles'] = $builder->buildArticles($entity);
+  $build['#attached']['library'][] = 'xmt_trust_ui/publisher_page';
+  $build['#attached']['html_head_link'][] = [
+    [
+      'rel' => 'alternate',
+      'type' => 'application/rss+xml',
+      'title' => t('RSS'),
+      'href' => \Drupal\Core\Url::fromRoute('xmt_trust_ui.publisher_feed_rss', [
+        'xmt_publisher' => $entity->id(),
+      ], ['absolute' => TRUE])->toString(),
+    ],
+    TRUE,
+  ];
 }
 
 /**
@@ -40,107 +90,4 @@ function xmt_trust_ui_preprocess_node(array &$variables): void {
     ],
   ];
   $variables['content']['xmt_trust_badge'] = $variables['xmt_trust_badge'];
-
-  // Publisher attribution for L1/L2 articles.
-  if (
-    in_array($level, ['l1_official', 'l2_enterprise'], TRUE)
-    && $node->hasField('field_publisher')
-    && !$node->get('field_publisher')->isEmpty()
-  ) {
-    $publisher = $node->get('field_publisher')->entity;
-    if ($publisher instanceof Publisher && $publisher->access('view')) {
-      $variables['content']['xmt_publisher_attribution'] = [
-        '#type' => 'container',
-        '#attributes' => ['class' => ['xmt-publisher-attribution']],
-        '#weight' => -40,
-        'label' => [
-          '#markup' => '<span class="xmt-publisher-attribution__label">' . t('Published by') . '</span> ',
-        ],
-        'link' => Link::fromTextAndUrl(
-          $publisher->label(),
-          $publisher->toUrl()
-        )->toRenderable(),
-      ];
-    }
-  }
-}
-
-/**
- * Implements hook_entity_view().
- *
- * Lists recent trusted articles on the public publisher page.
- */
-function xmt_trust_ui_entity_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode): void {
-  if (!$entity instanceof Publisher || $view_mode !== 'full') {
-    return;
-  }
-  if ($entity->get('status')->value !== 'approved') {
-    return;
-  }
-
-  $storage = \Drupal::entityTypeManager()->getStorage('node');
-  $nids = $storage->getQuery()
-    ->accessCheck(TRUE)
-    ->condition('type', 'article')
-    ->condition('status', 1)
-    ->condition('field_publisher', $entity->id())
-    ->condition('field_trust_level', ['l1_official', 'l2_enterprise'], 'IN')
-    ->sort('changed', 'DESC')
-    ->range(0, 20)
-    ->execute();
-
-  $items = [];
-  if ($nids) {
-    /** @var \Drupal\node\NodeInterface[] $nodes */
-    $nodes = $storage->loadMultiple($nids);
-    foreach ($nodes as $node) {
-      if (!$node->access('view')) {
-        continue;
-      }
-      $level = $node->hasField('field_trust_level') && !$node->get('field_trust_level')->isEmpty()
-        ? (string) $node->get('field_trust_level')->value
-        : '';
-      $items[] = [
-        '#type' => 'container',
-        '#attributes' => ['class' => ['xmt-publisher-articles__item']],
-        'title' => [
-          '#type' => 'link',
-          '#title' => $node->label(),
-          '#url' => $node->toUrl(),
-        ],
-        'badge' => $level !== '' ? [
-          '#type' => 'html_tag',
-          '#tag' => 'span',
-          '#value' => xmt_trust_badge_label($level),
-          '#attributes' => [
-            'class' => ['xmt-trust-badge', xmt_trust_badge_class($level)],
-          ],
-        ] : [],
-        'meta' => [
-          '#type' => 'html_tag',
-          '#tag' => 'div',
-          '#value' => \Drupal::service('date.formatter')->format($node->getChangedTime(), 'short'),
-          '#attributes' => ['class' => ['xmt-publisher-articles__meta']],
-        ],
-      ];
-    }
-  }
-
-  $build['xmt_publisher_articles'] = [
-    '#type' => 'container',
-    '#attributes' => ['class' => ['xmt-publisher-articles']],
-    '#weight' => 50,
-    'heading' => [
-      '#type' => 'html_tag',
-      '#tag' => 'h2',
-      '#value' => t('Trusted articles'),
-    ],
-    'list' => $items !== [] ? [
-      '#theme' => 'item_list',
-      '#items' => $items,
-      '#attributes' => ['class' => ['xmt-publisher-articles__list']],
-    ] : [
-      '#markup' => '<p class="xmt-publisher-articles__empty">' . t('No trusted articles yet.') . '</p>',
-    ],
-  ];
 }

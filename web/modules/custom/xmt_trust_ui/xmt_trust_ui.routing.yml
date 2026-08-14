@@ -31,39 +31,104 @@ xmt_trust_ui.feed_aggregate:
   requirements:
     _permission: 'access content'
 
-xmt_trust_ui.api_trusted:
-  path: '/api/xmt/v1/trusted/{filter}'
+xmt_trust_ui.feed_rss:
+  path: '/trusted/feed.rss'
   defaults:
-    _controller: '\Drupal\xmt_trust_ui\Controller\TrustFeedController::jsonFeed'
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustedFeedFormatController::rss'
     filter: 'all'
   requirements:
     _permission: 'access content'
-    filter: 'all|l0_aggregate|l1_official|l2_enterprise'
+xmt_trust_ui.feed_json:
+  path: '/trusted/feed.json'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustedFeedFormatController::json'
+    filter: 'all'
+  requirements:
+    _permission: 'access content'
+xmt_trust_ui.feed_official_rss:
+  path: '/trusted/official/feed.rss'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustedFeedFormatController::rss'
+    filter: 'l1_official'
+  requirements:
+    _permission: 'access content'
+xmt_trust_ui.feed_official_json:
+  path: '/trusted/official/feed.json'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustedFeedFormatController::json'
+    filter: 'l1_official'
+  requirements:
+    _permission: 'access content'
+xmt_trust_ui.feed_enterprise_rss:
+  path: '/trusted/enterprise/feed.rss'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustedFeedFormatController::rss'
+    filter: 'l2_enterprise'
+  requirements:
+    _permission: 'access content'
+xmt_trust_ui.feed_enterprise_json:
+  path: '/trusted/enterprise/feed.json'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustedFeedFormatController::json'
+    filter: 'l2_enterprise'
+  requirements:
+    _permission: 'access content'
+xmt_trust_ui.feed_aggregate_rss:
+  path: '/trusted/aggregate/feed.rss'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustedFeedFormatController::rss'
+    filter: 'l0_aggregate'
+  requirements:
+    _permission: 'access content'
+xmt_trust_ui.feed_aggregate_json:
+  path: '/trusted/aggregate/feed.json'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustedFeedFormatController::json'
+    filter: 'l0_aggregate'
+  requirements:
+    _permission: 'access content'
 
-xmt_trust_ui.api_trusted_root:
-  path: '/api/xmt/v1/trusted'
+xmt_trust_ui.publishers_directory:
+  path: '/publishers'
   defaults:
-    _controller: '\Drupal\xmt_trust_ui\Controller\TrustFeedController::jsonFeed'
-    filter: 'all'
+    _controller: '\Drupal\xmt_trust_ui\Controller\PublisherDirectoryController::list'
+    _title: '认证发布主体'
   requirements:
     _permission: 'access content'
 
-xmt_trust_ui.rss_trusted:
-  path: '/trusted/{filter}.xml'
+xmt_trust_ui.trust_sitemap:
+  path: '/trusted/sitemap.xml'
   defaults:
-    _controller: '\Drupal\xmt_trust_ui\Controller\TrustFeedController::rssFeed'
-    filter: 'all'
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustSitemapController::sitemap'
+    _title: 'Trust sitemap'
   requirements:
     _permission: 'access content'
-    filter: 'all|l0_aggregate|l1_official|l2_enterprise|official|enterprise|aggregate'
 
-xmt_trust_ui.rss_trusted_root:
-  path: '/trusted.xml'
+xmt_trust_ui.publisher_feed_rss:
+  path: '/publisher/{xmt_publisher}/feed.rss'
   defaults:
-    _controller: '\Drupal\xmt_trust_ui\Controller\TrustFeedController::rssFeed'
-    filter: 'all'
+    _controller: '\Drupal\xmt_trust_ui\Controller\PublisherFeedFormatController::rss'
+    _title: 'Publisher feed'
   requirements:
-    _permission: 'access content'
+    _entity_access: 'xmt_publisher.view'
+    xmt_publisher: \d+
+  options:
+    parameters:
+      xmt_publisher:
+        type: entity:xmt_publisher
+
+xmt_trust_ui.publisher_feed_json:
+  path: '/publisher/{xmt_publisher}/feed.json'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\PublisherFeedFormatController::json'
+    _title: 'Publisher feed'
+  requirements:
+    _entity_access: 'xmt_publisher.view'
+    xmt_publisher: \d+
+  options:
+    parameters:
+      xmt_publisher:
+        type: entity:xmt_publisher
 
 xmt_trust_ui.provenance_audit:
   path: '/admin/xmt/provenance'
@@ -73,16 +138,10 @@ xmt_trust_ui.provenance_audit:
   requirements:
     _permission: 'administer xmt trust'
 
-xmt_trust_ui.provenance_audit_csv:
-  path: '/admin/xmt/provenance/export.csv'
+xmt_trust_ui.provenance_audit_export:
+  path: '/admin/xmt/provenance/export'
   defaults:
     _controller: '\Drupal\xmt_trust_ui\Controller\ProvenanceAuditController::exportCsv'
-  requirements:
-    _permission: 'administer xmt trust'
-
-xmt_trust_ui.provenance_audit_json:
-  path: '/admin/xmt/provenance/export.json'
-  defaults:
-    _controller: '\Drupal\xmt_trust_ui\Controller\ProvenanceAuditController::exportJson'
+    _title: 'Export provenance audit'
   requirements:
     _permission: 'administer xmt trust'
