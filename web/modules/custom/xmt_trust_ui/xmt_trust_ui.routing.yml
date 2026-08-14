@@ -31,10 +31,41 @@ xmt_trust_ui.feed_aggregate:
   requirements:
     _permission: 'access content'
 
+xmt_trust_ui.provenance_verify:
+  path: '/trusted/verify/{node}'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ProvenanceVerifyController::page'
+    _title_callback: '\Drupal\xmt_trust_ui\Controller\ProvenanceVerifyController::title'
+  requirements:
+    _entity_access: 'node.view'
+    node: \d+
+  options:
+    parameters:
+      node:
+        type: entity:node
+xmt_trust_ui.provenance_verify_json:
+  path: '/trusted/verify/{node}/json'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ProvenanceVerifyController::json'
+  requirements:
+    _entity_access: 'node.view'
+    node: \d+
+  options:
+    parameters:
+      node:
+        type: entity:node
+
 xmt_trust_ui.provenance_audit:
   path: '/admin/xmt/provenance'
   defaults:
     _controller: '\Drupal\xmt_trust_ui\Controller\ProvenanceAuditController::list'
     _title: 'Provenance audit'
+  requirements:
+    _permission: 'administer xmt trust'
+xmt_trust_ui.provenance_audit_export:
+  path: '/admin/xmt/provenance/export'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ProvenanceAuditController::export'
+    _title: 'Export provenance audit'
   requirements:
     _permission: 'administer xmt trust'

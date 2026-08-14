@@ -5,6 +5,7 @@
  * XMT Trust UI module hooks.
  */
 
+use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 
 /**
@@ -36,4 +37,15 @@ function xmt_trust_ui_preprocess_node(array &$variables): void {
     ],
   ];
   $variables['content']['xmt_trust_badge'] = $variables['xmt_trust_badge'];
+
+  if (($variables['view_mode'] ?? '') !== 'full' || $node->isNew()) {
+    return;
+  }
+  $variables['xmt_trust_verify_link'] = [
+    '#type' => 'link',
+    '#title' => t('核验溯源'),
+    '#url' => Url::fromRoute('xmt_trust_ui.provenance_verify', ['node' => $node->id()]),
+    '#attributes' => ['class' => ['xmt-trust-verify-link']],
+  ];
+  $variables['content']['xmt_trust_verify_link'] = $variables['xmt_trust_verify_link'];
 }
