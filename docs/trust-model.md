@@ -30,7 +30,12 @@
 
 ## 溯源
 
-每条可信文章可写 `field_provenance_hash`（来源 URL + 主体 ID + 时间的哈希），便于审计导出。
+每条可信文章可写 `field_provenance_hash`（来源 URL + 主体 ID + 时间的哈希；DrupalX 推送为 `dx:{external_id}`）。
+
+### 公众核验
+
+- `/trusted/verify?hash=<hash>` — 任何人可输入哈希，精确匹配已发布文章，展示标题、信任等级、主体与时间；未命中则提示非本平台认证内容。
+- `/trusted` 导航含「Verify provenance」入口。
 
 ### 审计导出
 

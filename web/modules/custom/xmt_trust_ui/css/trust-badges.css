@@ -152,3 +152,46 @@
     grid-template-columns: 1fr;
   }
 }
+
+.xmt-trust-verify {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.xmt-trust-verify__form {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.xmt-trust-verify__form input[type="text"] {
+  flex: 1 1 24rem;
+  padding: 0.4em 0.6em;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.xmt-trust-verify__result {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.xmt-trust-verify__result--hit {
+  background: #d1e7dd;
+  color: #0f5132;
+  border: 1px solid #a3cfbb;
+}
+
+.xmt-trust-verify__result--miss {
+  background: #f8d7da;
+  color: #842029;
+  border: 1px solid #f1aeb5;
+}
+
+.xmt-trust-verify__details {
+  width: 100%;
+}

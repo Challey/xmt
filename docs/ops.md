@@ -41,6 +41,7 @@ bash scripts/80-trust-stack.sh
 - CSV：`/admin/xmt/provenance/export.csv` 或页面 **Export CSV**（带当前筛选）
 - JSON：`/admin/xmt/provenance/export.json` 或页面 **Export JSON**
 - Web 导出按节点访问权限过滤、禁止响应缓存；CSV 会转义电子表格公式前缀
+- 公众核验：`/trusted/verify?hash=<provenance_hash>`（无需登录）
 - CLI：
   ```bash
   vendor/bin/drush --uri=xmt.pub xmt:provenance-export --limit=500 --output=/tmp/audit.csv
@@ -109,6 +110,7 @@ vendor/bin/drush --uri=xmt.pub php:eval 'xmt_trust_ensure_fields(); echo "ok\n";
 
 - 后台：**Content → Provenance audit**（`/admin/xmt/provenance`），点击 **Export CSV**。
 - 直接下载：`/admin/xmt/provenance/export`（需 `administer xmt trust`）；可选查询参数 `limit`（1–5000，默认 500）、`trust_level`（`l0_aggregate` / `l1_official` / `l2_enterprise`）。
+- 公众核验：`/trusted/verify?hash=<provenance_hash>`（无需登录）。
 - Drush：
   ```bash
   vendor/bin/drush --uri=xmt.pub xmt:provenance-export --limit=500 --output=/tmp/xmt-provenance.csv

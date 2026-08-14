@@ -38,6 +38,7 @@ echo "==> XMT trust verify (Host=${HOST}, BASE=${BASE})"
 
 echo "-- HTTP pages"
 curl_check "/trusted" "xmt-trust-feed|可信"
+curl_check "/trusted/verify" "xmt-trust-verify|溯源|Verify"
 curl_check "/trusted/feed.json" '"feed"'
 curl_check "/trusted/official/feed.rss" "<rss"
 curl_check "/publishers" "xmt-publishers-directory|publishers"
