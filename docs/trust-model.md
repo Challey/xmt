@@ -15,6 +15,14 @@
 - 企业字段：名称、信用代码/注册号、网站、联系人
 - 批准后授予角色 `xmt_enterprise_publisher`，发文必须绑定本主体且等级为 L2
 
+公开入口：
+
+- 认证主体目录 `/publishers`（仅 `approved`，`?type=official|enterprise` 筛选）
+- 主体主页 `/publisher/{id}`：认证时间、可信发文数、最近可信内容
+- 文章页「发布主体」署名链接至主体主页
+
+联系人姓名与邮箱仅在管理表单可见，不在公开页面输出。
+
 ## 溯源
 
 每条文章在**首次落库**时写入 `field_provenance_hash`：

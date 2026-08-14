@@ -59,6 +59,14 @@ vendor/bin/drush --uri=xmt.pub php:eval 'xmt_trust_ensure_fields(); echo "ok\n";
 
 多站批量见 `setup/scripts/60-content-fields.sh`。
 
+## 认证主体目录
+
+- 目录：`/publishers`（需 `view xmt publisher`，匿名默认已授予）；筛选：`/publishers?type=official`、`?type=enterprise`
+- 主体主页：`/publisher/{id}`，仅 `approved` 可公开访问
+- 新增路由后清缓存：`vendor/bin/drush --uri=xmt.pub cr`
+
+垂直站若未执行 `xmt_trust_ensure_fields()`，目录仍可访问，但「可信发文」列为 0。
+
 ## 溯源核验与审计
 
 - 公开核验页：`/trusted/verify/{nid}`；JSON：`/trusted/verify/{nid}/json`

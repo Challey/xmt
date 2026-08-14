@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.5.0-publishers — 2026-08-14
+
+### Added
+- Public publisher directory `/publishers` — approved subjects only, `?type=official|enterprise` filter, paged, with certification date and trusted article counts
+- Publisher profile pages now show certification date, trusted article count, and the 10 most recent trusted articles
+- 「发布主体」byline linking full article displays to the accountable subject
+- `Drupal\xmt_trust\TrustLevel` for the trust level codes and the publisher-attributed subset
+- Unit tests for the directory type filter
+
+### Fixed
+- Publisher profile pages applied the inline `xmt-trust-badge` style to the whole page wrapper, shrinking the profile into a badge-sized box
+
+### Notes
+- Contact name and email stay form-only; they are not rendered on public pages
+- Vertical sites without the trust fields bootstrapped fall back to a directory without article counts
+
 ## v0.4.0-provenance — 2026-08-14
 
 ### Added
