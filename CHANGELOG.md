@@ -9,6 +9,15 @@
 ### Docs
 - Deduplicate and align `docs/ops.md` provenance export section with the live `/admin/xmt/provenance/export` route.
 
+## v0.10.0-provenance-verify — 2026-08-14
+
+### Added
+- Public provenance verification page `/trusted/verify?hash=...` (exact match on published `field_provenance_hash`)
+- Link from `/trusted` nav; styles for hit/miss result states
+
+### Docs
+- `docs/trust-model.md`, `docs/roadmap.md` — public verify marked done
+
 ## v0.9.0-trust-seo — 2026-08-14
 
 ### Added

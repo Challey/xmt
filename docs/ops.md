@@ -39,6 +39,7 @@ bash scripts/80-trust-stack.sh
 
 - 列表：`/admin/xmt/provenance`（需 `administer xmt trust`）；可按 Trust level / Publisher 筛选并分页
 - CSV：`/admin/xmt/provenance/export` 或页面 **Export CSV**（带当前筛选；可选 `?limit=`、`?trust_level=`）
+- 公众核验：`/trusted/verify?hash=<provenance_hash>`（无需登录）
 - CLI：
   ```bash
   vendor/bin/drush --uri=xmt.pub xmt:provenance-export --limit=500 --output=/tmp/audit.csv
