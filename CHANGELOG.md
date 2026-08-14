@@ -8,6 +8,7 @@
 - `ProvenanceAuditService` — shared query/export logic for web UI and CLI
 - Publisher public page (`/publisher/{id}`) lists recent L1/L2 articles for that subject
 - Article pages show “Published by” attribution linking to the publisher
+- DrupalX bridge `DxNonceGuard` — required HMAC `nonce` with expirable key-value replay rejection
 
 ### Fixed
 - Define missing `xmt_trust_vertical_readonly_after_build()` so vertical-site article forms do not fatally error
@@ -15,6 +16,7 @@
 ### Ops
 - Export: `vendor/bin/drush --uri=xmt.pub xmt:provenance-export --format=csv --output=/tmp/audit.csv`
 - JSON: `vendor/bin/drush --uri=xmt.pub xmt:provenance-export --format=json --output=/tmp/audit.json`
+- Bridge clients must send unique `nonce` (8–128 chars) on claim and trusted-content POSTs
 
 ## v0.3.0-homepage — 2026-08-13
 
