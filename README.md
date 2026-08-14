@@ -22,7 +22,18 @@ XMT（xmt.pub）是在 Drupal 11 上构建的**企业级认证新媒体平台**�
 
 垂直站（如 zhubao）仅展示/汇聚：**L0** 由 Agent 或 presave 默认；同步至 xmt.pub 时携带 `field_trust_level` / `field_publisher`。垂直站后台信任字段只读，L1/L2 仅在 hub 签发。
 
-公开可信流：`/trusted`（全部 L1+L2）、`/trusted/official`（L1 官方）、`/trusted/enterprise`（L2 企业）。
+公开可信流：`/trusted`（全部 L1+L2）、`/trusted/official`（L1 官方）、`/trusted/enterprise`（L2 企业）、`/trusted/aggregate`（L0 汇聚）。
+
+机器可读订阅（RSS / JSON，含信任等级、主体、溯源哈希）：
+
+| 页面 | RSS | JSON |
+|------|-----|------|
+| 全部可信 | `/trusted/feed.rss` | `/trusted/feed.json` |
+| 官方 L1 | `/trusted/official/feed.rss` | `/trusted/official/feed.json` |
+| 企业 L2 | `/trusted/enterprise/feed.rss` | `/trusted/enterprise/feed.json` |
+| 汇聚 L0 | `/trusted/aggregate/feed.rss` | `/trusted/aggregate/feed.json` |
+
+可选 `?limit=50`（1–100，默认 30）。
 
 ## 快速开始
 

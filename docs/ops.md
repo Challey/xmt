@@ -74,3 +74,23 @@ vendor/bin/drush --uri=xmt.pub php:eval 'xmt_trust_ensure_fields(); echo "ok\n";
   vendor/bin/drush --uri=xmt.pub xmt:provenance-export --limit=500 --output=/tmp/xmt-provenance.csv
   vendor/bin/drush --uri=xmt.pub xmt:provenance-export --trust-level=l2_enterprise
   ```
+
+## 可信流 RSS / JSON
+
+公开订阅（无需登录），与 HTML 页 `/trusted*` 同级过滤：
+
+| 过滤 | RSS | JSON |
+|------|-----|------|
+| L1+L2 | `/trusted/feed.rss` | `/trusted/feed.json` |
+| L1 官方 | `/trusted/official/feed.rss` | `/trusted/official/feed.json` |
+| L2 企业 | `/trusted/enterprise/feed.rss` | `/trusted/enterprise/feed.json` |
+| L0 汇聚 | `/trusted/aggregate/feed.rss` | `/trusted/aggregate/feed.json` |
+
+每条含 `trust_level`、`trust_label`、`publisher`、`provenance_hash`、`source_url` 等。可选 `?limit=50`（1–100）。
+
+验收：
+
+```bash
+curl -sH 'Host: xmt.pub' 'http://127.0.0.1/trusted/feed.json?limit=5' | head -c 500
+curl -sH 'Host: xmt.pub' 'http://127.0.0.1/trusted/enterprise/feed.rss?limit=5' | head -20
+```

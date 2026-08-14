@@ -3,3 +3,8 @@ services:
     class: Drupal\xmt_trust_ui\Service\ProvenanceAuditExporter
     arguments:
       - '@entity_type.manager'
+  xmt_trust_ui.trusted_feed_builder:
+    class: Drupal\xmt_trust_ui\Service\TrustedFeedBuilder
+    arguments:
+      - '@entity_type.manager'
+      - '@string_translation'

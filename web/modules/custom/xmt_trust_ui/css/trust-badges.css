@@ -40,6 +40,16 @@
   margin-right: 1rem;
 }
 
+.xmt-trust-feed__formats {
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.xmt-trust-feed__formats a {
+  margin-right: 0.75rem;
+}
+
 .xmt-trust-feed__item {
   border-bottom: 1px solid #dee2e6;
   padding: 1rem 0;

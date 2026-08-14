@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.5.0-trusted-feed-api — 2026-08-14
+
+### Added
+- Machine-readable trusted feeds: RSS 2.0 and JSON for `/trusted`, `/trusted/official`, `/trusted/enterprise`, `/trusted/aggregate`
+- `TrustedFeedBuilder` service — shared item shape with trust level, publisher, provenance hash, source URL
+- HTML trust pages link to RSS/JSON and expose `<link rel="alternate">` for feed discovery
+- Optional `?limit=` query parameter (1–100, default 30) on feed endpoints
+
+### Docs
+- README and `docs/ops.md` — feed URLs and sample `curl`
+
 ## v0.4.0-provenance-export — 2026-08-14
 
 ### Added
