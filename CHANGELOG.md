@@ -8,6 +8,7 @@
 - `xmt_dx_bridge` nonce-based replay protection: repeated `dx_developer_id` + `nonce` on `dx-claim` / `trusted-content` now rejected with `400`
 
 ### Fixed
+- **Trust field permissions were silently inactive on every site**: `xmt_trust_form_alter()` imported `Drupal\node\NodeForm` (no such class exists; the real class is `Drupal\node\Form\NodeForm`), so its `instanceof` check always failed and the function returned before doing anything. Vertical-site read-only enforcement and per-role trust-level option filtering now actually run.
 - Fatal error on vertical-site article forms: defined the missing `xmt_trust_vertical_readonly_after_build` `#after_build` callback in `xmt_trust`
 - Fatal error on `/admin/xmt/provenance`: unqualified `Drupal::service()` call in a namespaced controller resolved to the wrong class; now uses injected services
 
