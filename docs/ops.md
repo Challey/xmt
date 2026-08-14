@@ -127,5 +127,6 @@ HOST=xmt.pub BASE=https://xmt.pub DRUSH_URI=xmt.pub bash setup/scripts/75-verify
 ## 可信站点地图
 
 - URL：`/trusted/sitemap.xml`
-- 含 `/trusted*`、`/publishers`、各已认证 `/publisher/{id}`、近期 L1/L2 文章
-- 可选 `?limit=200`（10–500 篇文章，默认 100）
+- 含 `/trusted*`、`/publishers`、各已认证 `/publisher/{id}`、L1/L2 文章，**默认含 L0 汇聚**（约为 `limit` 一半，最多 50 条）
+- 可选：`?limit=200`、`?include_l0=0` 排除 L0、`?l0_limit=30` 指定 L0 上限
+- **robots.txt**（仅 xmt.pub hub）：自动追加 `Sitemap: https://xmt.pub/trusted/sitemap.xml`

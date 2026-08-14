@@ -35,7 +35,7 @@ XMT（xmt.pub）是在 Drupal 11 上构建的**企业级认证新媒体平台**�
 
 可选 `?limit=50`（1–100，默认 30）。
 
-站点地图：`/trusted/sitemap.xml`（可信页、主体、近期 L1/L2 文章）。
+站点地图：`/trusted/sitemap.xml`（可信页、主体、L1/L2 与默认 L0 汇聚文章）。`robots.txt` 在 xmt.pub 自动包含该 sitemap。
 
 ## 快速开始
 

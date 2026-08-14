@@ -77,6 +77,7 @@ class TrustFeedController extends ControllerBase {
       '#attributes' => ['class' => ['xmt-trust-feed__formats']],
       'rss' => Link::fromTextAndUrl($this->t('RSS'), Url::fromRoute('xmt_trust_ui.' . $this->feedBuilder->formatRouteSuffix($filter, 'rss')))->toRenderable(),
       'json' => Link::fromTextAndUrl($this->t('JSON'), Url::fromRoute('xmt_trust_ui.' . $this->feedBuilder->formatRouteSuffix($filter, 'json')))->toRenderable(),
+      'sitemap' => Link::fromTextAndUrl($this->t('Sitemap'), Url::fromRoute('xmt_trust_ui.trust_sitemap'))->toRenderable(),
     ];
 
     $build = [

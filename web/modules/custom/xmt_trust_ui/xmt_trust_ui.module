@@ -7,6 +7,7 @@
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 use Drupal\xmt_publisher\Entity\Publisher;
 
@@ -15,6 +16,26 @@ use Drupal\xmt_publisher\Entity\Publisher;
  */
 function xmt_trust_ui_page_attachments(array &$attachments): void {
   $attachments['#attached']['library'][] = 'xmt_trust_ui/trust_feed';
+}
+
+/**
+ * Implements hook_robots_alter().
+ */
+function xmt_trust_ui_robots_alter(array &$robots): void {
+  if (!function_exists('xmt_trust_is_hub_site') || !xmt_trust_is_hub_site()) {
+    return;
+  }
+  $sitemap = Url::fromRoute('xmt_trust_ui.trust_sitemap', [], ['absolute' => TRUE])->toString();
+  if (empty($robots['Sitemap'])) {
+    $robots['Sitemap'] = $sitemap;
+    return;
+  }
+  if (!is_array($robots['Sitemap'])) {
+    $robots['Sitemap'] = [$robots['Sitemap']];
+  }
+  if (!in_array($sitemap, $robots['Sitemap'], TRUE)) {
+    $robots['Sitemap'][] = $sitemap;
+  }
 }
 
 /**

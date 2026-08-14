@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.9.0-trust-seo — 2026-08-14
+
+### Added
+- `hook_robots_alter` on xmt.pub hub — appends `Sitemap: /trusted/sitemap.xml` to `robots.txt`
+- Sitemap includes recent **L0 aggregate** articles by default (half of `limit`, max 50)
+- Query params: `include_l0=0` to exclude L0; `l0_limit=` to override L0 cap
+- Trust feed pages link to sitemap; verify script checks `robots.txt`
+
+### Docs
+- `RELEASE-NOTES-v0.9.0-trust-platform.md` — consolidated v0.4–v0.9 slice summary
+
 ## v0.8.0-trust-verify-sitemap — 2026-08-14
 
 ### Added

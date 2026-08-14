@@ -42,6 +42,7 @@ curl_check "/trusted/feed.json" '"feed"'
 curl_check "/trusted/official/feed.rss" "<rss"
 curl_check "/publishers" "xmt-publishers-directory|publishers"
 curl_check "/trusted/sitemap.xml" "<urlset"
+curl_check "/robots.txt" "Sitemap:.*trusted/sitemap"
 
 echo "-- Publisher page (id=1, skip if missing)"
 PUB_CODE=$(curl -sS -o /tmp/xmt-verify-pub.txt -w '%{http_code}' -H "Host: ${HOST}" "${BASE}/publisher/1" || echo "000")
