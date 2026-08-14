@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.6.0-publisher-page — 2026-08-14
+
+### Added
+- Public publisher page (`/publisher/{id}`) shows trust badge, certification status, website, and recent articles
+- `PublisherPageBuilder` service — meta block + article list for approved publishers
+- CSS `publisher-page` library for publisher layout
+- Ops script `setup/scripts/65-trust-vertical.sh` — batch enable trust modules/fields on vertical sites
+
+### Docs
+- README, `docs/ops.md`, `docs/trust-model.md` — publisher page and vertical bootstrap
+
 ## v0.5.0-trusted-feed-api — 2026-08-14
 
 ### Added

@@ -3,3 +3,10 @@ trust_feed:
   css:
     theme:
       css/trust-badges.css: {}
+publisher_page:
+  version: 1.x
+  css:
+    theme:
+      css/publisher-page.css: {}
+  dependencies:
+    - xmt_trust_ui/trust_feed

@@ -62,6 +62,10 @@ vendor/bin/drush --uri=xmt.pub php:eval 'xmt_trust_ensure_fields(); echo "ok\n";
 ## 垂直站（zhubao 等）
 
 - 启用 `xmt_trust`、`xmt_publisher`（可选 `xmt_trust_ui` 展示徽章）；`vendor/bin/drush --uri=zhubao.wsl en xmt_trust xmt_publisher xmt_trust_ui -y` 后执行 `php:eval` 调用 `xmt_trust_ensure_fields()` / `xmt_trust_ensure_roles()`。
+- **批量引导**（非 hub 六站）：
+  ```bash
+  bash setup/scripts/65-trust-vertical.sh
+  ```
 - 垂直站文章默认 **L0 汇聚**（`xmt_trust_entity_presave`）；编辑表单上信任字段对非 hub 为**只读**（仅 `xmt.pub` 可改 L1/L2）。
 - Agent / `xmt_syndicate` 同步到 hub 时会带上 `trust_level` 与 `publisher_id`（垂直站一般为 L0）。
 
@@ -94,3 +98,9 @@ vendor/bin/drush --uri=xmt.pub php:eval 'xmt_trust_ensure_fields(); echo "ok\n";
 curl -sH 'Host: xmt.pub' 'http://127.0.0.1/trusted/feed.json?limit=5' | head -c 500
 curl -sH 'Host: xmt.pub' 'http://127.0.0.1/trusted/enterprise/feed.rss?limit=5' | head -20
 ```
+
+## 发布主体公开页
+
+- URL：`/publisher/{id}`（仅 `approved` 主体对公众可见）
+- 展示信任徽章、认证状态、官网、企业注册号及该主体最近文章
+- 验收：`curl -sH 'Host: xmt.pub' http://127.0.0.1/publisher/1 | grep -oE 'xmt-publisher|xmt-trust-badge|Published articles' | head`

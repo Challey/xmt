@@ -65,6 +65,8 @@ vendor/bin/drush --uri=xmt.pub cr
 | `xmt_syndicate` | 垂直站 → xmt.pub 聚合 |
 | `agent/` | 按领域 RSS 采集（写入 L0） |
 
+已认证发布主体公开页：`/publisher/{id}`（展示信任徽章、官网链接、已发布文章列表）。
+
 ## 许可证
 
 见 [LICENSE.txt](LICENSE.txt)。运营密钥与生产 `settings.php` 不进入本仓库。

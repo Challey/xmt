@@ -1,0 +1,1 @@
+../setup/scripts/65-trust-vertical.sh

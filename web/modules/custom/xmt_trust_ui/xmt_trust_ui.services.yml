@@ -8,3 +8,8 @@ services:
     arguments:
       - '@entity_type.manager'
       - '@string_translation'
+  xmt_trust_ui.publisher_page_builder:
+    class: Drupal\xmt_trust_ui\Service\PublisherPageBuilder
+    arguments:
+      - '@entity_type.manager'
+      - '@string_translation'

@@ -5,13 +5,34 @@
  * XMT Trust UI module hooks.
  */
 
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\node\NodeInterface;
+use Drupal\xmt_publisher\Entity\Publisher;
 
 /**
  * Implements hook_page_attachments().
  */
 function xmt_trust_ui_page_attachments(array &$attachments): void {
   $attachments['#attached']['library'][] = 'xmt_trust_ui/trust_feed';
+}
+
+/**
+ * Implements hook_entity_view_alter().
+ */
+function xmt_trust_ui_entity_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode): void {
+  if (!$entity instanceof Publisher || $view_mode !== 'full') {
+    return;
+  }
+  if ($entity->get('status')->value !== 'approved') {
+    return;
+  }
+
+  /** @var \Drupal\xmt_trust_ui\Service\PublisherPageBuilder $builder */
+  $builder = \Drupal::service('xmt_trust_ui.publisher_page_builder');
+  $build['xmt_trust_meta'] = $builder->buildMeta($entity);
+  $build['xmt_articles'] = $builder->buildArticles($entity);
+  $build['#attached']['library'][] = 'xmt_trust_ui/publisher_page';
 }
 
 /**

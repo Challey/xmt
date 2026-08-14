@@ -4,11 +4,28 @@
  * Default theme implementation for a publisher entity.
  */
 #}
-<div{{ attributes.addClass('xmt-publisher', 'xmt-trust-badge') }}>
+<div{{ attributes.addClass('xmt-publisher-page') }}>
   {{ title_prefix }}
   {% if label %}
-    <h1{{ title_attributes }}>{{ label }}</h1>
+    <header class="xmt-publisher-page__header">
+      <h1{{ title_attributes.addClass('xmt-publisher-page__title') }}>{{ label }}</h1>
+    </header>
   {% endif %}
   {{ title_suffix }}
-  {{ content }}
+
+  {% if content.xmt_trust_meta %}
+    <div class="xmt-publisher-page__meta">
+      {{ content.xmt_trust_meta }}
+    </div>
+  {% endif %}
+
+  <div class="xmt-publisher-page__fields">
+    {{ content|without('xmt_trust_meta', 'xmt_articles') }}
+  </div>
+
+  {% if content.xmt_articles %}
+  <div class="xmt-publisher-page__articles">
+    {{ content.xmt_articles }}
+  </div>
+  {% endif %}
 </div>
