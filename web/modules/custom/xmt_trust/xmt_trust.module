@@ -7,7 +7,7 @@
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\node\NodeForm;
+use Drupal\node\Form\NodeForm;
 use Drupal\node\NodeInterface;
 
 /**
