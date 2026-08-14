@@ -17,7 +17,10 @@
 
 ## 溯源
 
-每条可信文章可写 `field_provenance_hash`（来源 URL + 主体 ID + 时间的哈希），便于审计导出（后续）。
+每条可信文章可写 `field_provenance_hash`（来源 URL + 主体 ID + 时间的哈希）。
+具备 `administer xmt trust` 权限的管理员可在 `/admin/xmt/provenance`
+分页审计 L1/L2 内容，并导出 UTF-8 CSV。导出会按节点访问权限过滤，
+且对电子表格公式前缀进行转义。
 
 ## 与 DrupalX
 
