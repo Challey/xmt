@@ -147,6 +147,11 @@ class TrustHomeColumnsBlock extends BlockBase implements ContainerFactoryPluginI
           '#title' => $this->t('Certified publishers'),
           '#url' => Url::fromRoute('xmt_trust_ui.publishers_directory'),
         ],
+        'verify' => [
+          '#type' => 'link',
+          '#title' => $this->t('Verify provenance'),
+          '#url' => Url::fromRoute('xmt_trust_ui.verify'),
+        ],
         'apply' => [
           '#type' => 'link',
           '#title' => $this->t('Apply for certification'),

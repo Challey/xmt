@@ -11,15 +11,16 @@
 | v0.3.0-homepage | 首页三列 block、`/trusted/aggregate` |
 | 后续补强 | 溯源审计列表、article body bootstrap、垂直站信任字段、HTTPS 文档 |
 | v0.4.0（本分支） | 溯源 CSV/JSON 导出 + Drush；主体页文章列表；文章归因；垂直站 after_build 修复；HMAC nonce 防重放 |
-| v0.10.0-provenance-verify | 溯源哈希 write-once；公开核验页 `/trusted/verify/{nid}`（含 JSON）；`xmt:provenance-verify`；`Provenance`/`TrustLevel` 类 |
+| v0.10.0-provenance-verify | 哈希 write-once；`/trusted/verify/{nid}`（含 JSON）；`/trusted/verify?hash=`；`xmt:provenance-verify`；`Provenance`/`TrustLevel` |
 
 ## 下一步（优先序）
 
-1. ~~审计列表筛选/分页~~ — **已完成（本分支）**
+1. ~~审计列表筛选/分页~~ — **已完成**
 2. ~~机器可读可信 feed~~ — **已完成**：`/api/xmt/v1/trusted/{filter}` JSON + `/trusted/{filter}.xml` RSS
 3. ~~引导脚本~~ — **已完成**：`setup/scripts/80-trust-stack.sh`（bootstrap-all 已串联）
-4. **PHPUnit** — `Provenance` 单元测试已落地；Kernel/Functional（导出、nonce、claim/content）仍待
-5. **DrupalX 侧 auto-push** — 在 DrupalX 仓库实现（非本仓）；须带唯一 nonce
+4. ~~公众溯源核验~~ — **已完成**：`/trusted/verify?hash=...` 与 `/trusted/verify/{nid}`（含 JSON）；哈希 write-once
+5. **PHPUnit** — `Provenance` 单元测试已落地；Kernel/Functional（导出、nonce、claim/content）仍待
+6. **DrupalX 侧 auto-push** — 在 DrupalX 仓库实现（非本仓）；须带唯一 nonce
 
 ## 非目标（本仓短期）
 

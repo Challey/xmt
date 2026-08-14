@@ -39,16 +39,14 @@ bash scripts/80-trust-stack.sh
 
 - 公开核验：`/trusted/verify/{nid}`，JSON：`/trusted/verify/{nid}/json`
 - 列表：`/admin/xmt/provenance`（需 `administer xmt trust`）；可按 Trust level / Publisher 筛选并分页
-- CSV：`/admin/xmt/provenance/export.csv` 或页面 **Export CSV**（带当前筛选）
-- JSON：`/admin/xmt/provenance/export.json` 或页面 **Export JSON**
-- Web 导出按节点访问权限过滤、禁止响应缓存；CSV 会转义电子表格公式前缀
+- CSV：`/admin/xmt/provenance/export` 或页面 **Export CSV**（带当前筛选；可选 `?limit=`、`?trust_level=`）
+- 公众核验：`/trusted/verify?hash=<provenance_hash>`（无需登录）
 - CLI：
   ```bash
   vendor/bin/drush --uri=xmt.pub xmt:provenance-verify
   vendor/bin/drush --uri=xmt.pub xmt:provenance-verify --status=mismatch --limit=200
   vendor/bin/drush --uri=xmt.pub xmt:provenance-export --limit=500 --output=/tmp/audit.csv
-  vendor/bin/drush --uri=xmt.pub xmt:provenance-export --format=json --trust-level=l2_enterprise --output=/tmp/audit.json
-  vendor/bin/drush --uri=xmt.pub xmt:provenance-export --publisher=1 --output=/tmp/pub1.csv
+  vendor/bin/drush --uri=xmt.pub xmt:provenance-export --trust-level=l2_enterprise --output=/tmp/audit.csv
   ```
 - `xmt:provenance-verify` 在存在 `mismatch` 时退出码为 1，可用于巡检；`mismatch` 表示来源/主体/创建时间在首次落库后被改过。
 
@@ -104,7 +102,6 @@ vendor/bin/drush --uri=xmt.pub php:eval 'xmt_trust_ensure_fields(); echo "ok\n";
   ```
 - 垂直站文章默认 **L0 汇聚**（`xmt_trust_entity_presave`）；编辑表单上信任字段对非 hub 为**只读**（仅 `xmt.pub` 可改 L1/L2）。
 - Agent / `xmt_syndicate` 同步到 hub 时会带上 `trust_level` 与 `publisher_id`（垂直站一般为 L0）。
-
 
 ## 可信流 RSS / JSON
 

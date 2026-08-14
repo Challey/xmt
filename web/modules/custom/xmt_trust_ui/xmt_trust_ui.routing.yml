@@ -104,6 +104,14 @@ xmt_trust_ui.trust_sitemap:
   requirements:
     _permission: 'access content'
 
+xmt_trust_ui.verify:
+  path: '/trusted/verify'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ProvenanceHashLookupController::page'
+    _title: '溯源核验'
+  requirements:
+    _permission: 'access content'
+
 xmt_trust_ui.publisher_feed_rss:
   path: '/publisher/{xmt_publisher}/feed.rss'
   defaults:
