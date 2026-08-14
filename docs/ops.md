@@ -23,6 +23,18 @@
 vendor/bin/drush --uri=xmt.pub cr
 ```
 
+## Trust 栈引导
+
+幂等脚本（亦可由 `bootstrap-all.sh` 调用）：
+
+```bash
+bash setup/scripts/80-trust-stack.sh
+# 或
+bash scripts/80-trust-stack.sh
+```
+
+作用：hub 启用 `xmt_publisher` / `xmt_trust` / `xmt_trust_ui` / `xmt_dx_bridge`；垂直站启用前三者；`xmt_trust_ensure_fields()` / `xmt_trust_ensure_roles()`；在 `gavias_sancy` 放置首页可信分区 block。
+
 ## 溯源审计导出
 
 - 列表：`/admin/xmt/provenance`（需 `administer xmt trust`）；可按 Trust level / Publisher 筛选并分页
@@ -65,9 +77,10 @@ vendor/bin/drush --uri=xmt.pub cr
 
 ## 机器可读可信 feed
 
-- JSON：`/api/xmt/v1/trusted/all`（默认 L1+L2）、`…/l1_official`、`…/l2_enterprise`、`…/l0_aggregate`
-- RSS：`/trusted/all.xml`、`/trusted/l1_official.xml`（亦支持 `official` / `enterprise` / `aggregate` 别名）
-- 权限：`access content`；每页最多 30 条，含 title/url/trust/publisher/provenance/summary
+- JSON：`/api/xmt/v1/trusted`（默认 L1+L2）、`/api/xmt/v1/trusted/l1_official`、`…/l2_enterprise`、`…/l0_aggregate`
+- RSS：`/trusted.xml`、`/trusted/l1_official.xml`（亦支持 `official` / `enterprise` / `aggregate` 别名）
+- 权限：`access content`；最多 30 条，含 title/url/trust/publisher/provenance/summary
+- HTML 可信页导航含 JSON / RSS 链接
 
 ## Article 字段（含 body）
 

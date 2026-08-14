@@ -11,6 +11,7 @@
 - Article pages show “Published by” attribution linking to the publisher
 - DrupalX bridge `DxNonceGuard` — required HMAC `nonce` with expirable key-value replay rejection
 - Public machine-readable feeds: JSON `/api/xmt/v1/trusted/{filter}` and RSS `/trusted/{filter}.xml`
+- Bootstrap `setup/scripts/80-trust-stack.sh` — enable trust modules, ensure fields/roles, place homepage block
 
 ### Fixed
 - Define missing `xmt_trust_vertical_readonly_after_build()` so vertical-site article forms do not fatally error
