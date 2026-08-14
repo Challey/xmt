@@ -28,10 +28,12 @@ class ProvenanceAuditCommands extends DrushCommands {
    * @usage drush xmt:provenance-export --file=/tmp/audit.csv
    * @usage drush xmt:provenance-export --limit=500 > audit.csv
    */
-  public function export(array $options = [
-    'limit' => 0,
-    'file' => '',
-  ]): void {
+  public function export(
+    array $options = [
+      'limit' => 0,
+      'file' => '',
+    ],
+  ): void {
     $limit = (int) $options['limit'];
     $nodes = $this->provenanceAudit->loadArticles($limit > 0 ? $limit : NULL);
 
