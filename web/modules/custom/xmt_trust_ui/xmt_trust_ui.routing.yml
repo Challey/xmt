@@ -31,6 +31,14 @@ xmt_trust_ui.feed_aggregate:
   requirements:
     _permission: 'access content'
 
+xmt_trust_ui.publisher_directory:
+  path: '/publishers'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\PublisherDirectoryController::page'
+    _title: '认证主体目录'
+  requirements:
+    _permission: 'view xmt publisher'
+
 xmt_trust_ui.provenance_verify:
   path: '/trusted/verify/{node}'
   defaults:
