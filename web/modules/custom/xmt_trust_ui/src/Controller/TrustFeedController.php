@@ -3,13 +3,26 @@
 namespace Drupal\xmt_trust_ui\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Trusted content listing pages.
  */
 class TrustFeedController extends ControllerBase {
+
+  public function __construct(
+    protected DateFormatterInterface $dateFormatter,
+  ) {}
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container): static {
+    return new static($container->get('date.formatter'));
+  }
 
   /**
    * Renders a filtered trust feed.
@@ -58,7 +71,7 @@ class TrustFeedController extends ControllerBase {
             '#type' => 'html_tag',
             '#tag' => 'div',
             '#value' => $this->t('Published @date', [
-              '@date' => \Drupal::service('date.formatter')->format($node->getCreatedTime(), 'short'),
+              '@date' => $this->dateFormatter->format($node->getCreatedTime(), 'short'),
             ]),
             '#attributes' => ['class' => ['xmt-trust-feed__meta']],
           ],
