@@ -6,6 +6,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\xmt_trust\TrustLevel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -40,7 +41,7 @@ class TrustFeedController extends ControllerBase {
       $query->condition('field_trust_level', $filter);
     }
     else {
-      $query->condition('field_trust_level', ['l1_official', 'l2_enterprise'], 'IN');
+      $query->condition('field_trust_level', TrustLevel::ATTRIBUTED, 'IN');
     }
 
     $nids = $query->execute();
@@ -86,6 +87,7 @@ class TrustFeedController extends ControllerBase {
       'official' => Link::fromTextAndUrl($this->t('Official (L1)'), Url::fromRoute('xmt_trust_ui.feed_official'))->toRenderable(),
       'enterprise' => Link::fromTextAndUrl($this->t('Enterprise (L2)'), Url::fromRoute('xmt_trust_ui.feed_enterprise'))->toRenderable(),
       'aggregate' => Link::fromTextAndUrl($this->t('Aggregate (L0)'), Url::fromRoute('xmt_trust_ui.feed_aggregate'))->toRenderable(),
+      'publishers' => Link::fromTextAndUrl($this->t('认证主体'), Url::fromRoute('xmt_trust_ui.publisher_directory'))->toRenderable(),
     ];
 
     return [
