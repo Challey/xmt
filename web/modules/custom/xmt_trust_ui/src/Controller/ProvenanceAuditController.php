@@ -117,9 +117,11 @@ class ProvenanceAuditController extends ControllerBase {
         'Node ID',
         'Title',
         'Trust level',
+        'Publisher ID',
         'Publisher',
         'Provenance hash',
         'Source URL',
+        'Created (UTC)',
         'Updated (UTC)',
       ], ',', '"', '');
 
@@ -155,6 +157,7 @@ class ProvenanceAuditController extends ControllerBase {
     $response->headers->set('Content-Type', 'text/csv; charset=UTF-8');
     $response->headers->set('Content-Disposition', $disposition);
     $response->headers->set('Cache-Control', 'private, no-store');
+    $response->headers->set('X-Content-Type-Options', 'nosniff');
 
     return $response;
   }
@@ -214,10 +217,12 @@ class ProvenanceAuditController extends ControllerBase {
       ? $node->get('field_trust_level')->value
       : '';
 
+    $publisher_id = '';
     $publisher = '';
     if ($node->hasField('field_publisher') && !$node->get('field_publisher')->isEmpty()) {
+      $publisher_id = (string) $node->get('field_publisher')->target_id;
       $entity = $node->get('field_publisher')->entity;
-      $publisher = $entity ? $entity->label() : (string) $node->get('field_publisher')->target_id;
+      $publisher = $entity ? $entity->label() : $publisher_id;
     }
 
     $provenance = $node->hasField('field_provenance_hash') && !$node->get('field_provenance_hash')->isEmpty()
@@ -233,9 +238,11 @@ class ProvenanceAuditController extends ControllerBase {
       (string) $node->id(),
       $node->label(),
       $level,
+      $publisher_id,
       $publisher,
       $provenance,
       $source,
+      gmdate(DATE_ATOM, $node->getCreatedTime()),
       gmdate(DATE_ATOM, $node->getChangedTime()),
     ];
   }

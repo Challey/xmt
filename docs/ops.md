@@ -28,7 +28,7 @@ vendor/bin/drush --uri=xmt.pub cr
 - 管理页：`/admin/xmt/provenance`，仅显示当前管理员有权访问的 L1/L2
   文章，每页 50 条。
 - 「Export CSV」导出全部可访问的可信文章；文件为 UTF-8，包含节点 ID、
-  信任级别、发布主体、溯源哈希、来源 URL 和 UTC 更新时间。
+  信任级别、发布主体 ID/名称、溯源哈希、来源 URL 以及 UTC 创建/更新时间。
 - 页面与导出均要求 `administer xmt trust` 权限；CSV 响应禁止缓存，并转义
   可能被电子表格识别为公式的单元格。
 
