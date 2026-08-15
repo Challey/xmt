@@ -1,30 +1,163 @@
 # Domain-keyed mature RSS / Atom sources for XMT agent.
 # Each item: name, url, site (Drupal URI), domain tag
+# Optional (hub only): trust_level: l1_official, publisher: credit_code
 
 sources:
   jewelry:
     site: zhubao.pub
     domain: jewelry
     feeds:
-      - name: Jewellery Net Asia
-        url: https://www.jewellerynet.com/en/rss
-      - name: National Jeweler
-        url: https://www.nationaljeweler.com/rss
+      - name: Rapaport
+        url: https://rapaport.com/feed/
       - name: JCK Online
         url: https://www.jckonline.com/feed/
+      - name: Jewellery Net Asia
+        url: https://www.jewellerynet.com/en/rss
 
   ai_robot:
     site: airobotor.com
-    domain: ai_robot
+    domain: robot
     feeds:
       - name: IEEE Spectrum Robotics
         url: https://spectrum.ieee.org/feeds/topic/robotics.rss
-      - name: MIT Tech Review
-        url: https://www.technologyreview.com/feed/
       - name: The Robot Report
         url: https://www.therobotreport.com/feed/
+
+  hot_ai:
+    site: xmt.pub
+    domain: ai
+    trust_level: l0_aggregate
+    feeds:
       - name: OpenAI Blog
         url: https://openai.com/blog/rss.xml
+      - name: Google AI Blog
+        url: https://blog.google/technology/ai/rss/
+      - name: Hugging Face Blog
+        url: https://huggingface.co/blog/feed.xml
+      - name: DeepLearning.AI The Batch
+        url: https://www.deeplearning.ai/the-batch/feed/
+      - name: MIT Tech Review
+        url: https://www.technologyreview.com/feed/
+      - name: VentureBeat AI
+        url: https://venturebeat.com/category/ai/feed/
+      - name: 机器之心
+        url: https://www.jiqizhixin.com/rss
+      - name: 雷锋网
+        url: https://www.leiphone.com/feed
+
+  hot_chip:
+    site: xmt.pub
+    domain: chip
+    trust_level: l0_aggregate
+    feeds:
+      - name: Semiconductor Engineering
+        url: https://semiengineering.com/feed/
+      - name: EE Times
+        url: https://www.eetimes.com/feed/
+      - name: AnandTech
+        url: https://www.anandtech.com/rss/
+      - name: Tom's Hardware
+        url: https://www.tomshardware.com/feeds/all
+      - name: IEEE Spectrum
+        url: https://spectrum.ieee.org/feeds/feed.rss
+
+  hot_cyber:
+    site: xmt.pub
+    domain: cyber
+    trust_level: l0_aggregate
+    feeds:
+      - name: Krebs on Security
+        url: https://krebsonsecurity.com/feed/
+      - name: BleepingComputer
+        url: https://www.bleepingcomputer.com/feed/
+      - name: The Hacker News
+        url: https://feeds.feedburner.com/TheHackersNews
+
+  hot_cloud:
+    site: xmt.pub
+    domain: cloud
+    trust_level: l0_aggregate
+    feeds:
+      - name: AWS News Blog
+        url: https://aws.amazon.com/blogs/aws/feed/
+      - name: Google Cloud Blog
+        url: https://cloud.google.com/blog/rss
+      - name: Azure Blog
+        url: https://azure.microsoft.com/en-us/blog/feed/
+
+  hot_ev:
+    site: xmt.pub
+    domain: ev
+    trust_level: l0_aggregate
+    feeds:
+      - name: Electrek
+        url: https://electrek.co/feed/
+      - name: Teslarati
+        url: https://www.teslarati.com/feed/
+      - name: InsideEVs
+        url: https://insideevs.com/rss/news/all/
+
+  hot_energy:
+    site: xmt.pub
+    domain: energy
+    trust_level: l0_aggregate
+    feeds:
+      - name: CleanTechnica
+        url: https://cleantechnica.com/feed/
+      - name: Renewable Energy World
+        url: https://www.renewableenergyworld.com/feed/
+
+  hot_biotech:
+    site: xmt.pub
+    domain: biotech
+    trust_level: l0_aggregate
+    feeds:
+      - name: STAT News
+        url: https://www.statnews.com/feed/
+      - name: Fierce Biotech
+        url: https://www.fiercebiotech.com/rss/xml
+
+  hot_space:
+    site: xmt.pub
+    domain: space
+    trust_level: l0_aggregate
+    feeds:
+      - name: SpaceNews
+        url: https://spacenews.com/feed/
+      - name: NASA Spaceflight
+        url: https://www.nasaspaceflight.com/feed/
+
+  hot_fintech:
+    site: xmt.pub
+    domain: fintech
+    trust_level: l0_aggregate
+    feeds:
+      - name: Finextra
+        url: https://www.finextra.com/rss/headlines.aspx
+      - name: CoinDesk
+        url: https://www.coindesk.com/arc/outboundfeeds/rss/
+
+  hot_enterprise:
+    site: xmt.pub
+    domain: enterprise
+    trust_level: l0_aggregate
+    feeds:
+      - name: TechCrunch Enterprise
+        url: https://techcrunch.com/category/enterprise/feed/
+      - name: InfoQ中文
+        url: https://www.infoq.cn/feed
+
+  hot_internet:
+    site: xmt.pub
+    domain: internet
+    trust_level: l0_aggregate
+    feeds:
+      - name: TechCrunch
+        url: https://techcrunch.com/feed/
+      - name: The Verge
+        url: https://www.theverge.com/rss/index.xml
+      - name: 爱范儿
+        url: https://www.ifanr.com/feed
 
   harmonyos:
     site: hm-os.com
@@ -70,12 +203,215 @@ sources:
       - name: Trail Runner Mag
         url: https://www.trailrunnermag.com/feed/
 
-  # Also push a curated cross-domain sample into xmt directly when vertical fails
   general_tech:
     site: xmt.pub
-    domain: general
+    domain: tech
+    trust_level: l0_aggregate
     feeds:
-      - name: BBC Technology
-        url: https://feeds.bbci.co.uk/news/technology/rss.xml
+      - name: TechCrunch
+        url: https://techcrunch.com/feed/
+      - name: Wired
+        url: https://www.wired.com/feed/rss
+      - name: Ars Technica
+        url: https://feeds.arstechnica.com/arstechnica/index
       - name: The Verge
         url: https://www.theverge.com/rss/index.xml
+      - name: MIT Technology Review
+        url: https://www.technologyreview.com/feed/
+      - name: IEEE Spectrum
+        url: https://spectrum.ieee.org/feeds/feed.rss
+      - name: CNET News
+        url: https://www.cnet.com/rss/news/
+      - name: Engadget
+        url: https://www.engadget.com/rss.xml
+      - name: 爱范儿
+        url: https://www.ifanr.com/feed
+      - name: 少数派
+        url: https://sspai.com/feed
+      - name: Solidot
+        url: https://www.solidot.org/index.rss
+      - name: InfoQ中文
+        url: https://www.infoq.cn/feed
+      - name: 雷锋网
+        url: https://www.leiphone.com/feed
+      - name: 极客公园
+        url: https://www.geekpark.net/rss
+
+  trusted_fashion:
+    site: xmt.pub
+    domain: fashion
+    trust_level: l0_aggregate
+    feeds:
+      - name: Vogue
+        url: https://www.vogue.com/feed/rss
+      - name: Vogue Fashion
+        url: https://www.vogue.com/feed/fashion/rss
+      - name: WWD
+        url: https://wwd.com/feed/
+      - name: Elle
+        url: https://www.elle.com/rss/all.xml/
+      - name: Harper's Bazaar
+        url: https://www.harpersbazaar.com/rss/all.xml/
+      - name: GQ
+        url: https://www.gq.com/feed/rss
+      - name: Hypebeast
+        url: https://hypebeast.com/feed
+      - name: 数英网
+        url: https://www.digitaling.com/rss
+
+  # --- 官媒报道 L1（仅官方 RSS allowlist；hub xmt.pub）---
+  # 收录：人民网 / 新华网 / China Daily / 中国新闻网
+  # 凤凰网：订阅中心页仍在，但 XML 端点已 404，不做 HTML 抓取
+  # 香港 RTHK / news.gov.hk：阿里云 B 出网不可达，暂不启用
+  official_media_society:
+    site: xmt.pub
+    domain: society
+    trust_level: l1_official
+    publisher: xmt_official_media
+    feeds:
+      - name: 人民网·社会
+        url: https://www.people.com.cn/rss/society.xml
+      - name: 中国新闻网·社会
+        url: https://www.chinanews.com.cn/rss/society.xml
+      - name: China Daily China
+        url: https://www.chinadaily.com.cn/rss/china_rss.xml
+
+  official_media_world:
+    site: xmt.pub
+    domain: world
+    trust_level: l1_official
+    publisher: xmt_official_media
+    feeds:
+      - name: 新华网·国际
+        url: https://www.news.cn/world/news_world.xml
+      - name: 中国新闻网·国际
+        url: https://www.chinanews.com.cn/rss/world.xml
+      - name: China Daily World
+        url: https://www.chinadaily.com.cn/rss/world_rss.xml
+
+  official_media_finance:
+    site: xmt.pub
+    domain: finance
+    trust_level: l1_official
+    publisher: xmt_official_media
+    feeds:
+      - name: 人民网·财经
+        url: https://www.people.com.cn/rss/finance.xml
+      - name: 中国新闻网·财经
+        url: https://www.chinanews.com.cn/rss/finance.xml
+      - name: China Daily Biz
+        url: https://www.chinadaily.com.cn/rss/bizchina_rss.xml
+      - name: 新华网·财经
+        url: https://www.news.cn/fortune/news_fortune.xml
+
+  official_media_tech:
+    site: xmt.pub
+    domain: tech
+    trust_level: l1_official
+    publisher: xmt_official_media
+    feeds:
+      - name: 人民网·科技
+        url: https://www.people.com.cn/rss/scitech.xml
+      - name: 人民网·IT
+        url: https://www.people.com.cn/rss/it.xml
+      - name: 新华网·科技
+        url: https://www.news.cn/tech/news_tech.xml
+      - name: 中国新闻网·即时
+        url: https://www.chinanews.com.cn/rss/scroll-news.xml
+
+  official_media_entertainment:
+    site: xmt.pub
+    domain: entertainment
+    trust_level: l1_official
+    publisher: xmt_official_media
+    feeds:
+      - name: 人民网·娱乐
+        url: https://www.people.com.cn/rss/ent.xml
+      - name: 中国新闻网·文娱
+        url: https://www.chinanews.com.cn/rss/ent.xml
+      - name: China Daily Culture
+        url: https://www.chinadaily.com.cn/rss/culture_rss.xml
+      - name: 中国新闻网·文化
+        url: https://www.chinanews.com.cn/rss/culture.xml
+
+  official_media_fashion:
+    site: xmt.pub
+    domain: fashion
+    trust_level: l1_official
+    publisher: xmt_official_media
+    feeds:
+      - name: China Daily Lifestyle
+        url: https://www.chinadaily.com.cn/rss/lifestyle_rss.xml
+      - name: 人民网·文化
+        url: https://www.people.com.cn/rss/culture.xml
+      - name: 中国新闻网·生活
+        url: https://www.chinanews.com.cn/rss/life.xml
+
+  official_media_military:
+    site: xmt.pub
+    domain: military
+    trust_level: l1_official
+    publisher: xmt_official_media
+    feeds:
+      - name: 人民网·军事
+        url: https://www.people.com.cn/rss/military.xml
+      - name: 新华网·法治
+        url: https://www.news.cn/legal/news_legal.xml
+      - name: 中国新闻网·法治
+        url: https://www.chinanews.com.cn/rss/fz.xml
+
+  official_media_sports:
+    site: xmt.pub
+    domain: sports
+    trust_level: l1_official
+    publisher: xmt_official_media
+    feeds:
+      - name: 人民网·体育
+        url: https://www.people.com.cn/rss/sports.xml
+      - name: 中国新闻网·体育
+        url: https://www.chinanews.com.cn/rss/sports.xml
+      - name: China Daily Sports
+        url: https://www.chinadaily.com.cn/rss/sports_rss.xml
+
+  official_media_gov:
+    site: xmt.pub
+    domain: gov
+    trust_level: l1_official
+    publisher: xmt_official_media
+    feeds:
+      - name: 人民网·时政
+        url: https://www.people.com.cn/rss/politics.xml
+      - name: 中国新闻网·时政
+        url: https://www.chinanews.com.cn/rss/china.xml
+      - name: 新华网·时政
+        url: https://www.news.cn/politics/news_politics.xml
+      - name: 中国新闻网·要闻
+        url: https://www.chinanews.com.cn/rss/importnews.xml
+      - name: China Daily Opinion
+        url: https://www.chinadaily.com.cn/rss/opinion_rss.xml
+
+  official_media_auto:
+    site: xmt.pub
+    domain: auto
+    trust_level: l1_official
+    publisher: xmt_official_media
+    feeds:
+      - name: 人民网·汽车
+        url: https://www.people.com.cn/rss/auto.xml
+      - name: 人民网·健康
+        url: https://www.people.com.cn/rss/health.xml
+      - name: 中国新闻网·大湾区
+        url: https://www.chinanews.com.cn/rss/dwq.xml
+
+  official_media_property:
+    site: xmt.pub
+    domain: property
+    trust_level: l1_official
+    publisher: xmt_official_media
+    feeds:
+      - name: 人民网·房产
+        url: https://www.people.com.cn/rss/house.xml
+      - name: 人民网·教育
+        url: https://www.people.com.cn/rss/edu.xml
+      - name: 中国新闻网·教育
+        url: https://www.chinanews.com.cn/rss/edu.xml

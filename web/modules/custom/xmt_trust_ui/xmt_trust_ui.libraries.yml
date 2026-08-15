@@ -1,8 +1,36 @@
 trust_feed:
-  version: 1.x
+  version: "1.2"
   css:
     theme:
       css/trust-badges.css: {}
+
+short_read:
+  version: "2.6"
+  css:
+    theme:
+      css/short-read.css: {}
+  js:
+    js/short-read-theme-boot.js:
+      header: true
+      weight: -40
+      preprocess: false
+      minified: false
+    js/short-read.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings
+    - xmt_trust_ui/trust_feed
+
+source_ops:
+  version: "1.14"
+  css:
+    theme:
+      css/source-ops.css: {}
+  js:
+    js/source-ops.js: {}
+  dependencies:
+    - core/drupal
+
 publisher_page:
   version: 1.x
   css:

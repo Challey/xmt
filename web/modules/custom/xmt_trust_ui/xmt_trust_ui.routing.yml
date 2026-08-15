@@ -6,6 +6,7 @@ xmt_trust_ui.feed:
     filter: 'all'
   requirements:
     _permission: 'access content'
+
 xmt_trust_ui.feed_official:
   path: '/trusted/official'
   defaults:
@@ -14,6 +15,7 @@ xmt_trust_ui.feed_official:
     filter: 'l1_official'
   requirements:
     _permission: 'access content'
+
 xmt_trust_ui.feed_enterprise:
   path: '/trusted/enterprise'
   defaults:
@@ -22,6 +24,7 @@ xmt_trust_ui.feed_enterprise:
     filter: 'l2_enterprise'
   requirements:
     _permission: 'access content'
+
 xmt_trust_ui.feed_aggregate:
   path: '/trusted/aggregate'
   defaults:
@@ -38,6 +41,7 @@ xmt_trust_ui.feed_rss:
     filter: 'all'
   requirements:
     _permission: 'access content'
+
 xmt_trust_ui.feed_json:
   path: '/trusted/feed.json'
   defaults:
@@ -45,6 +49,7 @@ xmt_trust_ui.feed_json:
     filter: 'all'
   requirements:
     _permission: 'access content'
+
 xmt_trust_ui.feed_official_rss:
   path: '/trusted/official/feed.rss'
   defaults:
@@ -52,6 +57,7 @@ xmt_trust_ui.feed_official_rss:
     filter: 'l1_official'
   requirements:
     _permission: 'access content'
+
 xmt_trust_ui.feed_official_json:
   path: '/trusted/official/feed.json'
   defaults:
@@ -59,6 +65,7 @@ xmt_trust_ui.feed_official_json:
     filter: 'l1_official'
   requirements:
     _permission: 'access content'
+
 xmt_trust_ui.feed_enterprise_rss:
   path: '/trusted/enterprise/feed.rss'
   defaults:
@@ -66,6 +73,7 @@ xmt_trust_ui.feed_enterprise_rss:
     filter: 'l2_enterprise'
   requirements:
     _permission: 'access content'
+
 xmt_trust_ui.feed_enterprise_json:
   path: '/trusted/enterprise/feed.json'
   defaults:
@@ -73,6 +81,7 @@ xmt_trust_ui.feed_enterprise_json:
     filter: 'l2_enterprise'
   requirements:
     _permission: 'access content'
+
 xmt_trust_ui.feed_aggregate_rss:
   path: '/trusted/aggregate/feed.rss'
   defaults:
@@ -80,6 +89,7 @@ xmt_trust_ui.feed_aggregate_rss:
     filter: 'l0_aggregate'
   requirements:
     _permission: 'access content'
+
 xmt_trust_ui.feed_aggregate_json:
   path: '/trusted/aggregate/feed.json'
   defaults:
@@ -150,6 +160,7 @@ xmt_trust_ui.provenance_verify:
     parameters:
       node:
         type: entity:node
+
 xmt_trust_ui.provenance_verify_json:
   path: '/trusted/verify/{node}/json'
   defaults:
@@ -161,7 +172,6 @@ xmt_trust_ui.provenance_verify_json:
     parameters:
       node:
         type: entity:node
-
 
 xmt_trust_ui.provenance_audit:
   path: '/admin/xmt/provenance'
@@ -178,3 +188,396 @@ xmt_trust_ui.provenance_audit_export:
     _title: 'Export provenance audit'
   requirements:
     _permission: 'administer xmt trust'
+
+xmt_trust_ui.home:
+  path: '/home'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustHomeController::home'
+    _title: 'Home'
+  requirements:
+    _permission: 'access content'
+
+xmt_trust_ui.official_media:
+  path: '/official-media'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\OfficialMediaController::listing'
+    _title: '官媒报道'
+  requirements:
+    _permission: 'access content'
+
+xmt_trust_ui.official_media_channel:
+  path: '/official-media/{channel}'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\OfficialMediaController::listing'
+    _title_callback: '\Drupal\xmt_trust_ui\Controller\OfficialMediaController::channelTitle'
+  requirements:
+    _permission: 'access content'
+    channel: '[a-z_]+'
+
+xmt_trust_ui.badge_node:
+  path: '/api/xmt/v1/badge/node/{nid}'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustBadgeApiController::node'
+  requirements:
+    _permission: 'access content'
+    nid: '\d+'
+  methods: [GET]
+
+xmt_trust_ui.badge_publisher:
+  path: '/api/xmt/v1/badge/publisher/{xmt_publisher}'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustBadgeApiController::publisher'
+  requirements:
+    _permission: 'access content'
+    xmt_publisher: '\d+'
+  methods: [GET]
+
+xmt_trust_ui.badge_embed_node_html:
+  path: '/badge/embed/node/{nid}'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustBadgeEmbedController::nodeHtml'
+  requirements:
+    _permission: 'access content'
+    nid: '\d+'
+  methods: [GET]
+
+xmt_trust_ui.badge_embed_publisher_html:
+  path: '/badge/embed/publisher/{xmt_publisher}'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustBadgeEmbedController::publisherHtml'
+  requirements:
+    _permission: 'access content'
+    xmt_publisher: '\d+'
+  methods: [GET]
+
+xmt_trust_ui.badge_embed_node_js:
+  path: '/badge/embed/node/{nid}/js'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustBadgeEmbedController::nodeScript'
+  requirements:
+    _permission: 'access content'
+    nid: '\d+'
+  methods: [GET]
+
+xmt_trust_ui.badge_embed_publisher_js:
+  path: '/badge/embed/publisher/{xmt_publisher}/js'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustBadgeEmbedController::publisherScript'
+  requirements:
+    _permission: 'access content'
+    xmt_publisher: '\d+'
+  methods: [GET]
+
+xmt_trust_ui.short_read:
+  path: '/read'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ShortReadController::feed'
+    _title: '短闻'
+  requirements:
+    _permission: 'access content'
+
+xmt_trust_ui.short_read_later:
+  path: '/read/later'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ShortReadLaterController::page'
+    _title: '稍后再看'
+  requirements:
+    _permission: 'access content'
+
+xmt_trust_ui.short_read_today:
+  path: '/read/today'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ShortReadController::today'
+    _title: '今日简报'
+  requirements:
+    _permission: 'access content'
+
+xmt_trust_ui.short_read_detail:
+  path: '/read/{node}'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ShortReadController::detail'
+    _title_callback: '\Drupal\xmt_trust_ui\Controller\ShortReadController::detailTitle'
+  requirements:
+    _permission: 'access content'
+    node: \d+
+  options:
+    parameters:
+      node:
+        type: entity:node
+
+xmt_trust_ui.short_read_share:
+  path: '/read/{node}/share.svg'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ShortReadShareController::svg'
+  requirements:
+    _permission: 'access content'
+    node: \d+
+  options:
+    parameters:
+      node:
+        type: entity:node
+  methods: [GET]
+
+xmt_trust_ui.short_read_api:
+  path: '/api/xmt/v1/short-read'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ShortReadController::api'
+  requirements:
+    _permission: 'access content'
+  methods: [GET]
+
+xmt_trust_ui.short_read_progress:
+  path: '/api/xmt/v1/short-read/progress'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ShortReadProgressController::get'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [GET]
+
+xmt_trust_ui.short_read_progress_save:
+  path: '/api/xmt/v1/short-read/progress'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ShortReadProgressController::post'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+    _csrf_request_header_token: 'TRUE'
+  methods: [POST]
+
+xmt_trust_ui.short_read_later_sync:
+  path: '/api/xmt/v1/short-read/later'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ShortReadLaterSyncController::get'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+  methods: [GET]
+
+xmt_trust_ui.short_read_later_sync_save:
+  path: '/api/xmt/v1/short-read/later'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ShortReadLaterSyncController::post'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+    _csrf_request_header_token: 'TRUE'
+  methods: [POST]
+
+xmt_trust_ui.search:
+  path: '/trusted/search'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustSearchController::search'
+    _title: '可信搜索'
+  requirements:
+    _permission: 'access content'
+
+xmt_trust_ui.help_wechat:
+  path: '/help/wechat'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustHelpController::wechat'
+    _title: '微信打不开？'
+  requirements:
+    _permission: 'access content'
+
+xmt_trust_ui.short_summary_regen:
+  path: '/admin/xmt/short-summary/{node}/regenerate'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ShortSummaryAdminController::regenerate'
+    _title: 'Regenerate short summary'
+  requirements:
+    _permission: 'administer xmt trust'
+    node: \d+
+  options:
+    parameters:
+      node:
+        type: entity:node
+  methods: [GET]
+
+xmt_trust_ui.short_news_rss:
+  path: '/read/rss.xml'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\ShortNewsRssController::feed'
+  requirements:
+    _permission: 'access content'
+  methods: [GET]
+
+xmt_trust_ui.stats:
+  path: '/admin/xmt/stats'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\TrustStatsController::dashboard'
+    _title: 'XMT trust stats'
+  requirements:
+    _permission: 'administer xmt trust'
+
+xmt_trust_ui.source_ops:
+  path: '/admin/xmt/sources'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceOpsController::dashboard'
+    _title: '信源运营台'
+  requirements:
+    _permission: 'administer xmt trust'
+
+xmt_trust_ui.source_health:
+  path: '/admin/xmt/sources/health'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceHealthController::report'
+    _title: '信源健康摘要'
+  requirements:
+    _permission: 'administer xmt trust'
+
+xmt_trust_ui.source_health_export:
+  path: '/admin/xmt/sources/health.json'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceHealthController::export'
+  requirements:
+    _permission: 'administer xmt trust'
+  methods: [GET]
+
+xmt_trust_ui.source_ops_toggle:
+  path: '/admin/xmt/sources/toggle'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceOpsController::toggle'
+    _title: 'Toggle source'
+  requirements:
+    _permission: 'administer xmt trust'
+  methods: [GET]
+
+xmt_trust_ui.source_ops_probe:
+  path: '/admin/xmt/sources/probe'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceOpsController::probe'
+    _title: '探测信源'
+  requirements:
+    _permission: 'administer xmt trust'
+  methods: [GET]
+
+xmt_trust_ui.source_ops_dryrun:
+  path: '/admin/xmt/sources/dry-run'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceOpsController::dryRun'
+    _title: '信源 dry-run'
+  requirements:
+    _permission: 'administer xmt trust'
+  methods: [GET]
+
+xmt_trust_ui.source_ops_probe_group:
+  path: '/admin/xmt/sources/probe-group'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceOpsController::probeGroup'
+    _title: '分组批量探测'
+  requirements:
+    _permission: 'administer xmt trust'
+  methods: [GET]
+
+xmt_trust_ui.source_ops_probe_silent:
+  path: '/admin/xmt/sources/probe-silent'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceOpsController::probeSilent'
+    _title: '静默信源重测'
+  requirements:
+    _permission: 'administer xmt trust'
+  methods: [GET]
+
+xmt_trust_ui.source_ops_probe_stale:
+  path: '/admin/xmt/sources/probe-stale'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceOpsController::probeStale'
+    _title: '过期探测重测'
+  requirements:
+    _permission: 'administer xmt trust'
+  methods: [GET]
+
+xmt_trust_ui.source_ops_probe_never:
+  path: '/admin/xmt/sources/probe-never'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceOpsController::probeNever'
+    _title: '从未探测首测'
+  requirements:
+    _permission: 'administer xmt trust'
+  methods: [GET]
+
+xmt_trust_ui.source_ops_probe_empty:
+  path: '/admin/xmt/sources/probe-empty'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceOpsController::probeEmpty'
+    _title: '空源重测'
+  requirements:
+    _permission: 'administer xmt trust'
+  methods: [GET]
+
+xmt_trust_ui.source_ops_probe_failed:
+  path: '/admin/xmt/sources/probe-failed'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceOpsController::probeFailed'
+    _title: '失败信源重测'
+  requirements:
+    _permission: 'administer xmt trust'
+  methods: [GET]
+
+xmt_trust_ui.source_ops_resume_paused:
+  path: '/admin/xmt/sources/resume-paused'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceOpsController::resumePaused'
+    _title: '恢复暂停信源'
+  requirements:
+    _permission: 'administer xmt trust'
+  methods: [GET]
+
+xmt_trust_ui.source_ops_group_pause:
+  path: '/admin/xmt/sources/group-pause'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceOpsController::groupPause'
+    _title: '分组暂停'
+  requirements:
+    _permission: 'administer xmt trust'
+  methods: [GET]
+
+xmt_trust_ui.source_ops_pause_failed:
+  path: '/admin/xmt/sources/pause-failed'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceOpsController::pauseFailed'
+    _title: '暂停探测失败'
+  requirements:
+    _permission: 'administer xmt trust'
+  methods: [GET]
+
+xmt_trust_ui.source_ops_pause_never:
+  path: '/admin/xmt/sources/pause-never'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceOpsController::pauseNever'
+    _title: '暂停从未探测'
+  requirements:
+    _permission: 'administer xmt trust'
+  methods: [GET]
+
+xmt_trust_ui.source_ops_pause_silent:
+  path: '/admin/xmt/sources/pause-silent'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceOpsController::pauseSilent'
+    _title: '暂停静默信源'
+  requirements:
+    _permission: 'administer xmt trust'
+  methods: [GET]
+
+xmt_trust_ui.source_ops_pause_empty:
+  path: '/admin/xmt/sources/pause-empty'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceOpsController::pauseEmpty'
+    _title: '暂停空源'
+  requirements:
+    _permission: 'administer xmt trust'
+  methods: [GET]
+
+xmt_trust_ui.source_ops_pause_stale:
+  path: '/admin/xmt/sources/pause-stale'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceOpsController::pauseStale'
+    _title: '暂停过期信源'
+  requirements:
+    _permission: 'administer xmt trust'
+  methods: [GET]
+
+xmt_trust_ui.source_ops_export:
+  path: '/admin/xmt/sources/export.csv'
+  defaults:
+    _controller: '\Drupal\xmt_trust_ui\Controller\SourceOpsController::export'
+  requirements:
+    _permission: 'administer xmt trust'
+  methods: [GET]

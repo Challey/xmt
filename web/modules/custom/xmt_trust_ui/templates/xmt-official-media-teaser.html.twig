@@ -1,0 +1,40 @@
+{#
+/**
+ * @file
+ * Homepage teaser for official media.
+ */
+#}
+<div class="xmt-official-media-teaser block">
+  <div class="block-heading">
+    <h2 class="block-title"><span>{{ '官媒报道'|t }}</span></h2>
+    <div class="extra-links">
+      <a href="{{ short_news_url }}">{{ '短闻'|t }}</a>
+      {% if today_url %}<a href="{{ today_url }}">{{ '今日简报'|t }}</a>{% endif %}
+      <a href="/read/later">{{ '稍后再看'|t }}</a>
+      <a href="/trusted/search">{{ '搜索'|t }}</a>
+      {% if rss_url %}<a href="{{ rss_url }}" type="application/rss+xml" rel="alternate">RSS</a>{% endif %}
+      <a href="{{ more_url }}">{{ '更多'|t }}</a>
+    </div>
+  </div>
+  <nav class="xmt-official-media__nav xmt-official-media__nav--compact">
+    {% for ch in channels %}
+      <a href="{{ ch.url }}">{{ ch.label }}</a>
+    {% endfor %}
+  </nav>
+  {% if items %}
+    <div class="items-second">
+      {% for item in items %}
+        <div class="item-post">
+          <div class="small-post post-block">
+            <div class="post-content">
+              <div class="post-meta"><span class="xmt-channel-tag">{{ item.channel_label }}</span></div>
+              <div class="post-title"><a href="{{ item.url }}">{{ item.title }}</a></div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="xmt-trust-home__empty">{{ '暂无官媒报道'|t }}</p>
+  {% endif %}
+</div>

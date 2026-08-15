@@ -1,0 +1,76 @@
+{#
+/**
+ * @file
+ * Official media listing with channel nav.
+ */
+#}
+<div class="xmt-official-media block">
+  <div class="block-heading">
+    <h2 class="block-title"><span>{{ title_text }}</span></h2>
+    <div class="extra-links">
+      <a href="{{ all_url }}">{{ '全部'|t }}</a>
+      {% if short_news_url %}
+        <a href="{{ short_news_url }}">{{ '短闻阅读'|t }}</a>
+      {% endif %}
+      {% if today_url %}
+        <a href="{{ today_url }}">{{ '今日简报'|t }}</a>
+      {% endif %}
+      <a href="/read/later">{{ '稍后再看'|t }}</a>
+      <a href="/trusted/search">{{ '搜索'|t }}</a>
+      {% if rss_url %}
+        <a href="{{ rss_url }}" type="application/rss+xml" rel="alternate">RSS</a>
+        <button type="button" class="xmt-short__btn xmt-short__btn--ghost" data-xmt-copy-rss data-rss="{{ rss_url }}">{{ '复制 RSS'|t }}</button>
+      {% endif %}
+    </div>
+  </div>
+
+  <nav class="xmt-official-media__nav">
+    <a href="{{ all_url }}" class="{{ channel is empty ? 'is-active' : '' }}">{{ '全部'|t }}</a>
+    {% for ch in channels %}
+      <a href="{{ ch.url }}" class="{{ ch.active ? 'is-active' : '' }}">{{ ch.label }}</a>
+    {% endfor %}
+  </nav>
+
+  {% if short_news_url %}
+    <p class="xmt-official-media__bridge">
+      {{ '想速览摘要？'|t }}
+      <a href="{{ short_news_url }}">{{ '用短闻打开本频道'|t }}</a>
+      {% if today_url %}
+        · <a href="{{ today_url }}">{{ '今日简报'|t }}</a>
+      {% endif %}
+      · <a href="/read/later">{{ '稍后再看'|t }}</a>
+      · <a href="/trusted/search">{{ '搜索'|t }}</a>
+      {% if rss_url %}
+        · <a href="{{ rss_url }}" type="application/rss+xml" rel="alternate">{{ '订阅本频道短闻 RSS'|t }}</a>
+      {% endif %}
+    </p>
+  {% endif %}
+
+  {% if items %}
+    <div class="xmt-official-media__list">
+      {% for item in items %}
+        <article class="post-block small-post xmt-official-media__item">
+          <div class="post-content">
+            <div class="post-meta">
+              <span class="category-background xmt-trust-badge {{ item.badge_class }}">{{ item.badge }}</span>
+              {% if item.channel_label %}
+                <span class="xmt-channel-tag">{{ item.channel_label }}</span>
+              {% endif %}
+              {% if item.source %}
+                <span class="post-source">{{ item.source }}</span>
+              {% endif %}
+              <span class="post-created">{{ item.date }}</span>
+            </div>
+            <h3 class="post-title"><a href="{{ item.url }}">{{ item.title }}</a></h3>
+            {% if item.immerse_url %}
+              <p class="xmt-official-media__item-actions"><a href="{{ item.immerse_url }}">{{ '沉浸'|t }}</a></p>
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+    <p class="xmt-official-media__hint" aria-hidden="true">j/k 选择 · Enter/e 打开 · i 沉浸 · t 今日 · l 稍后 · f 搜索 · r RSS</p>
+  {% else %}
+    <p class="xmt-trust-home__empty">{{ '暂无官媒报道'|t }}</p>
+  {% endif %}
+</div>

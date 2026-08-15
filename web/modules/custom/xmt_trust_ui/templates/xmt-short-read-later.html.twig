@@ -1,0 +1,32 @@
+<div class="xmt-short-later-page" data-xmt-later-page>
+  <div class="xmt-short-later-page__nav">
+    <a href="{{ feed_url }}">← 返回速览</a>
+    <a href="/read/today">今日简报</a>
+    <a href="/trusted/search">搜索</a>
+    <a href="{{ rss_url }}" type="application/rss+xml" rel="alternate">RSS</a>
+    <button type="button" class="xmt-short__btn xmt-short__btn--ghost" data-xmt-copy-rss data-rss="{{ rss_url }}">复制 RSS</button>
+    <button type="button" class="xmt-short__btn xmt-short__btn--ghost" data-xmt-copy-share data-url="">复制本页</button>
+    <a href="/official-media">官媒</a>
+  </div>
+  <header class="xmt-short-later-page__head">
+    <h1>稍后再看</h1>
+    <p>保存在本机浏览器；登录后会与账号同步。不登录也能跨详情页继续读。</p>
+    <p class="xmt-short-later-page__hint">登录后可在多设备同步「稍后再看」与已读进度。键盘 <kbd>j</kbd>/<kbd>k</kbd> 选择 · <kbd>Enter</kbd> 打开 · <kbd>x</kbd> 移除 · <kbd>c</kbd> 清空 · <kbd>p</kbd> 复制 · <kbd>t</kbd> 今日 · <kbd>i</kbd> 沉浸 · <kbd>r</kbd> RSS · <kbd>f</kbd>/<kbd>/</kbd> 搜索 · <kbd>g</kbd> 官媒。</p>
+  </header>
+  <div class="xmt-short-later-page__toolbar">
+    <button type="button" class="xmt-short__btn xmt-short__btn--ghost" data-xmt-later-clear hidden>清空全部</button>
+  </div>
+  <ul class="xmt-short-later-page__list" data-xmt-later-page-list></ul>
+  <div class="xmt-short-later-page__empty" data-xmt-later-empty hidden>
+    <p>暂无收藏。在速览或详情点「稍后再看」即可加入。</p>
+    <p class="xmt-short-later-page__hint">也可先按领域筛选速览，再挑条收藏。</p>
+    <div class="xmt-short-later-page__cta">
+      <a class="xmt-short__btn xmt-short__btn--primary" href="{{ feed_url }}">去速览</a>
+      <a class="xmt-short__btn xmt-short__btn--ghost" href="{{ immerse_url }}">信流</a>
+      <a class="xmt-short__btn xmt-short__btn--ghost" href="/read/today">今日简报</a>
+      <a class="xmt-short__btn xmt-short__btn--ghost" href="/trusted/search">搜索</a>
+      <a class="xmt-short__btn xmt-short__btn--ghost" href="{{ rss_url }}" type="application/rss+xml" rel="alternate">RSS</a>
+      <a class="xmt-short__btn xmt-short__btn--ghost" href="/official-media">官媒</a>
+    </div>
+  </div>
+</div>
