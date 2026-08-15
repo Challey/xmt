@@ -1,0 +1,31 @@
+<div class="xmt-publisher-directory">
+  <p class="xmt-publisher-directory__intro">已认证的官方与企业发布主体。申请入驻：<a href="{{ apply_url }}">企业可信发布认证</a>。</p>
+  <p class="xmt-publisher-directory__nav">
+    <a href="{{ short_news_url }}">短闻</a>
+    ·
+    <a href="{{ today_url|default('/read/today') }}">今日简报</a>
+    ·
+    <a href="/read/later">稍后再看</a>
+    ·
+    <a href="{{ rss_url }}" type="application/rss+xml" rel="alternate">RSS</a>
+    ·
+    <button type="button" class="xmt-short__btn xmt-short__btn--ghost" data-xmt-copy-rss data-rss="{{ rss_url }}">复制 RSS</button>
+    ·
+    <a href="{{ search_url }}">可信搜索</a>
+  </p>
+  {% if items %}
+    <ul class="xmt-publisher-directory__list">
+      {% for item in items %}
+        <li class="xmt-publisher-directory__item">
+          <a class="xmt-publisher-directory__name" href="{{ item.url }}">{{ item.name }}</a>
+          <span class="xmt-trust-badge {{ item.badge_class }}">{{ item.badge_label }}</span>
+          {% if item.website_link %}
+            <span class="xmt-publisher-directory__web">{{ item.website_link|raw }}</span>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>{{ '暂无已批准主体。'|t }}</p>
+  {% endif %}
+</div>

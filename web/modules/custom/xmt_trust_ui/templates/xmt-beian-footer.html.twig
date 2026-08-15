@@ -1,0 +1,34 @@
+{#
+/**
+ * Footer beian + product links.
+ */
+#}
+<div class="xmt-beian{% if international %} xmt-beian--intl{% endif %}">
+  {% if international %}
+    <a href="{{ read_url }}">{{ 'Short News'|t }}</a>
+    <span class="xmt-beian__sep">·</span>
+    {% if today_url %}<a href="{{ today_url }}">{{ 'Today'|t }}</a><span class="xmt-beian__sep">·</span>{% endif %}
+    {% if later_url %}<a href="{{ later_url }}">{{ 'Later'|t }}</a><span class="xmt-beian__sep">·</span>{% endif %}
+    <a href="{{ search_url }}">{{ 'Trusted Search'|t }}</a>
+  {% else %}
+    <a href="{{ read_url }}">{{ '短闻'|t }}</a>
+    <span class="xmt-beian__sep">·</span>
+    {% if today_url %}
+      <a href="{{ today_url }}">{{ '今日简报'|t }}</a>
+      <span class="xmt-beian__sep">·</span>
+    {% endif %}
+    {% if later_url %}
+      <a href="{{ later_url }}">{{ '稍后再看'|t }}</a>
+      <span class="xmt-beian__sep">·</span>
+    {% endif %}
+    <a href="{{ search_url }}">{{ '可信搜索'|t }}</a>
+    {% if wechat_help_url %}
+      <span class="xmt-beian__sep">·</span>
+      <a href="{{ wechat_help_url }}">{{ '微信打不开？'|t }}</a>
+    {% endif %}
+    {% if beian %}
+      <span class="xmt-beian__sep">·</span>
+      <a class="xmt-beian__icp" href="{{ beian_url }}" target="_blank" rel="noopener noreferrer">{{ beian }}</a>
+    {% endif %}
+  {% endif %}
+</div>

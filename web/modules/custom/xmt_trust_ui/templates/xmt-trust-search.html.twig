@@ -1,0 +1,70 @@
+{#
+/**
+ * Trusted search.
+ */
+#}
+<div class="xmt-search">
+  <header class="xmt-search__head">
+    <h1 class="xmt-search__brand">{{ '可信搜索'|t }}</h1>
+    <p class="xmt-search__tagline">{{ '在官方 / 企业 / 汇聚分层中检索可信资讯，结果可直达短闻。'|t }}</p>
+  </header>
+
+  <form class="xmt-search__form" method="get" action="{{ form_action }}">
+    <label class="visually-hidden" for="xmt-search-q">{{ '关键词'|t }}</label>
+    <input id="xmt-search-q" class="xmt-search__input" type="search" name="q" value="{{ q }}" placeholder="{{ '搜索标题或摘要…'|t }}" minlength="2" required>
+    {% if level != 'trusted' %}
+      <input type="hidden" name="level" value="{{ level }}">
+    {% endif %}
+    <button class="xmt-short__btn xmt-short__btn--primary" type="submit">{{ '搜索'|t }}</button>
+    <a class="xmt-short__btn xmt-short__btn--ghost" href="{{ short_news_url }}">{{ '短闻'|t }}</a>
+    {% if today_url %}
+      <a class="xmt-short__btn xmt-short__btn--ghost" href="{{ today_url }}">{{ '今日简报'|t }}</a>
+    {% endif %}
+    <a class="xmt-short__btn xmt-short__btn--ghost" href="/read/later">{{ '稍后再看'|t }}</a>
+    <a class="xmt-short__btn xmt-short__btn--ghost" href="/official-media">{{ '官媒'|t }}</a>
+    <a class="xmt-short__btn xmt-short__btn--ghost" href="{{ rss_url }}" type="application/rss+xml" rel="alternate">RSS</a>
+    <button type="button" class="xmt-short__btn xmt-short__btn--ghost" data-xmt-copy-rss data-rss="{{ rss_url }}">{{ '复制 RSS'|t }}</button>
+    <button type="button" class="xmt-short__btn xmt-short__btn--ghost" data-xmt-copy-share data-url="">{{ '复制本页'|t }}</button>
+  </form>
+
+  <nav class="xmt-short__filters" aria-label="{{ 'Trust filters'|t }}">
+    {% for f in filters %}
+      <a class="xmt-short__filter{% if f.active %} is-active{% endif %}" href="{{ f.url }}">{{ f.label }}</a>
+    {% endfor %}
+  </nav>
+
+  {% if q == '' %}
+    <p class="xmt-search__hint">{{ '输入至少 2 个字开始检索。'|t }}</p>
+  {% elseif items is empty %}
+    <div class="xmt-search__hint">
+      <p>{{ '未找到匹配的可信内容。'|t }}</p>
+      <div class="xmt-short__empty-actions">
+        <a class="xmt-short__btn xmt-short__btn--primary" href="{{ short_news_url }}">{{ '去短闻速览'|t }}</a>
+        <a class="xmt-short__btn xmt-short__btn--ghost" href="{{ immerse_url|default(short_news_url) }}">{{ '信流'|t }}</a>
+        {% if today_url %}
+          <a class="xmt-short__btn xmt-short__btn--ghost" href="{{ today_url }}">{{ '今日简报'|t }}</a>
+        {% endif %}
+      </div>
+    </div>
+  {% else %}
+    <p class="xmt-search__count">{{ '共 @n 条'|t({'@n': items|length}) }}</p>
+    <div class="xmt-search__list">
+      {% for item in items %}
+        <article class="xmt-search__item">
+          <div class="xmt-short__meta">
+            <span class="xmt-trust-badge {{ item.badge_class }}">{{ item.badge_label }}</span>
+            {% if item.source_name %}<span>{{ item.source_name }}</span>{% endif %}
+            <span>{{ item.created_label }}</span>
+          </div>
+          <h2 class="xmt-search__title"><a href="{{ item.detail_url }}">{{ item.title }}</a></h2>
+          {% if item.excerpt %}<p class="xmt-search__excerpt">{{ item.excerpt }}</p>{% endif %}
+          <div class="xmt-short__actions">
+            <a class="xmt-short__btn xmt-short__btn--primary" href="{{ item.detail_url }}">{{ '详情'|t }}</a>
+            <a class="xmt-short__btn xmt-short__btn--ghost" href="{{ item.immerse_url }}">{{ '沉浸'|t }}</a>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+    <p class="xmt-search__hint" aria-hidden="true">j/k 选择 · Enter/e 打开 · i 沉浸 · t 今日 · l 稍后 · r RSS · p 复制</p>
+  {% endif %}
+</div>

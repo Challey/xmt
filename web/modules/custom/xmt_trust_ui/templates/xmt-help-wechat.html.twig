@@ -1,0 +1,31 @@
+{#
+/**
+ * WeChat open help.
+ */
+#}
+<div class="xmt-help" data-xmt-wechat-help>
+  <h1>{{ '在微信里打不开？'|t }}</h1>
+  <p>{{ '若链接跳转到 weixin110.qq.com，属于微信安全中心对域名的拦截，不是短闻页面故障。'|t }}</p>
+
+  <section>
+    <h2>{{ '立刻可读（二次打开）'|t }}</h2>
+    <ol>
+      <li>{{ '点击右上角 ··· → 在浏览器打开（推荐）'|t }}</li>
+      <li>{{ '或复制下方链接，粘贴到 Safari / Chrome'|t }}</li>
+    </ol>
+    <div class="xmt-help__copy">
+      <input type="text" readonly class="xmt-help__url" data-xmt-copy-url value="{{ target_url|default(read_url) }}" aria-label="{{ '页面链接'|t }}">
+      <button type="button" class="xmt-short__btn xmt-short__btn--primary" data-xmt-copy-btn>{{ '复制链接'|t }}</button>
+      <span class="xmt-help__copied" data-xmt-copy-ok hidden>{{ '已复制'|t }}</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>{{ '站长处理'|t }}</h2>
+    <ul>
+      <li>{{ '完成 ICP 备案，并把备案号挂在页脚'|t }}{% if beian %}（{{ '当前配置'|t }}：{{ beian }}）{% endif %}</li>
+      <li>{{ '在微信安全中心申诉域名解封'|t }}</li>
+      <li><a href="{{ home_url }}">{{ '返回首页'|t }}</a> · <a href="{{ read_url }}">{{ '短闻'|t }}</a>{% if today_url %} · <a href="{{ today_url }}">{{ '今日简报'|t }}</a>{% endif %}{% if later_url %} · <a href="{{ later_url }}">{{ '稍后再看'|t }}</a>{% endif %}{% if search_url %} · <a href="{{ search_url }}">{{ '搜索'|t }}</a>{% endif %}</li>
+    </ul>
+  </section>
+</div>

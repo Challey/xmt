@@ -1,0 +1,93 @@
+{#
+/**
+ * @file
+ * Hub homepage: 短闻 hero + hot news sections (财经 / 科技 / 国内 / 国际).
+ *
+ * Variables:
+ * - short_news: brand, text, urls, hot_links[]
+ * - columns: list of {title, more_url, items[]}
+ *   items: {url, title, date, excerpt, badge, badge_class, short_url}
+ */
+#}
+{% if short_news %}
+  <div class="xmt-short-home" data-xmt-theme-root>
+    <div class="xmt-short-home__bar">
+      <p class="xmt-short-home__eyebrow">XMT</p>
+      <button type="button" class="xmt-short-home__theme" data-xmt-theme-toggle aria-label="{{ '切换白天 / 黑夜'|t }}" title="{{ '白天 / 黑夜'|t }}">
+        <span data-xmt-theme-label>白天</span>
+      </button>
+    </div>
+    <div class="xmt-short-home__brand">{{ short_news.brand }}</div>
+    <p class="xmt-short-home__text">{{ short_news.text }}</p>
+    {% if short_news.hot_links %}
+      <nav class="xmt-short-home__hot" aria-label="{{ '最热短闻'|t }}">
+        {% for h in short_news.hot_links %}
+          <a class="xmt-short-home__hot-link" href="{{ h.url }}">{{ h.label }}</a>
+        {% endfor %}
+      </nav>
+    {% endif %}
+    <div class="xmt-short-home__actions">
+      <a class="xmt-short-home__btn xmt-short-home__btn--primary" href="{{ short_news.immerse_url }}">{{ '进入信流'|t }}</a>
+      <a class="xmt-short-home__btn xmt-short-home__btn--ghost" href="{{ short_news.today_url|default('/read/today') }}">{{ '今日'|t }}</a>
+      <a class="xmt-short-home__btn xmt-short-home__btn--ghost" href="{{ short_news.browse_url }}">{{ '速览'|t }}</a>
+    </div>
+  </div>
+{% endif %}
+<div class="xmt-trust-home xmt-trust-home--hot row">
+  {% for column in columns %}
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <div class="block xmt-trust-home__block">
+        <div class="block-heading">
+          <h2 class="block-title"><span>{{ column.title }}</span></h2>
+          <div class="extra-links">
+            <a href="{{ column.more_url }}">{{ '信流'|t }}</a>
+          </div>
+        </div>
+        <div class="gva-view-mlayout-1">
+          {% if column.items %}
+            {% for item in column.items %}
+              {% if loop.first %}
+                <div class="item-first">
+                  <div class="content-inner">
+                    <div class="post-block node-index-1">
+                      <div class="post-content">
+                        <div class="post-meta">
+                          <span class="category-background xmt-trust-badge {{ item.badge_class }}">{{ item.badge }}</span>
+                          <span class="post-created">{{ item.date }}</span>
+                        </div>
+                        <h3 class="post-title"><a href="{{ item.short_url|default(item.url) }}" rel="bookmark">{{ item.title }}</a></h3>
+                        {% if item.excerpt %}
+                          <div class="post-body">{{ item.excerpt }}</div>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% if column.items|length > 1 %}
+                  <div class="items-second"><div class="content-inner">
+                {% endif %}
+              {% else %}
+                <div class="item-post">
+                  <div class="small-post post-block">
+                    <div class="post-content">
+                      <div class="post-meta">
+                        <span class="xmt-trust-badge {{ item.badge_class }}">{{ item.badge }}</span>
+                        <span class="post-created">{{ item.date }}</span>
+                      </div>
+                      <div class="post-title"><a href="{{ item.short_url|default(item.url) }}">{{ item.title }}</a></div>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+            {% if column.items|length > 1 %}
+                  </div></div>
+            {% endif %}
+          {% else %}
+            <p class="xmt-trust-home__empty">{{ '暂无内容，稍后再看或进入信流'|t }}</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>

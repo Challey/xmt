@@ -23,3 +23,12 @@ services:
     arguments:
       - '@entity_type.manager'
       - '@string_translation'
+  xmt_trust_ui.short_summary:
+    class: Drupal\xmt_trust_ui\Service\ShortSummaryGenerator
+    arguments:
+      - '@cache.default'
+  xmt_trust_ui.source_catalog:
+    class: Drupal\xmt_trust_ui\Service\SourceCatalog
+    arguments:
+      - '@database'
+      - '@state'
