@@ -1,0 +1,418 @@
+/**
+ * 短闻 · Apple refinement layer (v3)
+ * Loaded after short-read.css. Tokens stay on html[data-xmt-theme].
+ * Goals: SF-like clarity, generous leading, soft surfaces, reading-first.
+ */
+
+/* System stack preference when available */
+.xmt-short,
+.xmt-short-detail,
+.xmt-short-home {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Safer fluid type */
+.xmt-short {
+  font-size: clamp(15px, 0.35vw + 14.5px, 17px);
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+}
+
+/* Sticky top: true glass, tighter on immerse */
+.xmt-short__top {
+  padding-block: 0.65rem;
+  border-bottom-color: color-mix(in srgb, var(--xmt-line) 80%, transparent);
+}
+
+.xmt-short--browse {
+  max-width: 680px;
+  padding-inline: max(1rem, env(safe-area-inset-left));
+  padding-bottom: max(3.5rem, env(safe-area-inset-bottom));
+}
+
+.xmt-short__brand {
+  font-size: clamp(1.75rem, 4.2vw, 2.35rem);
+  letter-spacing: -0.035em;
+  font-weight: 700;
+}
+
+.xmt-short__tagline {
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--xmt-muted);
+}
+
+.xmt-short__pitch {
+  font-size: 0.86rem;
+  line-height: 1.5;
+  max-width: 36em;
+}
+
+/* Segmented control — iOS style */
+.xmt-short__mode-switch {
+  padding: 0.18rem;
+  border-radius: 9px;
+  background: var(--xmt-seg-track);
+}
+
+.xmt-short__seg {
+  min-width: 4.25rem;
+  padding: 0.38rem 0.85rem;
+  border-radius: 7px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.xmt-short__seg.is-active {
+  box-shadow:
+    0 0.5px 1px rgba(0, 0, 0, 0.04),
+    0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* Pill actions: quieter chrome */
+.xmt-short__mode-btn {
+  min-height: 1.85rem;
+  padding: 0.22rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  border-color: var(--xmt-line);
+  border-radius: 980px;
+  color: var(--xmt-text) !important;
+  background: color-mix(in srgb, var(--xmt-paper) 55%, transparent);
+}
+
+.xmt-short__mode-btn:hover {
+  background: var(--xmt-accent-soft);
+  border-color: color-mix(in srgb, var(--xmt-accent) 35%, var(--xmt-line));
+  color: var(--xmt-accent) !important;
+}
+
+html[data-xmt-theme="night"] .xmt-short__mode-btn:hover {
+  background: var(--xmt-accent-soft);
+}
+
+/* Domain / trust chips */
+.xmt-short__filter,
+.xmt-short__domain {
+  padding: 0.28rem 0.72rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  border-radius: 980px;
+}
+
+.xmt-short__filter.is-active,
+.xmt-short__domain.is-active {
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--xmt-accent) 25%, transparent);
+}
+
+.xmt-short__domains--more {
+  border-top-color: var(--xmt-line);
+}
+
+.xmt-short__domain--more {
+  border-color: var(--xmt-line) !important;
+  border-style: dashed;
+}
+
+html[data-xmt-theme="night"] .xmt-short__domain--more:hover,
+html[data-xmt-theme="night"] .xmt-short__domains-wrap.is-open .xmt-short__domain--more {
+  color: var(--xmt-text) !important;
+  border-color: var(--xmt-line) !important;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Browse cards — Apple card */
+.xmt-short__list {
+  gap: 0.75rem;
+}
+
+.xmt-short__card--browse .xmt-short__card-inner {
+  padding: 1.05rem 1.15rem 1.1rem 1.2rem;
+  border-radius: 16px;
+  border: 1px solid var(--xmt-line);
+  background: var(--xmt-paper);
+  box-shadow:
+    0 0.5px 1.5px rgba(0, 0, 0, 0.04),
+    0 6px 18px rgba(0, 0, 0, 0.035);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.xmt-short__card--browse:hover .xmt-short__card-inner {
+  border-color: color-mix(in srgb, var(--xmt-accent) 28%, var(--xmt-line));
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 12px 28px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+.xmt-short__trust-rail {
+  width: 3px;
+  border-radius: 3px 0 0 3px;
+  background: linear-gradient(180deg, var(--xmt-accent), var(--xmt-good));
+}
+
+.xmt-short__card--browse .xmt-short__title {
+  font-size: 1.12rem;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  line-height: 1.32;
+}
+
+.xmt-short__card--browse .xmt-short__brief {
+  margin-top: 0.45rem;
+  font-size: 0.92rem;
+  line-height: 1.62;
+  color: color-mix(in srgb, var(--xmt-text) 78%, var(--xmt-muted)) !important;
+  -webkit-line-clamp: 3;
+}
+
+html[data-xmt-theme="night"] .xmt-short__card--browse .xmt-short__brief {
+  color: color-mix(in srgb, var(--xmt-text) 72%, transparent) !important;
+}
+
+.xmt-short__meta {
+  font-size: 0.78rem;
+  gap: 0.4rem 0.65rem;
+}
+
+/* Immersive: focus reading, less chrome noise */
+.xmt-short--immerse .xmt-short__top::after {
+  font-size: 0.7rem;
+  opacity: 0.85;
+}
+
+.xmt-short__card--immerse {
+  padding: 0.85rem 1rem max(2rem, env(safe-area-inset-bottom));
+}
+
+.xmt-short__card--immerse .xmt-short__card-inner {
+  width: min(640px, 100%);
+  padding: 1.35rem 1.3rem 1.55rem;
+  border-radius: 20px;
+  border: 1px solid var(--xmt-line);
+  background: var(--xmt-paper);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    0 24px 48px rgba(0, 0, 0, 0.06);
+  gap: 0.85rem;
+}
+
+html[data-xmt-theme="night"] .xmt-short__card--immerse .xmt-short__card-inner {
+  background: #161618;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+.xmt-short__card--immerse .xmt-short__title {
+  font-family: var(--xmt-font-brand), "Noto Sans SC", system-ui, sans-serif;
+  font-size: clamp(1.28rem, 3.2vw, 1.85rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.28;
+}
+
+.xmt-short__card--immerse .xmt-short__brief {
+  font-size: 1.02rem;
+  line-height: 1.68;
+  color: color-mix(in srgb, var(--xmt-text) 88%, transparent) !important;
+}
+
+.xmt-short__points li {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--xmt-muted) !important;
+}
+
+.xmt-short__points li::before {
+  background: var(--xmt-accent);
+  width: 0.35rem;
+  height: 0.35rem;
+}
+
+/* Primary CTA — Apple blue pill */
+.xmt-short__btn {
+  min-height: 2.4rem;
+  padding: 0.45rem 1.05rem;
+  border-radius: 980px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: transform 140ms ease, opacity 140ms ease, background 140ms ease;
+}
+
+.xmt-short__btn--primary {
+  background: var(--xmt-accent) !important;
+  color: #fff !important;
+  border: none;
+}
+
+.xmt-short__btn--primary:hover {
+  opacity: 0.92;
+  transform: scale(1.01);
+}
+
+.xmt-short__btn--ghost {
+  border-color: var(--xmt-line) !important;
+  color: var(--xmt-text) !important;
+  background: transparent;
+}
+
+.xmt-short__btn--ghost:hover {
+  background: var(--xmt-accent-soft);
+}
+
+/* Detail page reading measure */
+.xmt-short-detail {
+  max-width: 680px;
+  padding-inline: max(1rem, env(safe-area-inset-left));
+  font-size: clamp(15px, 0.3vw + 14.5px, 17px);
+  line-height: 1.65;
+}
+
+.xmt-short-detail__title {
+  font-size: clamp(1.45rem, 2.8vw, 2rem);
+  letter-spacing: -0.03em;
+  line-height: 1.28;
+  margin-bottom: 0.65rem;
+}
+
+.xmt-short-detail__brief,
+.xmt-short-detail__body {
+  padding: 1.05rem 1.15rem;
+  border-radius: 14px;
+  border-left: none;
+  border: 1px solid var(--xmt-line);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.xmt-short-detail__brief {
+  background: color-mix(in srgb, var(--xmt-accent-soft) 55%, var(--xmt-paper));
+}
+
+.xmt-short-detail__pager-link {
+  border-radius: 14px;
+  border-color: var(--xmt-line);
+  background: var(--xmt-paper);
+  color: var(--xmt-text);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.xmt-short-detail__pager-link:hover {
+  border-color: color-mix(in srgb, var(--xmt-accent) 40%, var(--xmt-line));
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+.xmt-short-detail__related {
+  border-top-color: var(--xmt-line);
+}
+
+.xmt-short-detail__related h2 {
+  color: var(--xmt-text);
+}
+
+/* Today list — tokenized (was hard-coded parchment) */
+.xmt-short-today__item {
+  padding: 1rem 1.1rem;
+  background: var(--xmt-paper);
+  border: 1px solid var(--xmt-line);
+  border-radius: 14px;
+}
+
+.xmt-short-today__item.is-focus {
+  border-color: color-mix(in srgb, var(--xmt-accent) 45%, var(--xmt-line));
+  box-shadow: inset 3px 0 0 var(--xmt-accent);
+}
+
+.xmt-short-today__title {
+  font-family: var(--xmt-font-brand), "Noto Sans SC", sans-serif;
+  font-size: 1.08rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.32;
+  color: var(--xmt-text);
+}
+
+.xmt-short-today__brief {
+  color: color-mix(in srgb, var(--xmt-text) 80%, var(--xmt-muted));
+  font-size: 0.92rem;
+  line-height: 1.58;
+}
+
+.xmt-short-today__meta {
+  color: var(--xmt-muted);
+  font-size: 0.8rem;
+}
+
+.xmt-short__source-bar {
+  color: var(--xmt-muted);
+  font-size: 0.85rem;
+}
+
+/* Later panel glass */
+.xmt-short__later-panel {
+  background: color-mix(in srgb, var(--xmt-paper) 92%, transparent);
+  color: var(--xmt-text);
+  border: 1px solid var(--xmt-line);
+  border-radius: 16px;
+  backdrop-filter: saturate(160%) blur(18px);
+  -webkit-backdrop-filter: saturate(160%) blur(18px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
+}
+
+.xmt-short__later-list a {
+  color: var(--xmt-text);
+}
+
+/* Empty states */
+.xmt-short__empty-title {
+  color: var(--xmt-text);
+  letter-spacing: -0.02em;
+}
+
+.xmt-short__fallback-note {
+  border-left-color: var(--xmt-accent);
+  background: var(--xmt-accent-soft);
+  color: var(--xmt-muted);
+  border-radius: 0 10px 10px 0;
+}
+
+/* Home hero / hot columns */
+.xmt-short-home__btn--primary {
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--xmt-accent) 30%, transparent);
+}
+
+.xmt-trust-home--hot .block {
+  border-radius: 16px;
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .xmt-short--browse,
+  .xmt-short__card--browse .xmt-short__card-inner,
+  .xmt-short__card--immerse .xmt-short__card-inner,
+  .xmt-short__btn {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Mobile comfort */
+@media (max-width: 640px) {
+  .xmt-short__top-actions {
+    gap: 0.3rem;
+  }
+  .xmt-short__mode-btn {
+    font-size: 0.74rem;
+    padding: 0.2rem 0.55rem;
+  }
+  .xmt-short__card--browse .xmt-short__title {
+    font-size: 1.05rem;
+  }
+  .xmt-short__card--immerse .xmt-short__card-inner {
+    padding: 1.1rem 1rem 1.25rem;
+    border-radius: 16px;
+  }
+}
