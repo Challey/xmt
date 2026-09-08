@@ -2,21 +2,25 @@
 
 ## Unreleased
 
+### Docs
+- `docs/BRANCHES.md` — 分支梳理与合并记录
+- `docs/roadmap.md` — 纳入短闻切片与下一步清理项
+
+## v0.11.0-short-news-theme — 2026-08-15（合入 main 2026-09-09）
+
 ### Added
 - 短闻 **白天 / 黑夜** 主题（`xmt_duanwen_theme`，顶栏与首页一键切换；信流布局与配色解耦）
 - 首页最热四栏：**财经 · 科技 · 国内 · 国际**；主行领域芯片同步置顶
 - 领域 `world`（国际）与虚拟聚合 `domestic`（时政/社会/军事）；官媒国际 RSS 独立分组入库
+- `docs/short-news.md`、`docs/domains.md`、`docs/sources-allowlist.md`
 
 ### Merged
-- Reconcile **short-news / source-ops** working tree with **origin/main** trust-platform merges (publishers feeds, provenance verify, trusted feed formats, sitemap). Audit CSV adds `url` + `short_read_url`; route names follow main (`publishers_directory`, `trust_sitemap`, `provenance_audit_export`).
+- PR #1 `cursor/short-news-theme-hot-home-e92f` → main（冲突已按「保留信任平台 + 叠加短闻」解决）
+- Reconcile short-news / source-ops with trust-platform（publishers feeds、provenance verify、trusted feed、sitemap）。Audit CSV 含 `url` + `short_read_url`；路由名对齐 main。
 
-### Fixed
-- **Trust field permissions were silently inactive on every site**: `xmt_trust_form_alter()` imported `Drupal\node\NodeForm` (no such class; real class is `Drupal\node\Form\NodeForm`), so its `instanceof` check always failed and the function returned before applying vertical-site read-only or per-role trust-level option filtering.
-- Register missing `xmt_trust_ui.provenance_audit` service so `ProvenanceAuditFilterForm` can resolve `ProvenanceAuditService`.
-
-### Docs
-- Deduplicate and align `docs/ops.md` provenance export section with the live `/admin/xmt/provenance/export` route.
-- `docs/short-news.md` / `docs/domains.md` — day/night + hot homepage IA.
+### Fixed（此前已在 main）
+- **Trust field permissions were silently inactive on every site**：`xmt_trust_form_alter()` 错误 `use Drupal\node\NodeForm`，已改为 `Drupal\node\Form\NodeForm`
+- 注册缺失的 `xmt_trust_ui.provenance_audit` 服务
 
 ## v0.10.0-provenance-verify — 2026-08-14
 
