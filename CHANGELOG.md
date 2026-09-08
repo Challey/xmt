@@ -2,9 +2,15 @@
 
 ## Unreleased
 
+### Added
+- 短闻 **Apple 精修层** `css/short-read-apple.css`（`short_read` library **3.0**）：更清晰字号/行高、iOS 分段控件、卡片悬停层级、信流阅读面、详情与「今日」全 token 化、夜间一致、减少动效支持
+- 垂直站 **hm-os.com / airobotor.com** 信源扩充（`agent/sources.yaml`：`harmonyos`、`ai_robot`）
+- Agent：`XMT_AGENT_FILTER` 域过滤；payload 尊重 YAML `trust_level` / `publisher`
+- 垂直站短闻入口文案按鸿蒙 / 机器人定制；`hm-os.cn` Host 映射
+- `docs/vertical-sites.md` — 垂直站采集、UI、验收
+
 ### Docs
-- `docs/BRANCHES.md` — 分支梳理与合并记录
-- `docs/roadmap.md` — 纳入短闻切片与下一步清理项
+- `docs/BRANCHES.md`、`docs/roadmap.md`
 
 ## v0.11.0-short-news-theme — 2026-08-15（合入 main 2026-09-09）
 
@@ -15,130 +21,21 @@
 - `docs/short-news.md`、`docs/domains.md`、`docs/sources-allowlist.md`
 
 ### Merged
-- PR #1 `cursor/short-news-theme-hot-home-e92f` → main（冲突已按「保留信任平台 + 叠加短闻」解决）
-- Reconcile short-news / source-ops with trust-platform（publishers feeds、provenance verify、trusted feed、sitemap）。Audit CSV 含 `url` + `short_read_url`；路由名对齐 main。
+- PR #1 `cursor/short-news-theme-hot-home-e92f` → main
 
 ### Fixed（此前已在 main）
-- **Trust field permissions were silently inactive on every site**：`xmt_trust_form_alter()` 错误 `use Drupal\node\NodeForm`，已改为 `Drupal\node\Form\NodeForm`
-- 注册缺失的 `xmt_trust_ui.provenance_audit` 服务
+- Trust field `NodeForm` 命名空间修复；`provenance_audit` 服务注册
 
 ## v0.10.0-provenance-verify — 2026-08-14
 
 ### Added
-- `Drupal\xmt_trust\Provenance` — payload, hashing, and verification (`verified` / `mismatch` / `bridge` / `missing`)
-- `Drupal\xmt_trust\TrustLevel` — shared trust level codes
-- Per-article verification `/trusted/verify/{nid}` and JSON `/trusted/verify/{nid}/json` (recompute vs stored hash)
-- Hash lookup page `/trusted/verify?hash=...` (exact match on published `field_provenance_hash`)
-- Drush `xmt:provenance-verify` (`--limit`, `--status`); exits 1 when mismatches exist
-- Unit tests `Drupal\Tests\xmt_trust\Unit\ProvenanceTest`
-- Link from `/trusted` nav; styles for hit/miss and verdict states
-
-### Changed
-- Provenance hashes are **write-once**: previously every save recomputed the hash, which hid later edits to source URL, publisher, or creation time
-
-### Ops
-- Run `drush --uri=xmt.pub cr` after deploy so verify routes register (see `docs/ops.md`)
-
+- write-once Provenance、`/trusted/verify/{nid}`、hash 查找、`xmt:provenance-verify`、单元测试
 
 ## v0.9.0-trust-seo — 2026-08-14
 
 ### Added
-- `hook_robots_alter` on xmt.pub hub — appends `Sitemap: /trusted/sitemap.xml` to `robots.txt`
-- Sitemap includes recent **L0 aggregate** articles by default (half of `limit`, max 50)
-- Query params: `include_l0=0` to exclude L0; `l0_limit=` to override L0 cap
-- Trust feed pages link to sitemap; verify script checks `robots.txt`
+- robots.txt sitemap、L0 入 sitemap
 
-### Docs
-- `RELEASE-NOTES-v0.9.0-trust-platform.md` — consolidated v0.4–v0.9 slice summary
+## v0.8.0 — v0.1.0
 
-## v0.8.0-trust-verify-sitemap — 2026-08-14
-
-### Added
-- Trust platform XML sitemap at `/trusted/sitemap.xml` (hub pages, publishers, recent L1/L2 articles)
-- `TrustSitemapBuilder` service with optional `?limit=` (10–500 articles, default 100)
-- Homepage trust block footer links: all trusted, publishers, apply, sitemap
-- Ops script `setup/scripts/75-verify-trust.sh` — HTTP + Drush post-deploy checks
-
-### Docs
-- `docs/deploy-server-b.md`, `docs/ops.md` — verification script usage
-
-## v0.7.0-publishers-directory — 2026-08-14
-
-### Added
-- Public publishers directory at `/publishers` (official L1 + enterprise L2 sections)
-- Per-publisher RSS/JSON feeds: `/publisher/{id}/feed.rss` and `/publisher/{id}/feed.json`
-- `TrustedFeedBuilder::itemsForPublisher()` and channel serializers for publisher feeds
-- Publisher pages show RSS/JSON subscription links; trust feed nav links to `/publishers`
-
-### Docs
-- README, `docs/ops.md`, `docs/trust-model.md` — directory and per-publisher feeds
-
-## v0.6.0-publisher-page — 2026-08-14
-
-### Added
-- Public publisher page (`/publisher/{id}`) shows trust badge, certification status, website, and recent articles
-- `PublisherPageBuilder` service — meta block + article list for approved publishers
-- CSS `publisher-page` library for publisher layout
-- Ops script `setup/scripts/65-trust-vertical.sh` — batch enable trust modules/fields on vertical sites
-
-### Docs
-- README, `docs/ops.md`, `docs/trust-model.md` — publisher page and vertical bootstrap
-
-## v0.5.0-trusted-feed-api — 2026-08-14
-
-### Added
-- Machine-readable trusted feeds: RSS 2.0 and JSON for `/trusted`, `/trusted/official`, `/trusted/enterprise`, `/trusted/aggregate`
-- `TrustedFeedBuilder` service — shared item shape with trust level, publisher, provenance hash, source URL
-- HTML trust pages link to RSS/JSON and expose `<link rel="alternate">` for feed discovery
-- Optional `?limit=` query parameter (1–100, default 30) on feed endpoints
-
-### Docs
-- README and `docs/ops.md` — feed URLs and sample `curl`
-
-## v0.4.0-provenance-export — 2026-08-14
-
-### Added
-- CSV export for provenance audit: `/admin/xmt/provenance/export` (button on audit page)
-- `ProvenanceAuditExporter` service — shared by admin UI and Drush
-- Drush `xmt:provenance-export` (`--limit`, `--trust-level`, `--output`)
-- Export includes trust level, publisher, source URL, provenance hash, and timestamps
-
-### Docs
-- `docs/trust-model.md` — audit export marked implemented
-- `docs/ops.md` — export usage
-
-## v0.3.0-homepage — 2026-08-13
-
-### Added
-- Homepage block `xmt_trust_home_columns` — three columns (官方可信 / 企业可信 / 领域汇聚)
-- Route `/trusted/aggregate` for L0 aggregate feed
-- CSS grid `.xmt-trust-home` (3 columns desktop, stacked mobile)
-
-### Ops
-- Place block on xmt.pub front page `content` region via Drush (see `docs/ops.md`)
-
-## v0.2.0-trust-phase5 — 2026-08-13
-
-### Added
-- DrupalX → XMT trusted content API `POST /api/xmt/v1/trusted-content` (HMAC)
-- `DxContentHandler` — L2 article upsert by `external_id` or `source_url`
-- Drush `xmt:dx-content-test` and DrupalX `dx:xmt-push-content`
-- Preserve `dx:` provenance hash on bridge-created articles
-
-### Notes
-- Requires approved publisher from phase 3 `dx-claim` flow
-
-## v0.1.0-trust — 2026-08-12
-
-### Added
-- Branding/docs: vision, trust model, architecture, DrupalX bridge, deploy-to-B
-- Modules: `xmt_publisher`, `xmt_trust`, `xmt_trust_ui`, `xmt_dx_bridge`
-- Trust levels L0/L1/L2 on articles; official publisher seed「XMT官方」
-- Enterprise apply `/publishers/apply` + admin approve flow
-- Trusted feeds `/trusted`, `/trusted/official`, `/trusted/enterprise`
-- DrupalX `dx_xmt_bridge` Drush `dx:xmt-issue-claim`
-- Agent payloads set `trust_level=l0_aggregate`
-
-### Notes
-- Shared user tables not used (Drupal 11.4 string prefixes)
-- Content push from DrupalX deferred to phase 2
+见仓库历史：publishers、feeds、homepage、DrupalX bridge、信任模型初版。
