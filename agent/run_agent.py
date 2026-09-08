@@ -20,6 +20,9 @@ SOURCES = AGENT_DIR / "sources.yaml"
 STATE = AGENT_DIR / "state.json"
 DRUSH = ROOT / "vendor" / "bin" / "drush"
 MAX_PER_FEED = int(os.environ.get("XMT_MAX_PER_FEED", "5"))
+# Comma or | separated domain keys, e.g. harmonyos|ai_robot
+AGENT_FILTER = re.split(r"[,|]", os.environ.get("XMT_AGENT_FILTER", "").strip()) if os.environ.get("XMT_AGENT_FILTER") else []
+AGENT_FILTER = [x.strip() for x in AGENT_FILTER if x.strip()]
 USER_AGENT = "XMT-Agent/1.0 (+https://xmt.pub)"
 
 
@@ -28,22 +31,15 @@ def load_yaml(path: Path) -> dict:
         import yaml  # type: ignore
         return yaml.safe_load(path.read_text(encoding="utf-8"))
     except Exception:
-        # Minimal YAML subset parser for our simple structure
-        return json.loads(subprocess.check_output(
-            ["php", "-r", 'echo json_encode(yaml_parse(file_get_contents($argv[1])));', str(path)],
-            text=True,
-        )) if False else _parse_simple_yaml(path.read_text(encoding="utf-8"))
+        return _parse_simple_yaml(path.read_text(encoding="utf-8"))
 
 
 def _parse_simple_yaml(text: str) -> dict:
-    """Very small YAML reader sufficient for sources.yaml structure."""
-    # Prefer PyYAML; if missing, shell out to python with ruamel or install.
     try:
         import yaml
         return yaml.safe_load(text)
     except ImportError:
         pass
-    # Fallback: use ruby or php
     for cmd in (
         ["ruby", "-ryaml", "-rjson", "-e", "puts JSON.generate(YAML.load(STDIN.read))"],
         ["php", "-r", "echo json_encode(yaml_parse(stream_get_contents(STDIN)));"],
@@ -81,7 +77,6 @@ def local(tag: str) -> str:
 def parse_feed(content: bytes) -> list[dict]:
     root = ET.fromstring(content)
     items: list[dict] = []
-    # RSS
     for item in root.iter():
         if local(item.tag) != "item":
             continue
@@ -98,7 +93,6 @@ def parse_feed(content: bytes) -> list[dict]:
             items.append({"title": title, "link": link, "summary": desc})
     if items:
         return items
-    # Atom
     for entry in root.iter():
         if local(entry.tag) != "entry":
             continue
@@ -127,7 +121,6 @@ def strip_html(html: str) -> str:
 
 
 def publish(site: str, payload: dict) -> bool:
-    # Use /tmp so PHP/drush can always read the payload regardless of agent dir perms.
     tmp = Path("/tmp") / f"xmt_payload_{hashlib.md5(payload['source_url'].encode()).hexdigest()}.json"
     tmp.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
     try:
@@ -153,7 +146,6 @@ def main() -> int:
     if not SOURCES.exists():
         print("missing sources.yaml", file=sys.stderr)
         return 1
-    # Ensure pyyaml
     try:
         import yaml  # noqa: F401
     except ImportError:
@@ -166,10 +158,17 @@ def main() -> int:
     published = 0
     errors = 0
 
+    if AGENT_FILTER:
+        print(f"Filter: {AGENT_FILTER}")
+
     for key, block in (data.get("sources") or {}).items():
+        if AGENT_FILTER and key not in AGENT_FILTER and block.get("domain") not in AGENT_FILTER:
+            continue
         site = block["site"]
         domain = block.get("domain", key)
-        print(f"== Domain {key} -> {site}")
+        trust_level = block.get("trust_level") or "l0_aggregate"
+        publisher = block.get("publisher") or ""
+        print(f"== Domain {key} -> {site} ({domain}, {trust_level})")
         for feed in block.get("feeds") or []:
             name, url = feed.get("name"), feed.get("url")
             print(f"  Feed: {name} ({url})")
@@ -186,10 +185,7 @@ def main() -> int:
                 if h in seen:
                     continue
                 body = it.get("summary") or ""
-                if body and "<" in body:
-                    # keep basic html
-                    pass
-                else:
+                if not (body and "<" in body):
                     body = f"<p>{strip_html(body)}</p><p>来源：<a href=\"{link}\">{link}</a></p>"
                 payload = {
                     "title": it["title"][:200],
@@ -198,12 +194,13 @@ def main() -> int:
                     "source_url": link,
                     "source_name": name,
                     "domain": domain,
-                    "trust_level": "l0_aggregate",
+                    "trust_level": trust_level,
                 }
+                if publisher:
+                    payload["publisher"] = publisher
                 if publish(site, payload):
-                    seen[h] = {"url": link, "site": site, "ts": int(time.time())}
+                    seen[h] = {"url": link, "site": site, "domain": domain, "ts": int(time.time())}
                     published += 1
-                    # Also ensure xmt gets a copy if vertical site (module hooks may handle)
                     if site != "xmt.pub":
                         publish("xmt.pub", payload)
                 else:
