@@ -4,6 +4,8 @@
 
 XMT（xmt.pub）是在 Drupal 11 上构建的**企业级认证新媒体平台**：官方可信发布、企业身份认证后的企业可信发布，并与 [DrupalX](https://github.com/Challey) 企业门户 / App Store 在认证层互通。
 
+核心阅读产品：**短闻**（`/read`）——竖滑信流 + 可核验来源，支持白天/黑夜主题与财经·科技·国内·国际最热四栏首页。
+
 | | |
 |--|--|
 | 域名 | https://xmt.pub |
@@ -39,6 +41,16 @@ XMT（xmt.pub）是在 Drupal 11 上构建的**企业级认证新媒体平台**�
 
 管理员溯源审计与 CSV 导出：`/admin/xmt/provenance`。
 
+## 短闻（阅读产品）
+
+- 信流（默认）：`/read` — 竖滑短文 + 徽章/溯源
+- 速览：`/read?mode=browse`
+- 今日 / 稍后：`/read/today`、`/read/later`
+- 主题：白天 / 黑夜（`localStorage` 键 `xmt_duanwen_theme`）
+- 首页最热四栏：财经 · 科技 · 国内 · 国际
+
+详见 [docs/short-news.md](docs/short-news.md)、[docs/domains.md](docs/domains.md)。
+
 ## 快速开始
 
 ```bash
@@ -56,7 +68,7 @@ vendor/bin/drush --uri=xmt.pub en xmt_trust xmt_publisher xmt_trust_ui xmt_dx_br
 vendor/bin/drush --uri=xmt.pub cr
 ```
 
-默认运维说明见 [docs/ops.md](docs/ops.md)；愿景见 [docs/vision.md](docs/vision.md)。
+默认运维说明见 [docs/ops.md](docs/ops.md)；愿景见 [docs/vision.md](docs/vision.md)；路线图见 [docs/roadmap.md](docs/roadmap.md)；分支记录见 [docs/BRANCHES.md](docs/BRANCHES.md)。
 
 ## 模块
 
@@ -64,7 +76,7 @@ vendor/bin/drush --uri=xmt.pub cr
 |------|------|
 | `xmt_trust` | 信任等级、溯源字段、权限 |
 | `xmt_publisher` | 发布主体（官方/企业）与认证状态机 |
-| `xmt_trust_ui` | 可信流、主体页、徽章 |
+| `xmt_trust_ui` | 可信流、主体页、徽章、短闻 UI |
 | `xmt_dx_bridge` | DrupalX 认证 claim 验签 |
 | `xmt_syndicate` | 垂直站 → xmt.pub 聚合 |
 | `agent/` | 按领域 RSS 采集（写入 L0） |
