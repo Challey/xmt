@@ -1,6 +1,6 @@
 # Domain-keyed mature RSS / Atom sources for XMT agent.
 # Each item: name, url, site (Drupal URI), domain tag
-# Optional (hub only): trust_level: l1_official, publisher: credit_code
+# Optional: trust_level (l0_aggregate|l1_official), publisher: credit_code
 
 sources:
   jewelry:
@@ -14,21 +14,38 @@ sources:
       - name: Jewellery Net Asia
         url: https://www.jewellerynet.com/en/rss
 
+  # AI + 机器人垂直站 airobotor.com
   ai_robot:
     site: airobotor.com
     domain: robot
+    trust_level: l0_aggregate
     feeds:
       - name: IEEE Spectrum Robotics
         url: https://spectrum.ieee.org/feeds/topic/robotics.rss
       - name: The Robot Report
         url: https://www.therobotreport.com/feed/
+      - name: Robohub
+        url: https://robohub.org/feed/
+      - name: IEEE Spectrum AI
+        url: https://spectrum.ieee.org/feeds/topic/artificial-intelligence.rss
+      - name: MIT News Robotics
+        url: https://news.mit.edu/rss/topic/robotics
+      - name: Science Robotics
+        url: https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=scirobotics
+      - name: TechCrunch Robotics
+        url: https://techcrunch.com/category/robotics/feed/
+      - name: 雷锋网
+        url: https://www.leiphone.com/feed
+      - name: 极客公园
+        url: https://www.geekpark.net/rss
+      - name: InfoQ 中文
+        url: https://www.infoq.cn/feed
 
   hot_ai:
     site: xmt.pub
     domain: ai
     trust_level: l0_aggregate
     feeds:
-      # Prefer B-reachable feeds (Aliyun CN); skip TLS/308/broken XML hosts.
       - name: OpenAI Blog
         url: https://openai.com/blog/rss.xml
       - name: MIT Tech Review
@@ -149,7 +166,6 @@ sources:
     domain: fintech
     trust_level: l0_aggregate
     feeds:
-      # B-reachable (Aliyun CN); Finextra/CoinDesk paused as unreachable.
       - name: PYMNTS
         url: https://www.pymnts.com/feed/
       - name: The Block
@@ -181,16 +197,34 @@ sources:
       - name: 爱范儿
         url: https://www.ifanr.com/feed
 
+  # 鸿蒙 / OpenHarmony 垂直站 hm-os.com
   harmonyos:
     site: hm-os.com
     domain: harmonyos
+    trust_level: l0_aggregate
     feeds:
       - name: OpenHarmony News
         url: https://www.openharmony.cn/rss
-      - name: Huawei Developers Blog
+      - name: Huawei Developers Forum RSS
         url: https://developer.huawei.com/consumer/cn/forum/rss
-      - name: CNX Software Open Source
+      - name: CNX Software
         url: https://www.cnx-software.com/feed/
+      - name: Android Authority
+        url: https://www.androidauthority.com/feed/
+      - name: 9to5Google
+        url: https://9to5google.com/feed/
+      - name: XDA Developers
+        url: https://www.xda-developers.com/feed/
+      - name: Solidot
+        url: https://www.solidot.org/index.rss
+      - name: 爱范儿
+        url: https://www.ifanr.com/feed
+      - name: 少数派
+        url: https://sspai.com/feed
+      - name: 雷锋网
+        url: https://www.leiphone.com/feed
+      - name: InfoQ 中文
+        url: https://www.infoq.cn/feed
 
   ai_edu:
     site: kstudy.com.cn
@@ -281,10 +315,6 @@ sources:
       - name: 数英网
         url: https://www.digitaling.com/rss
 
-  # --- 官媒报道 L1（仅官方 RSS allowlist；hub xmt.pub）---
-  # 收录：人民网 / 新华网 / China Daily / 中国新闻网
-  # 凤凰网：订阅中心页仍在，但 XML 端点已 404，不做 HTML 抓取
-  # 香港 RTHK / news.gov.hk：阿里云 B 出网不可达，暂不启用
   official_media_society:
     site: xmt.pub
     domain: society
@@ -317,7 +347,6 @@ sources:
     trust_level: l1_official
     publisher: xmt_official_media
     feeds:
-      # 官媒财经（民生向）
       - name: 人民网·财经
         url: https://www.people.com.cn/rss/finance.xml
       - name: 中国新闻网·财经
@@ -331,8 +360,6 @@ sources:
       - name: 新华网·财经
         url: https://www.news.cn/fortune/news_fortune.xml
 
-  # 权威监管/宏观：国家统计局（公开 RSS）。
-  # 证监会 csrc.gov.cn 无官方 RSS/Atom（仅 HTML），按合规不抓取；监管要闻由人民网/新华/中新网财经转载覆盖。
   official_finance_stats:
     site: xmt.pub
     domain: finance
