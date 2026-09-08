@@ -4,3 +4,45 @@ xmt_trust_ui.provenance_audit:
   parent: system.admin_content
   route_name: xmt_trust_ui.provenance_audit
   weight: 51
+
+xmt_trust_ui.publishers_directory:
+  title: '认证主体'
+  description: 'Approved trusted publishers'
+  menu_name: main
+  route_name: xmt_trust_ui.publishers_directory
+  weight: 25
+
+xmt_trust_ui.short_read:
+  title: '短闻'
+  description: '可信短闻：速览与信流（核心入口）'
+  menu_name: main
+  route_name: xmt_trust_ui.short_read
+  weight: -20
+
+xmt_trust_ui.search:
+  title: '可信搜索'
+  description: '检索可信资讯'
+  menu_name: main
+  route_name: xmt_trust_ui.search
+  weight: 8
+
+xmt_trust_ui.stats:
+  title: 'XMT trust stats'
+  description: 'Counts by trust level and domain'
+  parent: system.admin_content
+  route_name: xmt_trust_ui.stats
+  weight: 50
+
+xmt_trust_ui.source_ops:
+  title: '信源运营台'
+  description: 'RSS/Atom allowlist、暂停、探测与入库对照'
+  parent: system.admin_content
+  route_name: xmt_trust_ui.source_ops
+  weight: 49
+
+xmt_trust_ui.source_health:
+  title: '信源健康摘要'
+  description: '探测失败与暂停一览'
+  parent: system.admin_content
+  route_name: xmt_trust_ui.source_health
+  weight: 48

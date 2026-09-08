@@ -1,0 +1,60 @@
+<article class="xmt-short__card xmt-short__card--{{ mode|default('browse') }}" data-nid="{{ card.nid }}" id="short-{{ card.nid }}" data-title="{{ card.title }}" data-detail="{{ card.detail_url }}">
+  <div class="xmt-short__card-inner">
+    <div class="xmt-short__trust-rail" aria-hidden="true"></div>
+    <div class="xmt-short__meta">
+      <span class="xmt-trust-badge {{ card.badge_class }}">{{ card.badge_label }}</span>
+      {% if card.source_name %}
+        {% if card.source_feed_url %}
+          <a class="xmt-short__source" href="{{ card.source_feed_url }}">{{ card.source_name }}</a>
+        {% else %}
+          <span class="xmt-short__source">{{ card.source_name }}</span>
+        {% endif %}
+      {% elseif card.publisher %}
+        <span class="xmt-short__source">{{ card.publisher }}</span>
+      {% endif %}
+      {% if card.domain_label %}
+        <span class="xmt-short__domain-tag">{{ card.domain_label }}</span>
+      {% endif %}
+      <span class="xmt-short__time">{{ card.reading_seconds }}″</span>
+    </div>
+
+    <h2 class="xmt-short__title">{{ card.title }}</h2>
+
+    <p class="xmt-short__brief">{{ card.brief }}</p>
+
+    {% if mode == 'immerse' and card.keypoints %}
+      <ul class="xmt-short__points">
+        {% for point in card.keypoints %}
+          <li>{{ point }}</li>
+        {% endfor %}
+      </ul>
+    {% elseif mode != 'immerse' and card.keypoints %}
+      <ul class="xmt-short__points xmt-short__points--compact">
+        {% for point in card.keypoints|slice(0, 2) %}
+          <li>{{ point }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <p class="xmt-short__prov">{{ card.provenance_note }}</p>
+
+    <div class="xmt-short__actions">
+      {% if mode == 'browse' %}
+        <a class="xmt-short__btn xmt-short__btn--primary" href="{{ card.immerse_url }}">信流</a>
+        <a class="xmt-short__btn xmt-short__btn--ghost" href="{{ card.detail_url }}">详情</a>
+      {% else %}
+        <a class="xmt-short__btn xmt-short__btn--primary" href="{{ card.detail_url }}">详情</a>
+      {% endif %}
+      {% if card.source_url %}
+        <a class="xmt-short__btn xmt-short__btn--ghost" href="{{ card.source_url }}" target="_blank" rel="noopener noreferrer">原文</a>
+      {% endif %}
+      {% if card.share_image_url %}
+        <a class="xmt-short__btn xmt-short__btn--ghost" href="{{ card.share_image_url }}" target="_blank" rel="noopener noreferrer">分享图</a>
+      {% endif %}
+      {% if card.brief %}
+        <button type="button" class="xmt-short__btn xmt-short__btn--ghost" data-xmt-copy-brief data-brief="{{ card.brief|e('html_attr') }}">复制摘要</button>
+      {% endif %}
+      <button type="button" class="xmt-short__btn xmt-short__btn--ghost" data-xmt-later data-nid="{{ card.nid }}" data-title="{{ card.title }}" data-url="{{ card.detail_url }}">稍后</button>
+    </div>
+  </div>
+</article>

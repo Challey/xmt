@@ -1,0 +1,102 @@
+<div class="xmt-short xmt-short--today" data-xmt-theme-root>
+  <header class="xmt-short__top">
+    <div class="xmt-short__brand-wrap">
+      <div class="xmt-short__brand">短闻 · 今日</div>
+      <p class="xmt-short__tagline">{{ date_label }} · 一屏看完今日可信短闻</p>
+    </div>
+    <div class="xmt-short__top-actions">
+      <button type="button" class="xmt-short__mode-btn xmt-short__theme-btn" data-xmt-theme-toggle aria-label="{{ '切换白天 / 黑夜'|t }}" title="{{ '白天 / 黑夜'|t }}">
+        <span data-xmt-theme-label>白天</span>
+      </button>
+      <a class="xmt-short__mode-btn" href="{{ feed_url }}">速览全部</a>
+      <a class="xmt-short__mode-btn" href="{{ immerse_url }}">信流连读</a>
+      <a class="xmt-short__mode-btn" href="{{ rss_url }}" type="application/rss+xml" rel="alternate">RSS</a>
+      <button type="button" class="xmt-short__mode-btn" data-xmt-copy-rss data-rss="{{ rss_url }}">复制 RSS</button>
+      <button type="button" class="xmt-short__mode-btn" data-xmt-copy-share data-url="">复制本页</button>
+      <a class="xmt-short__mode-btn" href="{{ search_url }}">搜索</a>
+      <a class="xmt-short__mode-btn" href="/read/later">稍后再看</a>
+      <a class="xmt-short__mode-btn" href="/official-media">官媒</a>
+    </div>
+  </header>
+
+  <nav class="xmt-short__filters" aria-label="{{ 'Trust filters'|t }}">
+    {% for f in filters %}
+      <a class="xmt-short__filter{% if f.active %} is-active{% endif %}" href="{{ f.url }}">{{ f.label }}</a>
+    {% endfor %}
+  </nav>
+
+  {% if domain_rail and (domain_rail.primary or domain_rail.more or domain_rail.all) %}
+    <div class="xmt-short__domains-wrap" data-xmt-domains{% if domain_rail.more_open %} data-open="1"{% endif %}>
+      <nav class="xmt-short__domains xmt-short__domains--primary" aria-label="{{ '热门领域'|t }}">
+        {% if domain_rail.all %}
+          <a class="xmt-short__domain{% if domain_rail.all.active %} is-active{% endif %}" href="{{ domain_rail.all.url }}">{{ domain_rail.all.label }}</a>
+        {% endif %}
+        {% for d in domain_rail.primary %}
+          <a class="xmt-short__domain{% if d.active %} is-active{% endif %}" href="{{ d.url }}"{% if d.hint %} title="{{ d.hint }}"{% endif %}>{{ d.label }}</a>
+        {% endfor %}
+        {% if domain_rail.more %}
+          <button type="button" class="xmt-short__domain xmt-short__domain--more" data-xmt-domains-toggle aria-expanded="{{ domain_rail.more_open ? 'true' : 'false' }}">
+            <span data-xmt-domains-label-more>{{ '更多'|t }}</span>
+            <span data-xmt-domains-label-less hidden>{{ '收起'|t }}</span>
+          </button>
+        {% endif %}
+      </nav>
+      {% if domain_rail.more %}
+        <nav class="xmt-short__domains xmt-short__domains--more" data-xmt-domains-panel aria-label="{{ '更多领域'|t }}"{% if not domain_rail.more_open %} hidden{% endif %}>
+          {% for d in domain_rail.more %}
+            <a class="xmt-short__domain{% if d.active %} is-active{% endif %}" href="{{ d.url }}"{% if d.hint %} title="{{ d.hint }}"{% endif %}>{{ d.label }}</a>
+          {% endfor %}
+        </nav>
+      {% endif %}
+    </div>
+  {% elseif domain_filters|length > 1 %}
+    <nav class="xmt-short__domains" aria-label="{{ 'Domain filters'|t }}">
+      {% for d in domain_filters %}
+        <a class="xmt-short__domain{% if d.active %} is-active{% endif %}" href="{{ d.url }}"{% if d.hint %} title="{{ d.hint }}"{% endif %}>{{ d.label }}</a>
+      {% endfor %}
+    </nav>
+  {% endif %}
+
+  {% if is_fallback and cards %}
+    <p class="xmt-short__fallback-note" role="status">{{ '今日暂无新入库，以下为最新可信短闻。'|t }}</p>
+  {% endif %}
+
+  {% if cards is empty %}
+    <div class="xmt-short__empty">
+      <p>{{ '今日暂无短闻，可先速览最新可信内容。'|t }}</p>
+      <div class="xmt-short__empty-actions">
+        <a class="xmt-short__mode-btn" href="{{ feed_url }}">{{ '去速览'|t }}</a>
+        <a class="xmt-short__mode-btn" href="{{ immerse_url }}">{{ '信流'|t }}</a>
+        <a class="xmt-short__mode-btn" href="/read/later">{{ '稍后再看'|t }}</a>
+        <a class="xmt-short__mode-btn" href="{{ search_url }}">{{ '搜索'|t }}</a>
+        <a class="xmt-short__mode-btn" href="/official-media">{{ '官媒'|t }}</a>
+      </div>
+    </div>
+  {% else %}
+    <ol class="xmt-short-today__list">
+      {% for card in cards %}
+        <li class="xmt-short-today__item">
+          <a class="xmt-short-today__link" href="{{ card.detail_url }}">
+            <span class="xmt-trust-badge {{ card.badge_class }}">{{ card.badge_label }}</span>
+            <span class="xmt-short-today__title">{{ card.title }}</span>
+          </a>
+          <p class="xmt-short-today__brief">{{ card.brief }}</p>
+          <div class="xmt-short-today__meta">
+            {% if card.source_name %}
+              {% if card.source_feed_url %}
+                <a href="{{ card.source_feed_url }}">{{ card.source_name }}</a>
+              {% else %}
+                <span>{{ card.source_name }}</span>
+              {% endif %}
+            {% endif %}
+            {% if card.domain_label %}<span>{{ card.domain_label }}</span>{% endif %}
+            <span>{{ card.created_label }}</span>
+            <a href="{{ card.immerse_url }}">沉浸</a>
+            <button type="button" class="xmt-short__btn xmt-short__btn--ghost" data-xmt-later data-nid="{{ card.nid }}" data-title="{{ card.title }}" data-url="{{ card.detail_url }}">稍后</button>
+          </div>
+        </li>
+      {% endfor %}
+    </ol>
+    <p class="xmt-short__hint">共 {{ cards|length }} 条 · j/k 选择 · Enter/e 打开 · a 收藏 · c/p 复制 · b 摘要 · l 稍后列表 · i 沉浸 · r RSS · f,/ 搜索 · g 官媒</p>
+  {% endif %}
+</div>

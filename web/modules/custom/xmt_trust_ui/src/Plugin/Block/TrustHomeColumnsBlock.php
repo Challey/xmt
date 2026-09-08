@@ -2,14 +2,18 @@
 
 namespace Drupal\xmt_trust_ui\Plugin\Block;
 
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Url;
+use Drupal\node\NodeInterface;
+use Drupal\xmt_trust_ui\DomainCatalog;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Homepage three-column trusted content summary.
+ * Homepage hot-news sections for 短闻 (finance / tech / domestic / world).
  *
  * @Block(
  *   id = "xmt_trust_home_columns",
@@ -20,23 +24,26 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class TrustHomeColumnsBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
-   * Column definitions: trust level, header, more route.
+   * Hot sections shown on the hub homepage.
+   *
+   * @var list<array{domain: string, title: string}>
    */
-  private const COLUMNS = [
+  private const HOT_SECTIONS = [
     [
-      'level' => 'l1_official',
-      'title' => '官方可信',
-      'route' => 'xmt_trust_ui.feed_official',
+      'domain' => 'finance',
+      'title' => '财经',
     ],
     [
-      'level' => 'l2_enterprise',
-      'title' => '企业可信',
-      'route' => 'xmt_trust_ui.feed_enterprise',
+      'domain' => 'tech',
+      'title' => '科技',
     ],
     [
-      'level' => 'l0_aggregate',
-      'title' => '领域汇聚',
-      'route' => 'xmt_trust_ui.feed_aggregate',
+      'domain' => 'domestic',
+      'title' => '国内',
+    ],
+    [
+      'domain' => 'world',
+      'title' => '国际',
     ],
   ];
 
@@ -45,6 +52,7 @@ class TrustHomeColumnsBlock extends BlockBase implements ContainerFactoryPluginI
     $plugin_id,
     $plugin_definition,
     protected EntityTypeManagerInterface $entityTypeManager,
+    protected DateFormatterInterface $dateFormatter,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
   }
@@ -58,6 +66,7 @@ class TrustHomeColumnsBlock extends BlockBase implements ContainerFactoryPluginI
       $plugin_id,
       $plugin_definition,
       $container->get('entity_type.manager'),
+      $container->get('date.formatter'),
     );
   }
 
@@ -68,106 +77,117 @@ class TrustHomeColumnsBlock extends BlockBase implements ContainerFactoryPluginI
     $storage = $this->entityTypeManager->getStorage('node');
     $columns = [];
 
-    foreach (self::COLUMNS as $column) {
-      $nids = $storage->getQuery()
+    foreach (self::HOT_SECTIONS as $section) {
+      $domain = $section['domain'];
+      $values = DomainCatalog::expandFilter($domain);
+      $query = $storage->getQuery()
         ->accessCheck(TRUE)
         ->condition('type', 'article')
         ->condition('status', 1)
-        ->condition('field_trust_level', $column['level'])
         ->sort('created', 'DESC')
-        ->range(0, 5)
-        ->execute();
+        ->range(0, 5);
+      if (count($values) === 1) {
+        $query->condition('field_domain', $values[0]);
+      }
+      elseif ($values !== []) {
+        $query->condition('field_domain', $values, 'IN');
+      }
+      $nids = $query->execute();
 
       $items = [];
       if ($nids) {
         foreach ($storage->loadMultiple($nids) as $node) {
-          $level = $node->get('field_trust_level')->value ?? 'l0_aggregate';
-          $items[] = [
-            '#type' => 'container',
-            '#attributes' => ['class' => ['xmt-trust-home__item']],
-            'link' => [
-              '#type' => 'link',
-              '#title' => $node->label(),
-              '#url' => $node->toUrl(),
-            ],
-            'badge' => [
-              '#type' => 'html_tag',
-              '#tag' => 'span',
-              '#value' => xmt_trust_badge_label($level),
-              '#attributes' => [
-                'class' => ['xmt-trust-badge', xmt_trust_badge_class($level)],
-              ],
-            ],
-          ];
+          $items[] = $this->buildItem($node);
         }
       }
 
       $columns[] = [
-        '#type' => 'container',
-        '#attributes' => ['class' => ['xmt-trust-home__column']],
-        'header' => [
-          '#type' => 'container',
-          '#attributes' => ['class' => ['xmt-trust-home__header']],
-          'title' => [
-            '#type' => 'html_tag',
-            '#tag' => 'h3',
-            '#value' => $column['title'],
-          ],
-          'more' => [
-            '#type' => 'link',
-            '#title' => $this->t('更多'),
-            '#url' => Url::fromRoute($column['route']),
-            '#attributes' => ['class' => ['xmt-trust-home__more']],
-          ],
-        ],
-        'list' => $items === [] ? [
-          '#markup' => '<p class="xmt-trust-home__empty">' . $this->t('暂无内容') . '</p>',
-        ] : [
-          '#theme' => 'item_list',
-          '#items' => $items,
-          '#attributes' => ['class' => ['xmt-trust-home__list']],
-        ],
+        'title' => $section['title'],
+        'more_url' => Url::fromRoute('xmt_trust_ui.short_read', [], [
+          'query' => ['domain' => $domain],
+        ])->toString(),
+        'items' => $items,
+      ];
+    }
+
+    $host = \Drupal::request()->getHost();
+    $domain_map = [
+      'zhubao.pub' => 'jewelry',
+      'www.zhubao.pub' => 'jewelry',
+      'airobotor.com' => 'robot',
+      'www.airobotor.com' => 'robot',
+      'hm-os.com' => 'harmonyos',
+      'www.hm-os.com' => 'harmonyos',
+      'kstudy.com.cn' => 'ai_edu',
+      'www.kstudy.com.cn' => 'ai_edu',
+      'drupal.org.cn' => 'drupal',
+      'www.drupal.org.cn' => 'drupal',
+      'itra.com.cn' => 'itra',
+      'www.itra.com.cn' => 'itra',
+    ];
+    $domain = $domain_map[$host] ?? '';
+    $query = array_filter(['domain' => $domain !== '' ? $domain : NULL]);
+
+    $hot_links = [];
+    foreach (self::HOT_SECTIONS as $section) {
+      $hot_links[] = [
+        'label' => $section['title'],
+        'url' => Url::fromRoute('xmt_trust_ui.short_read', [], [
+          'query' => array_filter([
+            'domain' => $section['domain'],
+          ] + $query),
+        ])->toString(),
       ];
     }
 
     return [
-      '#type' => 'container',
-      '#attributes' => ['class' => ['xmt-trust-home']],
-      'columns' => $columns,
-      'footer' => [
-        '#type' => 'container',
-        '#attributes' => ['class' => ['xmt-trust-home__footer']],
-        'trusted' => [
-          '#type' => 'link',
-          '#title' => $this->t('All trusted content'),
-          '#url' => Url::fromRoute('xmt_trust_ui.feed'),
-        ],
-        'publishers' => [
-          '#type' => 'link',
-          '#title' => $this->t('Certified publishers'),
-          '#url' => Url::fromRoute('xmt_trust_ui.publishers_directory'),
-        ],
-        'verify' => [
-          '#type' => 'link',
-          '#title' => $this->t('Verify provenance'),
-          '#url' => Url::fromRoute('xmt_trust_ui.verify'),
-        ],
-        'apply' => [
-          '#type' => 'link',
-          '#title' => $this->t('Apply for certification'),
-          '#url' => Url::fromRoute('xmt_publisher.apply'),
-        ],
-        'sitemap' => [
-          '#type' => 'link',
-          '#title' => $this->t('Sitemap'),
-          '#url' => Url::fromRoute('xmt_trust_ui.trust_sitemap'),
-        ],
+      '#theme' => 'xmt_trust_home',
+      '#columns' => $columns,
+      '#short_news' => [
+        'brand' => (string) $this->t('短闻'),
+        'text' => (string) $this->t('财经 · 科技 · 国内 · 国际——当前最热可信短闻，信流连刷，来源可核。'),
+        'browse_url' => Url::fromRoute('xmt_trust_ui.short_read', [], [
+          'query' => $query + ['mode' => 'browse'],
+        ])->toString(),
+        'immerse_url' => Url::fromRoute('xmt_trust_ui.short_read', [], [
+          'query' => $query,
+        ])->toString(),
+        'today_url' => Url::fromRoute('xmt_trust_ui.short_read_today', [], ['query' => $query])->toString(),
+        'later_url' => Url::fromRoute('xmt_trust_ui.short_read_later')->toString(),
+        'search_url' => Url::fromRoute('xmt_trust_ui.search')->toString(),
+        'rss_url' => Url::fromRoute('xmt_trust_ui.short_news_rss', [], ['query' => $query])->toString(),
+        'official_media_url' => Url::fromRoute('xmt_trust_ui.official_media')->toString(),
+        'hot_links' => $hot_links,
       ],
-      '#attached' => ['library' => ['xmt_trust_ui/trust_feed']],
+      '#attached' => ['library' => ['xmt_trust_ui/trust_feed', 'xmt_trust_ui/short_read']],
       '#cache' => [
         'tags' => ['node_list'],
-        'contexts' => ['languages:language_interface'],
+        'contexts' => ['languages:language_interface', 'url.site'],
       ],
+    ];
+  }
+
+  /**
+   * Builds one magazine item from a node.
+   */
+  protected function buildItem(NodeInterface $node): array {
+    $level = $node->hasField('field_trust_level')
+      ? ($node->get('field_trust_level')->value ?? 'l0_aggregate')
+      : 'l0_aggregate';
+    $excerpt = '';
+    if ($node->hasField('body') && !$node->get('body')->isEmpty()) {
+      $raw = $node->get('body')->summary ?: $node->get('body')->value;
+      $excerpt = Unicode::truncate(trim(html_entity_decode(strip_tags((string) $raw), ENT_QUOTES, 'UTF-8')), 140, TRUE, TRUE);
+    }
+
+    return [
+      'url' => $node->toUrl()->toString(),
+      'short_url' => Url::fromRoute('xmt_trust_ui.short_read_detail', ['node' => $node->id()])->toString(),
+      'title' => $node->label(),
+      'date' => $this->dateFormatter->format($node->getCreatedTime(), 'custom', 'M d, Y'),
+      'excerpt' => $excerpt,
+      'badge' => xmt_trust_badge_label($level),
+      'badge_class' => xmt_trust_badge_class($level),
     ];
   }
 

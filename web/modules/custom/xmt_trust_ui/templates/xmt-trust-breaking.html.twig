@@ -1,0 +1,29 @@
+{#
+/**
+ * @file
+ * Sancy breaking-news ticker markup.
+ *
+ * Variables:
+ * - items: list of {url, title}
+ */
+#}
+<div class="breaking-news-inner">
+  <div class="breaking-news-title">
+    {{ '快讯'|t }}
+    {% if short_news_url %}
+      <a class="xmt-short-breaking-link" href="{{ short_news_url }}">{{ '短闻'|t }}</a>
+    {% endif %}
+    {% if today_url %}
+      <a class="xmt-short-breaking-link" href="{{ today_url }}">{{ '今日简报'|t }}</a>
+    {% endif %}
+  </div>
+  <div class="breaking-content">
+    <ul class="newsticker">
+      {% for item in items %}
+        <li class="view-list-item"><a href="{{ item.url }}">{{ item.title }}</a></li>
+      {% else %}
+        <li class="view-list-item">{{ '暂无快讯'|t }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>

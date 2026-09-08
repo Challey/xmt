@@ -5,17 +5,205 @@
  * XMT Trust UI module hooks.
  */
 
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 use Drupal\xmt_publisher\Entity\Publisher;
+
+/**
+ * Implements hook_theme().
+ */
+function xmt_trust_ui_theme(): array {
+  return [
+    'xmt_trust_home' => [
+      'variables' => [
+        'columns' => [],
+        'short_news' => [],
+      ],
+      'template' => 'xmt-trust-home',
+    ],
+    'xmt_trust_breaking' => [
+      'variables' => [
+        'items' => [],
+        'short_news_url' => '',
+        'today_url' => '/read/today',
+      ],
+      'template' => 'xmt-trust-breaking',
+    ],
+    'xmt_official_media' => [
+      'variables' => [
+        'title_text' => '',
+        'all_url' => '',
+        'short_news_url' => '',
+        'today_url' => '/read/today',
+        'rss_url' => '',
+        'channel' => NULL,
+        'channels' => [],
+        'items' => [],
+      ],
+      'template' => 'xmt-official-media',
+    ],
+    'xmt_official_media_teaser' => [
+      'variables' => [
+        'items' => [],
+        'channels' => [],
+        'more_url' => '',
+        'short_news_url' => '',
+        'today_url' => '/read/today',
+        'rss_url' => '',
+      ],
+      'template' => 'xmt-official-media-teaser',
+    ],
+    'xmt_publisher_directory' => [
+      'variables' => [
+        'items' => [],
+        'apply_url' => '',
+        'short_news_url' => '',
+        'today_url' => '/read/today',
+        'rss_url' => '',
+        'search_url' => '',
+      ],
+      'template' => 'xmt-publisher-directory',
+    ],
+    'xmt_short_read_feed' => [
+      'variables' => [
+        'cards' => [],
+        'level' => 'trusted',
+        'mode' => 'browse',
+        'domain' => '',
+        'source' => '',
+        'focus' => 0,
+        'tagline' => '',
+        'filters' => [],
+        'domain_filters' => [],
+        'domain_groups' => [],
+        'domain_rail' => NULL,
+        'browse_url' => '',
+        'immerse_url' => '',
+        'api_url' => '',
+        'rss_url' => '',
+        'today_url' => '/read/today',
+        'official_media_url' => '',
+        'clear_source_url' => '',
+        'empty_state' => NULL,
+      ],
+      'template' => 'xmt-short-read-feed',
+    ],
+    'xmt_short_read_today' => [
+      'variables' => [
+        'cards' => [],
+        'date_label' => '',
+        'level' => 'trusted',
+        'domain' => '',
+        'is_fallback' => FALSE,
+        'feed_url' => '',
+        'immerse_url' => '',
+        'rss_url' => '',
+        'search_url' => '',
+        'filters' => [],
+        'domain_filters' => [],
+        'domain_groups' => [],
+        'domain_rail' => NULL,
+      ],
+      'template' => 'xmt-short-read-today',
+    ],
+    'xmt_trust_search' => [
+      'variables' => [
+        'q' => '',
+        'level' => 'trusted',
+        'items' => [],
+        'filters' => [],
+        'form_action' => '',
+        'short_news_url' => '',
+        'immerse_url' => '',
+        'today_url' => '/read/today',
+        'rss_url' => '',
+      ],
+      'template' => 'xmt-trust-search',
+    ],
+    'xmt_help_wechat' => [
+      'variables' => [
+        'read_url' => '',
+        'today_url' => '',
+        'later_url' => '',
+        'search_url' => '',
+        'home_url' => '',
+        'beian' => '',
+        'target_url' => '',
+      ],
+      'template' => 'xmt-help-wechat',
+    ],
+    'xmt_beian_footer' => [
+      'variables' => [
+        'beian' => '',
+        'beian_url' => '',
+        'read_url' => '',
+        'today_url' => '',
+        'later_url' => '',
+        'search_url' => '',
+        'wechat_help_url' => '',
+        'international' => FALSE,
+      ],
+      'template' => 'xmt-beian-footer',
+    ],
+    'xmt_short_read_detail' => [
+      'variables' => [
+        'card' => [],
+        'related' => [],
+        'prev' => NULL,
+        'next' => NULL,
+        'feed_url' => '',
+        'immerse_url' => '',
+        'rss_url' => '',
+        'today_url' => '/read/today',
+        'official_media_url' => '',
+        'share_url' => '',
+        'share_image_url' => '',
+        'wechat_help_url' => '',
+      ],
+      'template' => 'xmt-short-read-detail',
+    ],
+    'xmt_short_read_later' => [
+      'variables' => [
+        'feed_url' => '',
+        'immerse_url' => '',
+        'rss_url' => '',
+      ],
+      'template' => 'xmt-short-read-later',
+    ],
+    'xmt_short_news_entry' => [
+      'variables' => [
+        'brand' => '',
+        'text' => '',
+        'hot_links' => [],
+        'browse_url' => '',
+        'immerse_url' => '',
+        'later_url' => '',
+        'today_url' => '',
+        'rss_url' => '',
+        'search_url' => '',
+        'official_media_url' => '',
+      ],
+      'template' => 'xmt-short-news-entry',
+    ],
+  ];
+}
 
 /**
  * Implements hook_page_attachments().
  */
 function xmt_trust_ui_page_attachments(array &$attachments): void {
   $attachments['#attached']['library'][] = 'xmt_trust_ui/trust_feed';
+  $route = \Drupal::routeMatch()->getRouteName();
+  if (in_array($route, [
+    'xmt_trust_ui.short_read',
+    'xmt_trust_ui.short_read_detail',
+    'xmt_trust_ui.short_read_later',
+    'xmt_trust_ui.short_read_today',
+  ], TRUE)) {
+    $attachments['#attached']['library'][] = 'xmt_trust_ui/short_read';
+  }
 }
 
 /**
@@ -35,6 +223,20 @@ function xmt_trust_ui_robots_alter(array &$robots): void {
   }
   if (!in_array($sitemap, $robots['Sitemap'], TRUE)) {
     $robots['Sitemap'][] = $sitemap;
+  }
+}
+
+/**
+ * Implements hook_preprocess_html().
+ */
+function xmt_trust_ui_preprocess_html(array &$variables): void {
+  $route = \Drupal::routeMatch()->getRouteName();
+  if ($route === 'xmt_trust_ui.short_read') {
+    $mode = \Drupal::request()->query->get('mode', 'immerse');
+    if ($mode !== 'browse') {
+      $variables['attributes']['class'][] = 'xmt-mode-immerse';
+    }
+    $variables['attributes']['class'][] = 'xmt-short-news-page';
   }
 }
 
