@@ -1,0 +1,200 @@
+/**
+ * 节奏信流 Pulse layer — 摘要主读、标题锚点、呼吸点、今日节奏条。
+ */
+
+/* —— 核先于题 —— */
+.xmt-short__core {
+  margin: 0.35rem 0 0.5rem;
+  font-size: clamp(1.15rem, 2.8vw, 1.45rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.45;
+  color: var(--xmt-text);
+}
+
+.xmt-short__card--immerse .xmt-short__core {
+  font-size: clamp(1.28rem, 3.4vw, 1.75rem);
+  line-height: 1.42;
+  letter-spacing: -0.03em;
+}
+
+.xmt-short__title--anchor {
+  margin: 0.15rem 0 0 !important;
+  font-size: 0.92rem !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.4 !important;
+  color: var(--xmt-muted) !important;
+  font-family: var(--xmt-font-body), "Noto Sans SC", sans-serif !important;
+}
+
+.xmt-short__card--immerse .xmt-short__title--anchor {
+  font-size: 0.95rem !important;
+  opacity: 0.9;
+}
+
+/* 旧 brief 类若仍出现，弱化为与 core 一致 */
+.xmt-short__card--pulse .xmt-short__brief {
+  display: none;
+}
+
+.xmt-short__next-hint {
+  margin: 0.75rem 0 0;
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--xmt-muted);
+  opacity: 0.7;
+}
+
+.xmt-short__card--immerse .xmt-short__actions {
+  margin-top: 0.5rem;
+  gap: 0.4rem;
+}
+
+/* —— 顶栏：更克制 —— */
+.xmt-short__top--pulse .xmt-short__pitch {
+  display: none;
+}
+
+.xmt-short__pulse-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.85rem;
+  width: 100%;
+  padding: 0.15rem 0 0.35rem;
+}
+
+.xmt-short--immerse .xmt-short__pulse-row {
+  padding-inline: 0;
+}
+
+.xmt-short__pulse-meter {
+  position: relative;
+  flex: 1 1 8rem;
+  min-width: 7rem;
+  max-width: 14rem;
+  height: 0.35rem;
+  border-radius: 980px;
+  background: var(--xmt-seg-track);
+  overflow: hidden;
+}
+
+.xmt-short__pulse-meter::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--xmt-pulse, 0%);
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--xmt-accent), var(--xmt-good, #30d158));
+  transition: width 320ms ease;
+}
+
+.xmt-short__pulse-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--xmt-muted);
+  letter-spacing: -0.01em;
+}
+
+.xmt-short__pulse-stop {
+  font-size: 0.75rem !important;
+  min-height: 1.65rem !important;
+  padding: 0.15rem 0.6rem !important;
+}
+
+/* —— 呼吸点浮层 —— */
+.xmt-short__rhythm {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 1rem 1rem max(1.5rem, env(safe-area-inset-bottom));
+  background: color-mix(in srgb, var(--xmt-bg, #000) 35%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.xmt-short__rhythm[hidden] {
+  display: none !important;
+}
+
+.xmt-short__rhythm-card {
+  width: min(420px, 100%);
+  padding: 1.25rem 1.2rem 1.15rem;
+  border-radius: 20px;
+  border: 1px solid var(--xmt-line);
+  background: var(--xmt-paper, #fff);
+  color: var(--xmt-text);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+  animation: xmt-rhythm-in 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes xmt-rhythm-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+.xmt-short__rhythm-kicker {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--xmt-muted);
+}
+
+.xmt-short__rhythm-title {
+  margin: 0.35rem 0 0.4rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.3;
+  color: var(--xmt-text);
+}
+
+.xmt-short__rhythm-body {
+  margin: 0 0 1rem;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--xmt-muted);
+}
+
+.xmt-short__rhythm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+html.xmt-rhythm-open {
+  overflow: hidden;
+}
+
+/* 信流卡：摘要区更大留白 */
+.xmt-short__card--immerse.xmt-short__card--pulse .xmt-short__card-inner {
+  gap: 0.65rem;
+  justify-content: center;
+}
+
+.xmt-short__card--browse.xmt-short__card--pulse .xmt-short__core {
+  font-size: 1.05rem;
+  font-weight: 600;
+  -webkit-line-clamp: 4;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xmt-short__rhythm-card {
+    animation: none;
+  }
+}
