@@ -1,0 +1,77 @@
+/**
+ * 顶栏「⋯」收纳菜单。
+ * 关键因：.xmt-short__menu-panel { display:flex } 覆盖了 HTML [hidden] 的 display:none，
+ * 导致菜单在未点击时也一直显示。
+ */
+
+.xmt-short__menu {
+  position: relative;
+  display: inline-flex;
+}
+
+.xmt-short__menu-btn {
+  letter-spacing: 0.12em;
+  font-weight: 700;
+}
+
+.xmt-short__menu-panel {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  right: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  min-width: 9.5rem;
+  padding: 0.35rem;
+  border: 1px solid var(--xmt-line);
+  border-radius: 14px;
+  background: var(--xmt-paper);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+  animation: xmt-short-menu-in 160ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* 关键核心：必须压过上面的 display:flex */
+.xmt-short__menu-panel[hidden] {
+  display: none !important;
+  animation: none;
+}
+
+html[data-xmt-theme="night"] .xmt-short__menu-panel {
+  background: rgba(28, 28, 30, 0.96);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes xmt-short-menu-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+.xmt-short__menu-panel a,
+.xmt-short__menu-panel button {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--xmt-text) !important;
+  text-align: left;
+  text-decoration: none !important;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.3;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.xmt-short__menu-panel a:hover,
+.xmt-short__menu-panel button:hover {
+  background: var(--xmt-accent-soft);
+  color: var(--xmt-accent) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xmt-short__menu-panel {
+    animation: none;
+  }
+}
