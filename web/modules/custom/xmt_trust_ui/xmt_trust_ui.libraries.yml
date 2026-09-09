@@ -5,11 +5,12 @@ trust_feed:
       css/trust-badges.css: {}
 
 short_read:
-  version: "3.0"
+  version: "3.1"
   css:
     theme:
       css/short-read.css: {}
       css/short-read-apple.css: {}
+      css/short-read-pulse.css: {}
   js:
     js/short-read-theme-boot.js:
       header: true
@@ -17,6 +18,7 @@ short_read:
       preprocess: false
       minified: false
     js/short-read.js: {}
+    js/short-read-rhythm.js: {}
   dependencies:
     - core/drupal
     - core/drupalSettings
