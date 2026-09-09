@@ -1,6 +1,11 @@
-<article class="xmt-short__card xmt-short__card--{{ mode|default('browse') }}" data-nid="{{ card.nid }}" id="short-{{ card.nid }}" data-title="{{ card.title }}" data-detail="{{ card.detail_url }}">
+{#
+  节奏信流卡片：一屏一事、核先于题。
+  主读 = 从原文提炼的核心摘要；标题为定位；动作仅保留必要出口。
+#}
+<article class="xmt-short__card xmt-short__card--{{ mode|default('browse') }} xmt-short__card--pulse" data-nid="{{ card.nid }}" id="short-{{ card.nid }}" data-title="{{ card.title }}" data-detail="{{ card.detail_url }}">
   <div class="xmt-short__card-inner">
     <div class="xmt-short__trust-rail" aria-hidden="true"></div>
+
     <div class="xmt-short__meta">
       <span class="xmt-trust-badge {{ card.badge_class }}">{{ card.badge_label }}</span>
       {% if card.source_name %}
@@ -15,46 +20,51 @@
       {% if card.domain_label %}
         <span class="xmt-short__domain-tag">{{ card.domain_label }}</span>
       {% endif %}
-      <span class="xmt-short__time">{{ card.reading_seconds }}″</span>
+      <span class="xmt-short__time">约 {{ card.reading_seconds }}″</span>
     </div>
 
-    <h2 class="xmt-short__title">{{ card.title }}</h2>
+    {# 主读：核心摘要（来自原文提炼） #}
+    {% if card.brief %}
+      <p class="xmt-short__core" data-xmt-core>{{ card.brief }}</p>
+    {% endif %}
 
-    <p class="xmt-short__brief">{{ card.brief }}</p>
+    {# 次读：标题作定位，不抢摘要 #}
+    <h2 class="xmt-short__title xmt-short__title--anchor">{{ card.title }}</h2>
 
     {% if mode == 'immerse' and card.keypoints %}
-      <ul class="xmt-short__points">
+      <ul class="xmt-short__points" aria-label="要点">
         {% for point in card.keypoints %}
           <li>{{ point }}</li>
         {% endfor %}
       </ul>
     {% elseif mode != 'immerse' and card.keypoints %}
-      <ul class="xmt-short__points xmt-short__points--compact">
+      <ul class="xmt-short__points xmt-short__points--compact" aria-label="要点">
         {% for point in card.keypoints|slice(0, 2) %}
           <li>{{ point }}</li>
         {% endfor %}
       </ul>
     {% endif %}
 
-    <p class="xmt-short__prov">{{ card.provenance_note }}</p>
+    {% if card.provenance_note %}
+      <p class="xmt-short__prov">{{ card.provenance_note }}</p>
+    {% endif %}
 
     <div class="xmt-short__actions">
       {% if mode == 'browse' %}
         <a class="xmt-short__btn xmt-short__btn--primary" href="{{ card.immerse_url }}">信流</a>
-        <a class="xmt-short__btn xmt-short__btn--ghost" href="{{ card.detail_url }}">详情</a>
-      {% else %}
-        <a class="xmt-short__btn xmt-short__btn--primary" href="{{ card.detail_url }}">详情</a>
       {% endif %}
       {% if card.source_url %}
         <a class="xmt-short__btn xmt-short__btn--ghost" href="{{ card.source_url }}" target="_blank" rel="noopener noreferrer">原文</a>
       {% endif %}
-      {% if card.share_image_url %}
-        <a class="xmt-short__btn xmt-short__btn--ghost" href="{{ card.share_image_url }}" target="_blank" rel="noopener noreferrer">分享图</a>
-      {% endif %}
+      <a class="xmt-short__btn xmt-short__btn--ghost" href="{{ card.detail_url }}">详情</a>
       {% if card.brief %}
         <button type="button" class="xmt-short__btn xmt-short__btn--ghost" data-xmt-copy-brief data-brief="{{ card.brief|e('html_attr') }}">复制摘要</button>
       {% endif %}
       <button type="button" class="xmt-short__btn xmt-short__btn--ghost" data-xmt-later data-nid="{{ card.nid }}" data-title="{{ card.title }}" data-url="{{ card.detail_url }}">稍后</button>
     </div>
+
+    {% if mode == 'immerse' %}
+      <p class="xmt-short__next-hint" aria-hidden="true">上滑 · 下一条</p>
+    {% endif %}
   </div>
 </article>
