@@ -1,4 +1,4 @@
-<div class="xmt-short xmt-short--{{ mode }}" data-api="{{ api_url }}" data-level="{{ level }}" data-mode="{{ mode }}" data-domain="{{ domain }}" data-focus="{{ focus }}" data-xmt-theme-root{% if mode == 'immerse' %} data-immerse="1"{% endif %}>
+<div class="xmt-short xmt-short--{{ mode }} xmt-short--pulse" data-api="{{ api_url }}" data-level="{{ level }}" data-mode="{{ mode }}" data-domain="{{ domain }}" data-focus="{{ focus }}" data-xmt-theme-root{% if mode == 'immerse' %} data-immerse="1"{% endif %}>
   <div class="xmt-wechat-tip" data-xmt-wechat-tip hidden>
     <p>微信内可能无法直接打开本站。请点右上角 <strong>···</strong> → <strong>在浏览器打开</strong>，或复制链接后用系统浏览器访问。</p>
     <div class="xmt-wechat-tip__actions">
@@ -7,15 +7,14 @@
     </div>
   </div>
 
-  <header class="xmt-short__top">
+  <header class="xmt-short__top xmt-short__top--pulse">
     <div class="xmt-short__brand-wrap">
-      <p class="xmt-short__eyebrow">XMT</p>
+      <p class="xmt-short__eyebrow">XMT · 节奏信流</p>
       <div class="xmt-short__brand">短闻</div>
       {% if mode == 'browse' %}
-        <p class="xmt-short__tagline">{{ tagline }}</p>
-        <p class="xmt-short__pitch">财经 · 科技 · 国内 · 国际——短平快可读，来源可核验。</p>
+        <p class="xmt-short__tagline">先读核，再决定要不要深挖。来源可核验。</p>
       {% else %}
-        <p class="xmt-short__tagline xmt-short__tagline--flow">信流 · 上滑连读 · 来源可核</p>
+        <p class="xmt-short__tagline xmt-short__tagline--flow">上滑连读 · 摘要优先 · 随时可停</p>
       {% endif %}
       <p class="xmt-short__streak" data-xmt-streak hidden></p>
       <p class="xmt-short__sync" data-xmt-sync-status hidden></p>
@@ -24,6 +23,15 @@
     <div class="xmt-short__mode-switch" role="tablist" aria-label="阅读模式">
       <a class="xmt-short__seg{% if mode == 'browse' %} is-active{% endif %}" href="{{ browse_url }}" role="tab" aria-selected="{{ mode == 'browse' ? 'true' : 'false' }}">速览</a>
       <a class="xmt-short__seg{% if mode == 'immerse' %} is-active{% endif %}" href="{{ immerse_url }}" role="tab" aria-selected="{{ mode == 'immerse' ? 'true' : 'false' }}">信流</a>
+    </div>
+
+    <div class="xmt-short__pulse-row" aria-label="{{ '今日节奏'|t }}">
+      <div class="xmt-short__pulse-meter" data-xmt-pulse-meter role="progressbar" aria-valuemin="0" aria-valuemax="18" aria-valuenow="0" style="--xmt-pulse: 0%"></div>
+      <div class="xmt-short__pulse-meta">
+        <span data-xmt-pulse-label>今日节奏</span>
+        <span data-xmt-session-reads hidden></span>
+      </div>
+      <button type="button" class="xmt-short__mode-btn xmt-short__pulse-stop" data-xmt-rhythm-stop title="{{ '体面停下'|t }}">够了</button>
     </div>
 
     <div class="xmt-short__top-actions">
@@ -38,9 +46,7 @@
       {% endif %}
       <button type="button" class="xmt-short__mode-btn" data-xmt-unread-toggle aria-pressed="false">隐藏已读</button>
       <button type="button" class="xmt-short__mode-btn" data-xmt-clear-read hidden>清空已读</button>
-      <button type="button" class="xmt-short__mode-btn" data-xmt-copy-share data-url="">复制本页</button>
       <a class="xmt-short__mode-btn" href="{{ rss_url }}" type="application/rss+xml" rel="alternate">RSS</a>
-      <button type="button" class="xmt-short__mode-btn" data-xmt-copy-rss data-rss="{{ rss_url }}">复制 RSS</button>
     </div>
   </header>
 
@@ -137,9 +143,8 @@
       </div>
     </div>
     <div class="xmt-short__swipe-hint" aria-hidden="true" data-xmt-swipe-hint>
-      <span>上滑下一条</span>
+      <span>上滑 · 下一条</span>
     </div>
-    <div class="xmt-short__hint" aria-hidden="true">上滑 · j/k · m/u · h 隐藏 · a 稍后 · o 原文 · e 详情 · t 今日 · i 模式 · f 搜索</div>
   {% else %}
     <div class="xmt-short__list" id="xmt-short-list">
       {% for card in cards %}
@@ -155,7 +160,6 @@
       </div>
     </div>
     <div class="xmt-short__load-sent" id="xmt-short-sentinel" aria-hidden="true"></div>
-    <div class="xmt-short__hint" aria-hidden="true">下滑 · j/k · m/u · i 信流 · a 稍后 · o 原文 · e 详情 · t 今日 · f 搜索</div>
   {% endif %}
 
   <aside class="xmt-short__later-panel" id="xmt-short-later" hidden>
