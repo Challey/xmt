@@ -1,12 +1,13 @@
 <div class="xmt-short-home xmt-short-home--entry" data-xmt-theme-root>
   <div class="xmt-short-home__bar">
-    <p class="xmt-short-home__eyebrow">XMT · 核心入口</p>
+    <p class="xmt-short-home__eyebrow">XMT · 节奏信流</p>
     <button type="button" class="xmt-short-home__theme" data-xmt-theme-toggle aria-label="{{ '切换白天 / 黑夜'|t }}" title="{{ '白天 / 黑夜'|t }}">
       <span data-xmt-theme-label>白天</span>
     </button>
   </div>
   <div class="xmt-short-home__brand">{{ brand }}</div>
   <p class="xmt-short-home__text">{{ text }}</p>
+  <p class="xmt-short-home__sub">先读核，再决定要不要深挖。可连读，也可随时停。</p>
   {% if hot_links %}
     <nav class="xmt-short-home__hot" aria-label="{{ '最热短闻'|t }}">
       {% for h in hot_links %}
